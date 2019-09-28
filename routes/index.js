@@ -7,21 +7,26 @@ var router = express.Router();
 
 
 
-router.get('/', (req,res)=>{
-  // exec(sql).then(rows=>{
-  //   console.log(rows)
-  //   res.json(rows)}
-  //   ).catch(error=>console.log(error))
-  res.send("Hello get")
+router.get('/', (req,res, next)=>{
+  res.send("Hello get");
 })
 
 router.post('/', (req,res)=>{
-  // exec(sql).then(rows=>{
-  //   console.log(rows)
-  //   res.json(rows)}
-  //   )
-  res.send("Hello post")
-  console.log(req.body)
+
+  res.send("Hello post");
+  console.log(req.body);
+})
+
+router.get('/session-test', (req, res, next)=>{
+  const session = req.session
+  if(session.viewNum == null){
+    session.viewNum = 0
+  }
+  session.viewNum++;
+  
+  res.json({
+    viewNum: session.viewNum
+  });
 })
 
 
