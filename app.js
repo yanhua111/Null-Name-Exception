@@ -6,18 +6,30 @@ var logger = require('morgan');
 const session = require('express-session');
 const redis = require('connect-redis')(session)
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
 const orderRouter = require('./routes/orders');
+const pushRouter = require('./routes/notification');
 
 
 var app = express();
 // const env = process.env.NODE_ENV
+app.get('/', function (req, res) {
+  res.send("hello")
+});
+
+/* for socket.io */
+const server = app.listen(8000);
+var socket = require('socket.io');
+io = socket(server);
+io.sockets.on('connection', (socket) => {
+  console.log('new connection')
+  socket.on('locationIn', (data) => {
+    socket.json.broadcast.emit('locationOut', { location: data });
+  });
+})
 
 
-// // view engine setup
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'jade');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -30,12 +42,13 @@ const redis_client = require('./bin/database/redis');
 const redis_store = new redis({
   client: redis_client
 });
+
 app.use(session({
   secret: 'saVe_On_4396_A',
   cookie: {
     // path: '/', //default 
     // httpOnly: true, //default
-    maxAge: 24 * 60 * 60 * 1000  //expire in this time
+    maxAge: 60 * 24 * 60 * 60 * 1000  //expire in this time(60days)
   },
   store: redis_store
 }))
@@ -44,6 +57,16 @@ app.use(session({
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/order', orderRouter);
+app.use('/push', pushRouter);
+
+io.on('connection', (client) => { 
+  client.on('event', data => { 
+      console.log(data)
+  });
+  client.on('disconnect', (data) => { 
+      console.log(data)
+  });
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -61,6 +84,6 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-app.listen(8000, 'localhost')
+// app.listen(8000, 'localhost')
 
 module.exports = app;

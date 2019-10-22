@@ -1,4 +1,4 @@
-const env = 'dev'
+const env = 'prd'
 
 let MYSQL_CONF;
 
@@ -8,7 +8,7 @@ if(env == 'prd') {
     user: 'root',
     password: 'Skip_666',
     port:'3306',
-    database: 'sys'
+    database: 'appdb'
   }
 } 
 

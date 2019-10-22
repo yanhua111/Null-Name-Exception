@@ -1,23 +1,45 @@
 const { exec } = require('../database/mysql')
 
-const login = (username, password) => {
+// const login = (token) => {
+//     const sql=`
+//         select username, id from users where token='${token}';
+//     `
+//     return exec(sql).then(rows=>{
+//         return rows[0] || {}
+//     })
+// }
+
+const login = (username, fbtoken, apptoken) => {
     const sql=`
-        select username, realname from users where username='${username}' and password='${password}';
+        insert into users (username, fbtoken, apptoken) values('${username}', '${fbtoken}', '${apptoken}');
     `
-    return exec(sql).then(rows=>{
-        return rows[0] || {}
+    return exec(sql).then(result=>{
+        console.log(result)
+        return {
+            id: result.insertId,
+            affectedRows: result.affectedRows
+        }
     })
 }
 
-const signup = (username, password, realname, phonenum) => {
+const getAppToken = (userId) => {
     const sql=`
-    insert into users (username, password, realname, phonenum) values('${username}','${password}','${realname}', '${phonenum}');
+        select apptoken from users where id='${userId}';
     `
-    return exec(sql).then(result=>{
-        return {id: result.insertId,
-                affectedRows: result.affectedRows}
+    return exec(sql).then(rows=> {
+        return rows
     })
 }
+
+// const signup = (username, password, realname, phonenum) => {
+//     const sql=`
+//     insert into users (username, password, realname, phonenum) values('${username}','${password}','${realname}', '${phonenum}');
+//     `
+//     return exec(sql).then(result=>{
+//         return {id: result.insertId,
+//                 affectedRows: result.affectedRows}
+//     })
+// }
 
 const del = (userId, username) => {
     const sql = `
@@ -33,6 +55,7 @@ const del = (userId, username) => {
 
 module.exports = {
     login,
-    signup,
+    getAppToken,
+    // signup,
     del
 }

@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const { login, signup, del} = require('../bin/controller/user')
+const { login, getAppToken, del } = require('../bin/controller/user')
 const { SuccessModel,ErrorModel } = require('../bin/controller/resMod');
 
 /* GET users listing. */
@@ -10,12 +10,13 @@ router.get('/', function(req, res, next) {
 
 /* login */
 router.post('/login', (req, res, next)=>{
-  const result = login(req.body.username, req.body.password)
+  let result = login(req.body.username, req.body.fbtoken, req.body.apptoken)
    result.then(data=>{
-      if(data.username){
-        // console.log(data.username)
-        req.session.username = data.username
-        req.session.realname = data.realname
+      if(data.id){
+        req.session.userid = data.id
+        req.session.username = req.body.username
+        req.session.fbtoken = req.body.fbtoken
+        req.session.apptoken = req.body.apptoken
         res.json({
           errno: 0,
           message: 'Login successully!'
@@ -24,7 +25,7 @@ router.post('/login', (req, res, next)=>{
     } else {
       res.json({
         errno: -1,
-        message: 'User does not exit!!!!'
+        message: 'Unexpected Error, please try again!'
       })
     }
     }).catch(error=>{
@@ -33,35 +34,12 @@ router.post('/login', (req, res, next)=>{
       })
       console.log(error);
     })
-    
-})
-
-/* signup */
-router.post('/signup', (req, res, next) => {
-  console.log(req.body);
-  const result = signup(req.body.username, req.body.password, req.body.realname, req.body.phonenum);
-  result.then(data=>{
-    if(data){
-      res.json(
-        new SuccessModel({
-          userId: data.id,
-          affectedRows: data.affectedRows
-        },"User Created!")
-        )
-    }
-    else{
-      res.json(new ErrorModel("Unexpected Error!"))
-    }
-  }).catch(err=>{
-    console.log(err)
-  })
 })
 
 /* delete */
 router.post('/delete', (req, res, next) => {
-  const result = del(req.body.userId, req.body.username);
+  let result = del(req.body.userId, req.body.username);
   result.then(data=>{
-    console.log(data);
   if(data.affectedRows == 1) {
     res.json(
       new SuccessModel("User deleted!")
@@ -77,14 +55,26 @@ router.post('/delete', (req, res, next) => {
 /* login check */
 router.get('/check', (req,res)=>{
   if(req.session.username) {
+    console.log(req.session.userid)
     res.json(
-      new SuccessModel("User have logged in!")
+      new SuccessModel({
+        username: req.session.username
+      },"User have logged in!")
     )
   } else {
     res.json(
       new ErrorModel("Not logged in!")
     )
   }
+})
+
+/* get app token */
+router.post('/get_token', (req,res)=>{
+  let result = getAppToken(req.body.userid);
+  result.then(result => {
+    res.json(new SuccessModel({
+      apptoken: result[0].apptoken}))
+  })
 })
 
 module.exports = router;
