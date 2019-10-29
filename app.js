@@ -13,22 +13,24 @@ const pushRouter = require('./routes/notification');
 
 
 var app = express();
-// const env = process.env.NODE_ENV
 app.get('/', function (req, res) {
-  res.send("hello")
+  res.send("Hello Server!")
 });
 
-/* for socket.io */
+/* creating socket.io on port 8000, will be used be used for real time communication from the client,
+* event 'locationIn' is listened, 'locationOut' is emitted,
+* orderid is received and sent to ensure infomation only available between courier and customer sharing the same order
+*/
 const server = app.listen(8000);
 var socket = require('socket.io');
 io = socket(server);
 io.sockets.on('connection', (socket) => {
   console.log('new connection')
   socket.on('locationIn', (data) => {
-    socket.json.broadcast.emit('locationOut', { location: data });
+    io.sockets.json.emit('locationOut', { location: data }
+    );
   });
 })
-
 
 
 app.use(logger('dev'));

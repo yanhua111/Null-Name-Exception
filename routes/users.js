@@ -40,7 +40,7 @@ router.post('/login', (req, res, next)=>{
 router.post('/delete', (req, res, next) => {
   let result = del(req.body.userId, req.body.username);
   result.then(data=>{
-  if(data.affectedRows == 1) {
+  if(data.affectedRows === 1) {
     res.json(
       new SuccessModel("User deleted!")
     )
