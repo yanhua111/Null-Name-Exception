@@ -11,7 +11,7 @@ const accept = (orderId, courierId) => {
 
 const getOrder = (courierId) => {
     const sql=`
-        select id, userid, courierid, content, lat, lng from orders where status = 1 or (courierid = '${courierId}' and status = 0);
+        select id, userid, courierid, content, lat, lng, status from orders where status = 1 or (courierid = '${courierId}' and status = 0);
     `
     return exec(sql).then(rows=>{
         return rows;

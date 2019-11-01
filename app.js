@@ -25,10 +25,12 @@ const server = app.listen(8000);
 var socket = require('socket.io');
 io = socket(server);
 io.sockets.on('connection', (socket) => {
-  console.log('new connection')
+  socket.on('join', (data) => {
+    socket.join(data.orderid);
+  });
   socket.on('locationIn', (data) => {
-    io.sockets.json.emit('locationOut', { location: data }
-    );
+    io.to(`${data.orderid}`).emit('locationOut', { location: data });
+    // io.sockets.json.emit('locationOut', { location: data });
   });
 })
 
