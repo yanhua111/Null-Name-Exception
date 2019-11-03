@@ -2,10 +2,10 @@ const { exec } = require('../database/mysql')
 
 /* Facebook login, save fbtoken and apptoken into database */
 const login = (username, fbtoken, apptoken) => {
-    const sql=`
+    const sql = `
         insert into users (username, fbtoken, apptoken) values('${username}', '${fbtoken}', '${apptoken}');
     `
-    return exec(sql).then(result=>{
+    return exec(sql).then(result => {
         console.log(result)
         return {
             id: result.insertId,
@@ -16,10 +16,10 @@ const login = (username, fbtoken, apptoken) => {
 
 /* Get the app token given a known user id, used for courier to push notification to customer */
 const getAppToken = (userId) => {
-    const sql=`
+    const sql = `
         select apptoken from users where id='${userId}';
     `
-    return exec(sql).then(rows=> {
+    return exec(sql).then(rows => {
         return rows
     })
 }
@@ -29,12 +29,14 @@ const del = (userId, username) => {
     const sql = `
     delete from users where id='${userId}' and username ='${username}';
     `
-    return exec(sql).then(result=>{
+    return exec(sql).then(result => {
         console.log(result)
         return {
-            affectedRows: result.affectedRows}
+            affectedRows: result.affectedRows
+        }
     })
 }
+
 
 
 module.exports = {

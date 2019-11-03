@@ -58,22 +58,22 @@ app.use('/users', usersRouter);
 app.use('/order', orderRouter);
 app.use('/push', pushRouter);
 
-io.on('connection', (client) => { 
-  client.on('event', data => { 
-      console.log(data)
+io.on('connection', (client) => {
+  client.on('event', data => {
+    console.log(data)
   });
-  client.on('disconnect', (data) => { 
-      console.log(data)
+  client.on('disconnect', (data) => {
+    console.log(data)
   });
 });
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'dev' ? err : {};
 

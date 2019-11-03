@@ -1,9 +1,9 @@
 /* Base model for SuccessModel and ErrorModel,
 * takes data and message
 */
-class BaseModel{
+class BaseModel {
     constructor(data, message) {
-        if(typeof data === 'string') {
+        if (typeof data === 'string') {
             this.message = data
             data = null
             message = null

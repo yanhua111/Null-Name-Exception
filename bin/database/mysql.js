@@ -6,10 +6,10 @@ const con = mysql.createConnection(CONF)
 con.connect()
 
 /* Promise for executing mysql command */
-function exec(sql){
-    const promise = new Promise((resolve, reject) =>{
-        con.query(sql, (err, result)=>{
-            if(err){
+function exec(sql) {
+    const promise = new Promise((resolve, reject) => {
+        con.query(sql, (err, result) => {
+            if (err) {
                 console.error(err)
                 return
             }
@@ -17,8 +17,8 @@ function exec(sql){
         })
     })
     return promise
-  }
+}
 
-  module.exports = {
-      exec
-  }
+module.exports = {
+    exec
+}

@@ -5,17 +5,17 @@ let savedPushTokens = [];
 
 /* Push the saved token */
 const push = (token, message) => {
-    savedPushTokens = [];
-    saveToken(token)
-    handlePushTokens(message)
+  savedPushTokens = [];
+  saveToken(token)
+  handlePushTokens(message)
 }
 
 /* Save the token received */
 const saveToken = (token) => {
-    if (savedPushTokens.indexOf(token === -1)) {
-      savedPushTokens.push(token);
-    }
+  if (savedPushTokens.indexOf(token === -1)) {
+    savedPushTokens.push(token);
   }
+}
 
 
 /* Handler for pushing notification with specified message */
@@ -48,5 +48,5 @@ const handlePushTokens = (message) => {
 }
 
 module.exports = {
-    push
+  push
 }
