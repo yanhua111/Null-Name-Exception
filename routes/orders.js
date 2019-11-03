@@ -31,10 +31,10 @@ router.post('/finish', (req, res, next) => {
   result.then(data => {
     if (data) {
       res.json(
-        new SuccessModel('Order Placed!')
+        new SuccessModel('Order Finished!')
       );
     } else {
-      res.json(new ErrorModel('Unexpected Error!'));
+      res.json(new ErrorModel('Failed to finish'));
     }
   });
 });
