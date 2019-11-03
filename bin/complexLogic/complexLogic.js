@@ -1,4 +1,4 @@
-var adjKey = ["Starbucks", "Village", "Triple O's", "Shopper's", "Tim Horton's"];
+var adjKey = ['Starbucks', 'Village', "Triple O's", "Shopper's", "Tim Horton's"];
 var adjMatrix = [
   [0, 1100, 300, 2000, 1400],
   [1100, 0, 1200, 3000, 2300],
@@ -19,7 +19,7 @@ twoVisit: 2D array of locations to visit
 custLoc: 2D array of customer loactions, with respect to toVisit orders, ie. toVisit[1] contains orders of custLoc[1]
 */
 const solve = (startPos, twoVisit) => {
-  //adds all non repeating points to new 1D array
+  // adds all non repeating points to new 1D array
   var setVisit = new Set();
   for (var i = 0; i < twoVisit.length; i++) {
     for (var j = 0; j < twoVisit[i].length; j++) {
@@ -31,34 +31,33 @@ const solve = (startPos, twoVisit) => {
   var toVisit = permute(startPos, toVisit, 0, toVisit.length - 1, Number.MAX_SAFE_INTEGER);
 
   return toVisit;
-}
+};
 
 const permute = (startPos, toVisit, l, minWeight, minRoute) => {
   if (l == toVisit.length - 1) {
-    //gets the starting distance and the distance of points to visit in order
+    // gets the starting distance and the distance of points to visit in order
     weight = getWeight(toVisit) + getDist(startPos, toVisit[0]);
     if (weight < minWeight) {
       minWeight = weight;
       minRoute = Object.assign({}, toVisit);
     }
-  }
-  else {
+  } else {
     for (var i = l; i < toVisit.length; i++) {
       if (l != i) {
-        let temp = toVisit[l];
+        const temp = toVisit[l];
         toVisit[l] = toVisit[i];
         toVisit[i] = temp;
       }
       permute(startPos, toVisit, l + 1, minWeight, minRoute);
       if (l != i) {
-        let temp = toVisit[l];
+        const temp = toVisit[l];
         toVisit[l] = toVisit[i];
         toVisit[i] = temp;
       }
     }
   }
   return minRoute;
-}
+};
 
 const getWeight = (toVisit) => {
   var weight = 0;
@@ -66,7 +65,7 @@ const getWeight = (toVisit) => {
     weight += adjMatrix[toVisit[i]][toVisit[i + 1]];
   }
   return weight;
-}
+};
 
 const getDist = (point, index) => Math.sqrt(Math.pow(point.x - adjLoc[index].x, 2) + Math.pow(point.y - adjLoc[index].y, 2));
 
