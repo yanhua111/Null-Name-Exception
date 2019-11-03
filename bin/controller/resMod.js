@@ -1,3 +1,6 @@
+/* Base model for SuccessModel and ErrorModel,
+* takes data and message
+*/
 class BaseModel{
     constructor(data, message) {
         if(typeof data === 'string') {
@@ -14,6 +17,9 @@ class BaseModel{
     }
 }
 
+/* Use for a successful action,
+* return errno 0
+*/
 class SuccessModel extends BaseModel {
     constructor(data, message) {
         super(data, message)
@@ -21,6 +27,9 @@ class SuccessModel extends BaseModel {
     }
 }
 
+/* Use for a failed action,
+* return errno -1
+*/
 class ErrorModel extends BaseModel {
     constructor(data, message) {
         super(data, message)

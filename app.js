@@ -6,7 +6,6 @@ var logger = require('morgan');
 const session = require('express-session');
 const redis = require('connect-redis')(session)
 
-const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const orderRouter = require('./routes/orders');
 const pushRouter = require('./routes/notification');
@@ -30,7 +29,6 @@ io.sockets.on('connection', (socket) => {
   });
   socket.on('locationIn', (data) => {
     io.to(`${data.orderid}`).emit('locationOut', { location: data });
-    // io.sockets.json.emit('locationOut', { location: data });
   });
 })
 
@@ -41,7 +39,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 // app.use(express.static(path.join(__dirname, 'public')));
 
-/*analyse session*/
+/* analyse session, and cache session into redis */
 const redis_client = require('./bin/database/redis');
 const redis_store = new redis({
   client: redis_client
@@ -50,15 +48,12 @@ const redis_store = new redis({
 app.use(session({
   secret: 'saVe_On_4396_A',
   cookie: {
-    // path: '/', //default 
-    // httpOnly: true, //default
     maxAge: 60 * 24 * 60 * 60 * 1000  //expire in this time(60days)
   },
   store: redis_store
 }))
 
 
-app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/order', orderRouter);
 app.use('/push', pushRouter);
@@ -79,7 +74,6 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'dev' ? err : {};
 
@@ -87,7 +81,5 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-// app.listen(8000, 'localhost')
 
 module.exports = app;

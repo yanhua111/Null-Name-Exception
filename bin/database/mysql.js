@@ -5,6 +5,7 @@ CONF = MYSQL_CONF;
 const con = mysql.createConnection(CONF)
 con.connect()
 
+/* Promise for executing mysql command */
 function exec(sql){
     const promise = new Promise((resolve, reject) =>{
         con.query(sql, (err, result)=>{
