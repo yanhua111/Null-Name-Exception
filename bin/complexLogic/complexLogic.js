@@ -49,13 +49,13 @@ const permute = (startPos, toVisit, l, minWeight) => {
         let temp = toVisit[l];
         toVisit[l] = toVisit[i];
         toVisit[i] = temp;        
-      } 
-      minRoute = permute(startPos, toVisit, l+1, minWeight); 
-      if (l !== i) {
-        let temp = toVisit[l];
+        minRoute = permute(startPos, toVisit, l+1, minWeight); 
+        temp = toVisit[l];
         toVisit[l] = toVisit[i];
         toVisit[i] = temp;        
-      } 
+      } else {
+        minRoute = permute(startPos, toVisit, l+1, minWeight); 
+      }
     } 
   } 
   return minRoute;
@@ -63,9 +63,7 @@ const permute = (startPos, toVisit, l, minWeight) => {
 
 const getWeight = (toVisit) => {
   var weight = 0;
-  for (var i = 0; i < toVisit.length - 1; i++) {
-    //console.log(toVisit[i]);
-    //console.log(toVisit[i+1]);    
+  for (var i = 0; i < toVisit.length - 1; i++) {    
     weight += adjMatrix[toVisit[i]][toVisit[i+1]];
   }
   return weight;
@@ -73,4 +71,4 @@ const getWeight = (toVisit) => {
 
 const getDist = (point, index) => Math.sqrt(Math.pow(point.x - adjLoc[index].x, 2) + Math.pow(point.y - adjLoc[index].y, 2));
 
-module.exports = {"solve": solve, "permute": permute, "getWeight": getWeight};
+module.exports = {"solve": solve};
