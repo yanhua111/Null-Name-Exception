@@ -29,18 +29,18 @@ const solve = (startPos, twoVisit) => {
       }
     }
   } 
-  toVisit = permute(startPos, toVisit, 0, Number.MAX_SAFE_INTEGER, toVisit); 
+  toVisit = permute(startPos, toVisit, 0, Number.MAX_SAFE_INTEGER); 
 
   return toVisit;
 }
 
-const permute = (startPos, toVisit, l, minWeight, minRoute) => { 
+const permute = (startPos, toVisit, l, minWeight) => { 
   if (l == toVisit.length - 1) {
     //gets the starting distance and the distance of points to visit in order
     var weight = getWeight(toVisit) + getDist(startPos, toVisit[0]);
     if (weight < minWeight) {
       minWeight = weight;    
-      minRoute = [...toVisit];
+      var minRoute = [...toVisit];
     }
   } 
   else { 
@@ -50,7 +50,7 @@ const permute = (startPos, toVisit, l, minWeight, minRoute) => {
         toVisit[l] = toVisit[i];
         toVisit[i] = temp;        
       } 
-      minRoute = permute(startPos, toVisit, l+1, minWeight, minRoute); 
+      minRoute = permute(startPos, toVisit, l+1, minWeight); 
       if (l !== i) {
         let temp = toVisit[l];
         toVisit[l] = toVisit[i];
