@@ -21,14 +21,14 @@ returns the shortest possible path to pickup deliveries and get to customer
 */
 const solve = (startPos, twoVisit) => {
   //adds all non repeating points to new 1D array
-  var setVisit = new Set();
+  var toVisit = new Array();
   for (var i = 0; i < twoVisit.length; i++) {
     for (var j = 0; j < twoVisit[i].length; j++) {
-      setVisit.add(twoVisit[i][j]);
+      if (!toVisit.includes(twoVisit[i][j])) {
+        toVisit.push(twoVisit[i][j]);
+      }
     }
-  }
-  var toVisit = Array.from(setVisit);
- 
+  } 
   toVisit = permute(startPos, toVisit, 0, Number.MAX_SAFE_INTEGER, toVisit); 
 
   return toVisit;
