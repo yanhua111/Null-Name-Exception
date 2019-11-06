@@ -1,8 +1,7 @@
 import React from "react";
 import {
   StyleSheet, Text, Image, View, Button, TextInput,
-  PanResponder, TouchableOpacity, TimePickerAndroid, Alert, ToastAndroid,
-  Animated
+  PanResponder, TouchableOpacity, TimePickerAndroid, Alert, ToastAndroid
 } from "react-native";
 import MapView, { AnimatedRegion, Marker, ProviderPropType } from "react-native-maps";
 import SocketIOClient from "socket.io-client";
@@ -43,7 +42,6 @@ export default class CustomerScreen extends React.Component {
         latitudeDelta: 0.00922,
         longitudeDelta: 0.0200
       },
-      text: "",
       coordinate: new AnimatedRegion({
         latitude: LATITUDE,
         longitude: LONGITUDE,
