@@ -21,10 +21,10 @@ const getOrder = (courierId) => {
 };
 
 /* Place a order, and save all corresponding inforation into the database */
-const place = (userId, content, lat, lng) => {
+const place = (userId, content, lat, lng, time) => {
   const sql = `
-    insert into orders (userid, courierid, content, lat, lng, status) values('${userId}', -1 ,'${content}',
-     '${lat}', '${lng}', 1);
+    insert into orders (userid, courierid, content, lat, lng, status, time) values('${userId}', -1 ,'${content}',
+     '${lat}', '${lng}', 1, '${time}');
     `;
   return exec(sql).then(result => {
     return result;

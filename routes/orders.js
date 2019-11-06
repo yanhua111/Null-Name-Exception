@@ -6,7 +6,7 @@ const { SuccessModel, ErrorModel } = require('../bin/controller/resMod');
 /* Place a order, send content and current position of the customer */
 router.post('/place', (req, res, next) => {
   if (req.session.username) {
-    const result = place(req.session.userid, req.body.content, req.body.lat, req.body.lng);
+    const result = place(req.session.userid, req.body.content, req.body.lat, req.body.lng, req.body.time);
     result.then(data => {
       if (data) {
         res.json(
