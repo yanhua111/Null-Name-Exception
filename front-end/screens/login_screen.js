@@ -4,7 +4,7 @@ import Expo from "expo";
 import * as Facebook from "expo-facebook";
 import { Notifications } from "expo";
 import * as Permissions from "expo-permissions";
-
+import { URL, PORT } from '../src/conf'
 
 export default class LoginScreen extends React.Component {
 
