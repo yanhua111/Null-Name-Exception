@@ -7,7 +7,8 @@ import DashboardScreen from "./screens/dashboard";
 import CustomerScreen from "./screens/customerscreen";
 import CourierScreen from "./screens/courierscreen";
 import CourierMap from "./screens/couriermap";
-
+import OrderScreen from './screens/OrderPage';
+import AddressPage from './screens/address';
 
 
 export default class App extends React.Component {
@@ -22,7 +23,9 @@ const AppSwitchNavigator = createSwitchNavigator({
   DashboardScreen: DashboardScreen,
   CourierScreen: CourierScreen,
   CustomerScreen: CustomerScreen,
-  CourierMap: CourierMap
+  CourierMap: CourierMap,
+  OrderScreen: OrderScreen,
+  AddressPage: AddressPage
 });
 
 const AppNavigator = createAppContainer(AppSwitchNavigator);

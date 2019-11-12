@@ -1,16 +1,15 @@
 import React from "react";
 import {
     StyleSheet, Text, Image, View, Button, TextInput,
-    PanResponder, TouchableOpacity, TimePickerAndroid, Alert, ToastAndroid
+    TouchableOpacity, TimePickerAndroid, Alert, ToastAndroid,
+    ScrollView, ActivityIndicator
 } from "react-native";
-import MapView, { AnimatedRegion, Marker } from "react-native-maps";
-import SocketIOClient from "socket.io-client";
-import Modal from "react-native-modal";
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { URL, PORT, WebSocketPORT, APIKEY } from '../src/conf'
 
-
-
+import locIcon from '../assets/region.png'
+import { URL, PORT } from '../src/conf'
+import backicon from "../assets/back.png";
+import timeIcon from '../assets/time.png';
+import contentIcon from '../assets/content.png';
 export default class OrderScreen extends React.Component {
 
     constructor(props) {
@@ -25,10 +24,17 @@ export default class OrderScreen extends React.Component {
                 longitudeDelta: 0.0200
             },
             orderTime: {
-                hour: -1,
-                minute: -1
+                hour: 0,
+                minute: 0
             },
+            showloader: false
         };
+    }
+
+    componentWillUnmount() {
+        this.setState({
+            showloader: false
+        })
     }
 
     /* Update position set by user */
@@ -44,22 +50,28 @@ export default class OrderScreen extends React.Component {
     }
 
     /* place order handler */
-    get_order_info = () => {
+    get_order_info = (fromLat, fromLng, toLat, toLng) => {
         if (this.state.user_text === "") {
-            Alert.alert('Invalid order', 'Please enter order content!');
+            Alert.alert('Invalid Order', 'Please enter order Details!');
             return;
         }
-        if (this.state.orderTime.hour === -1) {
-            Alert.alert('Invalid order', 'Please enter a time!');
+        if (this.state.orderTime.hour === 0) {
+            Alert.alert('Invalid Order', 'Please enter a time!');
             return;
         }
-        navigator.geolocation.getCurrentPosition((position) => {
-            this.place_order(position.coords.latitude, position.coords.longitude, `${this.state.orderTime.hour}:${this.state.orderTime.minute}:00`);
-        }, (err) => console.log(err));
+        if (fromLat == 0 || toLat == 0) {
+            Alert.alert('Invalid Order', 'Please enter a valid place')
+        }
+        this.place_order(fromLat, fromLng,
+            toLat, toLng,
+            `${this.state.orderTime.hour}:${this.state.orderTime.minute}:00`);
     }
 
     /* place a order */
-    place_order = (lat, lng, time) => {
+    place_order = (lat, lng, deslat, deslng, time) => {
+        this.setState({
+            showloader: true
+        })
         fetch(`${URL}:${PORT}/order/place`, {
             method: "POST",
             headers: {
@@ -71,17 +83,28 @@ export default class OrderScreen extends React.Component {
                 content: this.state.user_text,
                 lat: lat,
                 lng: lng,
+                deslat: deslat,
+                deslng: deslng,
                 time: time
             }),
-        }).then(() => {
-            this.setState({ showOderInfo: false });
-            ToastAndroid.showWithGravityAndOffset(
-                'Order Placed!',
-                ToastAndroid.LONG,
-                ToastAndroid.BOTTOM,
-                25,
-                50
-            );
+        }).then((res) => {
+            res.json().then(result => {
+                this.setState({
+                    showloader: false
+                })
+                if (result.errno == 0) {
+                    ToastAndroid.showWithGravityAndOffset(
+                        'Order Placed!',
+                        ToastAndroid.LONG,
+                        ToastAndroid.BOTTOM,
+                        25,
+                        50
+                    );
+                    this.props.navigation.navigate("CustomerScreen");
+                } else {
+                    Alert.alert('Failed to Place order', 'Please try again');
+                }
+            })
         })
     }
 
@@ -109,73 +132,96 @@ export default class OrderScreen extends React.Component {
     }
 
     render() {
-        // let handles = this.state.panResponder.panHandlers;
+        const locFrom = this.props.navigation.getParam('locFrom', "Please enter A Location");
+        const locTo = this.props.navigation.getParam('locTo', "Please enter B Location");
+
+        const fromLat = this.props.navigation.getParam('fromLat', 0);
+        const fromLng = this.props.navigation.getParam('fromLng', 0);
+        const toLat = this.props.navigation.getParam('toLat', 0);
+        const toLng = this.props.navigation.getParam('toLng', 0);
         return (
             <View style={styles.container}>
-                <View style={styles.searchBar}>
-                    <GooglePlacesAutocomplete
-                        placeholder='Enter Location'
-                        minLength={2}
-                        autoFocus={false}
-                        returnKeyType={'default'}
-                        fetchDetails={true}
-
-                        query={{
-                            // available options: https://developers.google.com/places/web-service/autocomplete
-                            key: APIKEY,
-                            language: 'en', // language of the results
-                            // types: '(cities)' // default: 'geocode'
-                        }}
-
-                        styles={{
-                            textInputContainer: {
-                                backgroundColor: 'white',
-                                borderTopWidth: 0,
-                                borderBottomWidth: 0
-                            },
-                            textInput: {
-                                marginLeft: 0,
-                                marginRight: 0,
-                                height: 38,
-                                color: '#5d5d5d',
-                                fontSize: 16
-                            },
-                            predefinedPlacesDescription: {
-                                color: '#1faadb'
-                            },
-                        }}
-                        currentLocation={false}
-                    />
+                {
+                    this.state.showloader && <View style={{ position: 'absolute', top: "50%", right: 0, left: 0}}>
+                        <ActivityIndicator size="large" color="red" />
+                    </View>
+                }
+                <View style={styles.topBar}>
+                    <TouchableOpacity style={styles.backbtn}
+                        onPress={() => { this.props.navigation.navigate('DashboardScreen') }} >
+                        <Image source={backicon} style={styles.icon} />
+                    </TouchableOpacity>
+                    <Text style={styles.text}>Order Information</Text>
                 </View>
 
-                <View style={{ position: "absolute", bottom: 200, alignSelf: 'center' }}>
-                    <Text style={{ fontSize: 20, fontWeight: "bold", color: 'white', marginVertical: 20 }}>Enter Order Information</Text>
+                <View style={styles.locFrom}>
+                    <Image source={locIcon} style={styles.icon} />
+                    <Text style={styles.shorttext}> From: </Text>
+                    <TouchableOpacity style={styles.address}
+                        onPress={() => {
+                            this.props.navigation.navigate("AddressPage",
+                                {
+                                    selection: 'from',
+                                    locFrom: locFrom,
+                                    locTo: locTo,
+                                    fromLat: fromLat,
+                                    fromLng: fromLng,
+                                    toLat: toLat,
+                                    toLng: toLng
+                                });
+                        }} >
+                        <Text style={styles.placeholderText}>{locFrom}</Text>
+                    </TouchableOpacity>
+                </View>
+
+                <View style={styles.locTo}>
+                    <Image source={locIcon} style={styles.icon} />
+                    <Text style={styles.shorttext}> To: </Text>
+                    <TouchableOpacity style={styles.address}
+                        onPress={() => {
+                            this.props.navigation.navigate("AddressPage",
+                                {
+                                    selection: 'to',
+                                    locFrom: locFrom,
+                                    locTo: locTo,
+                                    fromLat: fromLat,
+                                    fromLng: fromLng,
+                                    toLat: toLat,
+                                    toLng: toLng
+                                });
+                        }} >
+                        <Text style={styles.placeholderText}>{locTo}</Text>
+                    </TouchableOpacity>
+                </View>
+
+                <View style={styles.locTo}>
+                    <Image source={timeIcon} style={styles.icon} />
+                    <Text onPress={this.pickTime.bind(this)} style={styles.shorttext}> Pick a time: </Text>
+                    <TouchableOpacity style={styles.address} onPress={this.pickTime.bind(this)}>
+                        <Text style={styles.placeholderText}>{`${this.state.orderTime.hour}:${this.state.orderTime.minute}`}</Text>
+                    </TouchableOpacity>
+                </View>
+
+                <View style={styles.txtInputContainer}>
+                    <View style={styles.titleContainer}>
+                        <Image source={contentIcon} style={styles.icon} />
+                        <Text style={styles.shorttext}> Order Details: </Text>
+                    </View>
                     <TextInput
-                        placeholder="Order Information"
+                        placeholder="Please enter any additional information here ..."
                         underlineColorAndroid={"transparent"}
                         onChangeText={(user_text) => this.setState({ user_text })}
                         style={{ marginVertical: 20 }} />
-                    <Button title="Cancel" onPress={this.toggleModal} />
-                    <Button title="Pick a time"
-                        onPress={this.pickTime.bind(this)} />
-                    <Button title="Place!"
-                        onPress={this.get_order_info.bind(this)} />
                 </View>
 
-                <View style={{ position: "absolute", top: 50, height: 60, marginVertical: 20 }}>
-                    <Button
-                        onPress={() => { this.props.navigation.navigate("DashboardScreen"); }}
-                        title="back"
-                        color="green">
-                    </Button>
+                <View style={styles.placeBtn}>
+                    <TouchableOpacity style={styles.placeTxtContainer}
+                        onPress={() => this.get_order_info(fromLat, fromLng, toLat, toLng)}>
+                        <Text style={styles.placeTxt}>PLACE!</Text>
+                    </TouchableOpacity>
                 </View>
-                <View style={{ position: "absolute", top: 100, height: 100, marginVertical: 20 }}>
-                    <Button
-                        onPress={this.toggleModal}
-                        title="Place Order"
-                        color="#ff9900">
-                    </Button>
-                </View>
+
+
             </View>
         );
     }
@@ -187,15 +233,108 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#fff",
-        justifyContent: "center",
+        // justifyContent: "center",
+        flexDirection: 'column',
         padding: 0,
     },
-    searchBar: {
-        position: "absolute",
-        top: 20,
-        alignSelf: 'center',
+    locFrom: {
+        marginTop: 100,
+        width: '100%',
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderBottomWidth: 1,
+        borderColor: 'grey',
+        height: 50,
+        flexDirection: 'row',
+        marginBottom: 20
+    },
+    locTo: {
+        width: '100%',
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderBottomWidth: 1,
+        borderColor: 'grey',
+        height: 50,
+        flexDirection: 'row',
+        marginBottom: 20
+    },
+    txtInputContainer: {
+        width: '100%',
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderBottomWidth: 1,
+        borderColor: 'grey',
+        height: 200,
+        flexDirection: 'column',
+    },
+    titleContainer: {
+        flexDirection: 'row'
+    },
+    address: {
         borderRadius: 10,
         width: '80%',
-        height: '50%'
+        height: 200
     },
+    text: {
+        fontSize: 20,
+        fontWeight: "bold",
+        color: 'black',
+        marginVertical: 40,
+    },
+    shorttext: {
+        fontSize: 15,
+        fontWeight: "bold",
+        color: 'black',
+        marginHorizontal: 10
+    },
+    placeholderText: {
+        color: 'grey'
+    },
+    placeOrder: {
+        marginVertical: 20
+    },
+    topBar: {
+        position: 'absolute',
+        backgroundColor: 'white',
+        marginBottom: 20,
+        width: '100%',
+        height: 80,
+        borderColor: 'grey',
+        borderBottomWidth: 1,
+        shadowOffset: { width: 10, height: 10 },
+        shadowColor: 'black',
+        shadowOpacity: 1.0,
+        elevation: 10,
+        alignItems: 'center'
+    },
+    backbtn: {
+        position: 'absolute',
+        top: 40,
+        left: 10
+    },
+    icon: {
+        width: 30,
+        height: 30
+    },
+    placeBtn: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        textAlign: 'center',
+        marginHorizontal: 20,
+        marginBottom: 60,
+        height: 40,
+        borderRadius: 5,
+    },
+    placeTxtContainer: {
+        backgroundColor: 'red',
+        borderRadius: 5,
+        paddingHorizontal: 10,
+        paddingVertical: 10,
+        alignItems: 'center'
+    },
+    placeTxt: {
+        //   justifyContent: 'flex-end',
+        fontSize: 20,
+        fontWeight: 'bold',
+    }
 });

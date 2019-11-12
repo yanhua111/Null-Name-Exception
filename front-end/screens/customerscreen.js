@@ -1,16 +1,16 @@
 import React from "react";
 import {
-  StyleSheet, Text, Image, View, Button, TextInput,
-  PanResponder, TouchableOpacity, TimePickerAndroid, Alert, ToastAndroid
+  StyleSheet, Text, Image, View,
+  TouchableOpacity, TimePickerAndroid, Alert, ToastAndroid
 } from "react-native";
 import MapView, { AnimatedRegion, Marker, ProviderPropType } from "react-native-maps";
 import SocketIOClient from "socket.io-client";
-import Modal from "react-native-modal";
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { URL, PORT, WebSocketPORT, APIKEY } from '../src/conf'
+import { URL, PORT, WebSocketPORT } from '../src/conf'
 
 import runicon from "../assets/run.png";
 import locateicon from "../assets/locate.png";
+import backicon from "../assets/back.png";
+import placeOrdericon from "../assets/plus.png"
 // import locateUsericon from "../assets/locate_user.png";
 
 /* A random latitude and longitude, required for declaring animated Marker*/
@@ -208,75 +208,20 @@ export default class CustomerScreen extends React.Component {
             style={[styles.circle, this.state.movablePosition.getLayout()]}
             {...handles}
          /> */}
-        <View style={styles.searchBar}>
-          <GooglePlacesAutocomplete
-            placeholder='Enter Location'
-            minLength={2}
-            autoFocus={false}
-            returnKeyType={'default'}
-            fetchDetails={true}
 
-            query={{
-              // available options: https://developers.google.com/places/web-service/autocomplete
-              key: APIKEY,
-              language: 'en', // language of the results
-              // types: '(cities)' // default: 'geocode'
-            }}
+        <TouchableOpacity style={styles.backbtn}
+          onPress={() => { this.props.navigation.navigate("DashboardScreen"); }} >
+          <Image source={backicon} style={styles.icon} />
+        </TouchableOpacity>
 
-            styles={{
-              textInputContainer: {
-                backgroundColor: 'white',
-                borderTopWidth: 0,
-                borderBottomWidth: 0
-              },
-              textInput: {
-                marginLeft: 0,
-                marginRight: 0,
-                height: 38,
-                color: '#5d5d5d',
-                fontSize: 16
-              },
-              predefinedPlacesDescription: {
-                color: '#1faadb'
-              },
-            }}
-            currentLocation={false}
-          />
-        </View>
-        <View style={{ position: "absolute", top: 50, height: 60, marginVertical: 20 }}>
-          <Button
-            onPress={() => { this.props.navigation.navigate("DashboardScreen"); }}
-            title="back"
-            color="green">
-          </Button>
-        </View>
-        <View style={{ position: "absolute", top: 100, height: 100, marginVertical: 20 }}>
-          <Button
-            onPress={this.toggleModal}
-            title="Place Order"
-            color="#ff9900">
-          </Button>
-        </View>
+        <TouchableOpacity style={styles.placebtn}
+          onPress={() => { this.props.navigation.navigate("OrderScreen"); }} >
+          <Image source={placeOrdericon} style={styles.largeicon} />
+        </TouchableOpacity>
 
-        <Modal isVisible={this.state.showOderInfo}>
-          <View style={{ position: "absolute", bottom: 200, alignSelf: 'center' }}>
-
-            <Text style={{ fontSize: 20, fontWeight: "bold", color: 'white', marginVertical: 20 }}>Enter Order Information</Text>
-            <TextInput
-              placeholder="Order Information"
-              underlineColorAndroid={"transparent"}
-              onChangeText={(user_text) => this.setState({ user_text })}
-              style={{ marginVertical: 20 }} />
-            <Button title="Cancel" onPress={this.toggleModal} />
-            <Button title="Pick a time"
-              onPress={this.pickTime.bind(this)} />
-            <Button title="Place!"
-              onPress={this.get_order_info.bind(this)} />
-          </View>
-        </Modal>
-        <TouchableOpacity style={{ position: "absolute", bottom: 80, right: 20, borderColor: 'black' }}
+        <TouchableOpacity style={{ position: "absolute", bottom: 40, right: 20, borderColor: 'black' }}
           onPress={() => this.locate(this.state.position)} >
-          <Image source={locateicon} style={{ width: 30, height: 30 }} />
+          <Image source={locateicon} style={styles.icon} />
         </TouchableOpacity>
       </View>
     );
@@ -297,47 +242,34 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 0,
   },
-  btn: {
-    borderWidth: 1,
-    borderRadius: 3,
-    margin: 10,
-    padding: 10,
-    borderColor: "black",
-    backgroundColor: "yellow",
-    borderStyle: "dotted"
+  icon: {
+    width: 30,
+    height: 30
   },
-  calloutView: {
+  backbtn: {
     position: 'absolute',
-    bottom: 20,
-    backgroundColor: 'black',
-    backgroundColor: "rgba(255, 255, 255, 0.9)",
-    borderRadius: 10,
-    width: "40%",
-    marginLeft: "30%",
-    marginRight: "30%",
-    marginTop: 20
+    top: 30,
+    left: 10,
+    // width: 30,
+    // height: 30,
+    // borderRadius: 15,
+    // backgroundColor: '#e6e6e6',
   },
-  calloutSearch: {
-    borderColor: "transparent",
-    marginLeft: 10,
-    width: "90%",
-    marginRight: 10,
-    height: 40,
-    borderWidth: 0.0
+  largeicon: {
+    width: 50,
+    height: 50
   },
-  searchBar: {
-    position: "absolute",
-    top: 20,
-    alignSelf: 'center',
-    borderRadius: 10,
-    width: '80%',
-    height: '50%'
+  placebtn: {
+    position: 'absolute',
+    bottom: 30,
+    left: 30,
   },
-  // circle: {
-  //   // position: 'absolute',
-  //   // bottom: 20,
-  //   backgroundColor: "skyblue",
-  //   width: '100%',
-  //   height: 100,
-  // }
+  // calloutSearch: {
+  //   borderColor: "transparent",
+  //   marginLeft: 10,
+  //   width: "90%",
+  //   marginRight: 10,
+  //   height: 40,
+  //   borderWidth: 0.0
+  // },
 });
