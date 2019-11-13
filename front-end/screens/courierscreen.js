@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View,Button, Alert } from "react-native";
 import "../global";
-
+import { URL, PORT } from '../src/conf'
 
 export default class CourierScreen extends React.Component {
 
@@ -13,7 +13,7 @@ export default class CourierScreen extends React.Component {
      
     list_order = (order_num) => {
       console.log("here");
-        fetch("http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/order/list", {
+        fetch(`${URL}:${PORT}/order/list`, {
                 method: "GET",
                 headers: {
                   Accept: "application/json",
@@ -42,7 +42,7 @@ export default class CourierScreen extends React.Component {
        */
      
       order_list_length = () => {
-        fetch("http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/order/list", {
+        fetch(`${URL}:${PORT}/order/list`, {
                 method: "GET",
                 headers: {
                   Accept: "application/json",
@@ -83,7 +83,7 @@ export default class CourierScreen extends React.Component {
       Function will be called, and in backend, this order will be marked accepted 
        */
       accept_order = () => {
-        fetch("http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/order/accept", {
+        fetch(`${URL}:${PORT}/order/accept`, {
                 method: "POST",
                 headers: {
                   Accept: "application/json",
@@ -101,7 +101,7 @@ export default class CourierScreen extends React.Component {
       that we can send notification later
       */
       get_user_token = () => {
-       return fetch("http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/users/get_token", {
+       return fetch(`${URL}:${PORT}/users/get_token`, {
                 method: "POST",
                 headers: {
                   Accept: "application/json",
@@ -127,7 +127,7 @@ export default class CourierScreen extends React.Component {
       */
       finish_order = () => {
         this.get_user_token().then( 
-          fetch("http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/order/finish", {
+          fetch(`${URL}:${PORT}:3000/order/finish`, {
             method: "POST",
             headers: {
               Accept: "application/json",
@@ -138,7 +138,7 @@ export default class CourierScreen extends React.Component {
               orderid: global.id_ls,
              }),
           }).then( (res)=>{
-            fetch("http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/push", {
+            fetch(`${URL}:${PORT}:3000/push`, {
             method: "POST",
             headers: {
               Accept: "application/json",

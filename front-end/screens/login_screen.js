@@ -4,7 +4,7 @@ import Expo from "expo";
 import * as Facebook from "expo-facebook";
 import { Notifications } from "expo";
 import * as Permissions from "expo-permissions";
-
+import { URL, PORT } from '../src/conf'
 
 export default class LoginScreen extends React.Component {
 
@@ -14,7 +14,7 @@ export default class LoginScreen extends React.Component {
     /*check if user have loged in before, if true we skip the facebook login screen
     */ 
     check_login = () => {
-        fetch("http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/users/check", {
+        fetch(`${URL}:${PORT}/users/check`, {
                 method: "GET",
                 headers: {
                   Accept: "application/json",
@@ -75,7 +75,7 @@ export default class LoginScreen extends React.Component {
    called in loginWithFB
    */
   user_signup = (username, fbtoken,apptoken) => {
-    fetch("http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/users/login", {
+    fetch(`${URL}:${PORT}/users/login`, {
             method: "POST",
             headers: {
               Accept: "application/json",

@@ -13,7 +13,17 @@ const accept = (orderId, courierId) => {
 /* Return the information of all avilable order */
 const getOrder = (courierId) => {
   const sql = `
-        select id, userid, courierid, content, lat, lng, status from orders where status = 1 or (courierid = '${courierId}' and status = 0);
+        select id, userid, courierid, content, lat, lng, deslat, deslng, status, time from orders where status = 1 or (courierid = '${courierId}' and status = 0);
+    `;
+  return exec(sql).then(rows => {
+    return rows;
+  });
+};
+
+/* Return the order accepted by the given courier id */
+const getAcceptedOrder = (courierId) => {
+  const sql = `
+        select id, userid, courierid, content, lat, lng, deslat, deslng, status, time from orders where courierid = '${courierId}';
     `;
   return exec(sql).then(rows => {
     return rows;
@@ -21,10 +31,10 @@ const getOrder = (courierId) => {
 };
 
 /* Place a order, and save all corresponding inforation into the database */
-const place = (userId, content, lat, lng, time) => {
+const place = (userId, content, lat, lng, deslat, deslng, time) => {
   const sql = `
-    insert into orders (userid, courierid, content, lat, lng, status, time) values('${userId}', -1 ,'${content}',
-     '${lat}', '${lng}', 1, '${time}');
+    insert into orders (userid, courierid, content, lat, lng, deslat, deslng, status, time) values('${userId}', -1 ,'${content}',
+     '${lat}', '${lng}', '${deslat}', '${deslng}', 1, '${time}');
     `;
   return exec(sql).then(result => {
     return result;
@@ -44,6 +54,7 @@ const finish = (orderId) => {
 module.exports = {
   accept,
   getOrder,
+  getAcceptedOrder,
   place,
   finish
 };
