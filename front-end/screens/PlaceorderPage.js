@@ -2,7 +2,7 @@ import React from "react";
 import {
     StyleSheet, Text, Image, View, Button, TextInput,
     TouchableOpacity, TimePickerAndroid, Alert, ToastAndroid,
-    ScrollView, ActivityIndicator
+    Modal, ActivityIndicator
 } from "react-native";
 
 import locIcon from '../assets/region.png'
@@ -10,6 +10,8 @@ import { URL, PORT } from '../src/conf'
 import backicon from "../assets/back.png";
 import timeIcon from '../assets/time.png';
 import contentIcon from '../assets/content.png';
+import confirmIcon from '../assets/confirm.png';
+import TopBar from "../src/utils/TopBar";
 export default class OrderScreen extends React.Component {
 
     constructor(props) {
@@ -50,7 +52,7 @@ export default class OrderScreen extends React.Component {
     }
 
     /* place order handler */
-    get_order_info = (fromLat, fromLng, toLat, toLng) => {
+    get_order_info = (fromLat, fromLng, toLat, toLng, locFrom, locTo) => {
         if (this.state.user_text === "") {
             Alert.alert('Invalid Order', 'Please enter order Details!');
             return;
@@ -60,18 +62,20 @@ export default class OrderScreen extends React.Component {
             return;
         }
         if (fromLat == 0 || toLat == 0) {
-            Alert.alert('Invalid Order', 'Please enter a valid place')
+            Alert.alert('Invalid Order', 'Please enter a valid place');
+            return;
         }
         this.place_order(fromLat, fromLng,
             toLat, toLng,
-            `${this.state.orderTime.hour}:${this.state.orderTime.minute}:00`);
+            `${this.state.orderTime.hour}:${this.state.orderTime.minute}:00`,
+            locFrom,locTo);
     }
 
     /* place a order */
-    place_order = (lat, lng, deslat, deslng, time) => {
+    place_order = (lat, lng, deslat, deslng, time, locFrom, locTo) => {
         this.setState({
             showloader: true
-        })
+        });
         fetch(`${URL}:${PORT}/order/place`, {
             method: "POST",
             headers: {
@@ -85,25 +89,29 @@ export default class OrderScreen extends React.Component {
                 lng: lng,
                 deslat: deslat,
                 deslng: deslng,
-                time: time
+                time: time,
+                locFrom: 
+                locTo
             }),
         }).then((res) => {
             res.json().then(result => {
-                this.setState({
-                    showloader: false
-                })
-                if (result.errno == 0) {
-                    ToastAndroid.showWithGravityAndOffset(
-                        'Order Placed!',
-                        ToastAndroid.LONG,
-                        ToastAndroid.BOTTOM,
-                        25,
-                        50
-                    );
-                    this.props.navigation.navigate("CustomerScreen");
-                } else {
-                    Alert.alert('Failed to Place order', 'Please try again');
-                }
+                setTimeout(() => {
+                    this.setState({
+                        showloader: false
+                    })
+                    if (result.errno == 0) {
+                        ToastAndroid.showWithGravityAndOffset(
+                            'Order Placed!',
+                            ToastAndroid.LONG,
+                            ToastAndroid.BOTTOM,
+                            25,
+                            50
+                        );
+                        this.props.navigation.navigate("CustomerScreen");
+                    } else {
+                        Alert.alert('Failed to Place order', 'Please try again');
+                    }
+                }, 1000);
             })
         })
     }
@@ -141,18 +149,24 @@ export default class OrderScreen extends React.Component {
         const toLng = this.props.navigation.getParam('toLng', 0);
         return (
             <View style={styles.container}>
-                {
-                    this.state.showloader && <View style={{ position: 'absolute', top: "50%", right: 0, left: 0}}>
+                <Modal
+                    animationType= 'fade'
+                    transparent={true}
+                    visible={this.state.showloader}>
+                    <View style={{ position: 'absolute', top: "50%", right: 0, left: 0 }}>
                         <ActivityIndicator size="large" color="red" />
                     </View>
-                }
-                <View style={styles.topBar}>
+                </Modal>
+                {/* <View style={styles.topBar}>
                     <TouchableOpacity style={styles.backbtn}
-                        onPress={() => { this.props.navigation.navigate('DashboardScreen') }} >
+                        onPress={() => { this.props.navigation.navigate('CustomerScreen') }} >
                         <Image source={backicon} style={styles.icon} />
                     </TouchableOpacity>
                     <Text style={styles.text}>Order Information</Text>
-                </View>
+                </View> */}
+                <TopBar onBackPress={() => { this.props.navigation.navigate('CustomerScreen') }}>
+                    Order Information
+                </TopBar>
 
                 <View style={styles.locFrom}>
                     <Image source={locIcon} style={styles.icon} />
@@ -216,7 +230,7 @@ export default class OrderScreen extends React.Component {
 
                 <View style={styles.placeBtn}>
                     <TouchableOpacity style={styles.placeTxtContainer}
-                        onPress={() => this.get_order_info(fromLat, fromLng, toLat, toLng)}>
+                        onPress={() => this.get_order_info(fromLat, fromLng, toLat, toLng, locFrom, locTo)}>
                         <Text style={styles.placeTxt}>PLACE!</Text>
                     </TouchableOpacity>
                 </View>
@@ -292,25 +306,6 @@ const styles = StyleSheet.create({
     },
     placeOrder: {
         marginVertical: 20
-    },
-    topBar: {
-        position: 'absolute',
-        backgroundColor: 'white',
-        marginBottom: 20,
-        width: '100%',
-        height: 80,
-        borderColor: 'grey',
-        borderBottomWidth: 1,
-        shadowOffset: { width: 10, height: 10 },
-        shadowColor: 'black',
-        shadowOpacity: 1.0,
-        elevation: 10,
-        alignItems: 'center'
-    },
-    backbtn: {
-        position: 'absolute',
-        top: 40,
-        left: 10
     },
     icon: {
         width: 30,

@@ -7,7 +7,7 @@ import DashboardScreen from "./screens/dashboard";
 import CustomerScreen from "./screens/customerscreen";
 import CourierScreen from "./screens/courierscreen";
 import CourierMap from "./screens/couriermap";
-import OrderScreen from './screens/OrderPage';
+import PlaceorderPage from './screens/PlaceorderPage';
 import AddressPage from './screens/address';
 
 
@@ -24,7 +24,7 @@ const AppSwitchNavigator = createSwitchNavigator({
   CourierScreen: CourierScreen,
   CustomerScreen: CustomerScreen,
   CourierMap: CourierMap,
-  OrderScreen: OrderScreen,
+  OrderScreen: PlaceorderPage,
   AddressPage: AddressPage
 });
 

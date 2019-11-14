@@ -1,17 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const { accept, getOrder, place, finish } = require('../bin/controller/order');
+const { accept, getOrder, getUserOrder, place, finish } = require('../bin/controller/order');
 const { SuccessModel, ErrorModel } = require('../bin/controller/resMod');
+const { complexLogic } = require('../bin/complexLogic/complexLogic');
 
 /* Place a order, send content and current position of the customer */
 router.post('/place', (req, res) => {
   if (req.session.username) {
     const result = place(req.session.userid, req.body.content,
-      req.body.lat, req.body.lng, req.body.deslat, req.body.deslng, req.body.time);
+      req.body.lat, req.body.lng, req.body.deslat, req.body.deslng, req.body.time, req.body.locFrom, req.body.locTo);
     result.then(data => {
       if (data) {
         res.json(
-          new SuccessModel('Order Placed!')
+          new SuccessModel({
+            orderid: data.insertId
+          }, 'Order Placed!')
         );
       } else {
         res.json(new ErrorModel('Unexpected Error!'));
@@ -44,7 +47,10 @@ router.post('/finish', (req, res) => {
 router.get('/list', function (req, res) {
   const result = getOrder(req.session.userid);
   result.then(data => {
+    // const output = complexLogic(data, req.body.curlat, req.body.curlng);
     res.json(new SuccessModel({ list: data }));
+  }).catch(() => {
+    res.json(new ErrorModel('Failed to fetch list!'));
   });
 });
 
@@ -59,6 +65,16 @@ router.post('/accept', function (req, res) {
     } else {
       res.json(new ErrorModel('Unexpected Error!'));
     }
+  });
+});
+
+/* Get the order that current user places or accepts */
+router.get('/list_user', (req, res) => {
+  const result = getUserOrder(req.session.userid);
+  result.then(data => {
+    res.json(new SuccessModel({ list: data }));
+  }).catch(() => {
+    res.json(new ErrorModel('Failed to fetch list!'));
   });
 });
 

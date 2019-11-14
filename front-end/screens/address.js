@@ -6,7 +6,6 @@ import {
 
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { APIKEY } from '../src/conf';
-import backicon from '../assets/back.png';
 import searchIcon from '../assets/search.png';
 import confirmIcon from '../assets/confirm.png';
 import TopBar from '../src/utils/TopBar.js';
@@ -22,7 +21,7 @@ export default class OrderScreen extends React.Component {
     };
   }
 
-  render () {
+  render() {
     const selection = this.props.navigation.getParam('selection', 'NO SELECTION');
     const locFrom = this.props.navigation.getParam('locFrom', 'NO SELECTION');
     const locTo = this.props.navigation.getParam('locTo', 'NO SELECTION');
@@ -33,38 +32,7 @@ export default class OrderScreen extends React.Component {
     const toLng = this.props.navigation.getParam('toLng', 0);
     return (
       <View style={styles.container}>
-        {/* <View style={styles.topBar}>
-          <TouchableOpacity style={styles.backbtn}
-            onPress={() => {
-              this.props.navigation.navigate('OrderScreen', {
-                locFrom: locFrom,
-                fromLat: fromLat,
-                fromLng: fromLng,
-
-                locTo: locTo,
-                toLat: toLat,
-                toLng: toLng
-              });
-            }} >
-            <Image source={backicon} style={styles.icon} />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.confirmBtn}
-            onPress={() => {
-              this.props.navigation.navigate('OrderScreen', {
-                locFrom: (selection === 'from') ? this.state.user_text : locFrom,
-                fromLat: (selection === 'from') ? this.state.lat : fromLat,
-                fromLng: (selection === 'from') ? this.state.lng : fromLng,
-
-                locTo: (selection === 'to') ? this.state.user_text : locTo,
-                toLat: (selection === 'to') ? this.state.lat : toLat,
-                toLng: (selection === 'to') ? this.state.lng : toLng
-              });
-            }} >
-            <Image source={confirmIcon} style={styles.icon} />
-          </TouchableOpacity>
-        </View> */}
-        <TopBar onPress={() => {
+        <TopBar onBackPress={() => {
           this.props.navigation.navigate('OrderScreen', {
             locFrom: locFrom,
             fromLat: fromLat,
@@ -74,7 +42,20 @@ export default class OrderScreen extends React.Component {
             toLat: toLat,
             toLng: toLng
           });
-        }}>
+        }}
+        source={confirmIcon}
+        onIconPress={() => {
+          this.props.navigation.navigate('OrderScreen', {
+            locFrom: (selection === 'from') ? this.state.user_text : locFrom,
+            fromLat: (selection === 'from') ? this.state.lat : fromLat,
+            fromLng: (selection === 'from') ? this.state.lng : fromLng,
+
+            locTo: (selection === 'to') ? this.state.user_text : locTo,
+            toLat: (selection === 'to') ? this.state.lat : toLat,
+            toLng: (selection === 'to') ? this.state.lng : toLng
+          });
+        }}
+        >
           Enter Address
         </TopBar>
         <View style={styles.searchBar}>
@@ -141,25 +122,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     padding: 0
   },
-  topBar: {
-    position: 'absolute',
-    backgroundColor: 'white',
-    marginBottom: 20,
-    width: '100%',
-    height: 80,
-    borderColor: 'grey',
-    borderBottomWidth: 1,
-    shadowOffset: { width: 10, height: 10 },
-    shadowColor: 'black',
-    shadowOpacity: 1.0,
-    elevation: 10
-  },
-  backbtn: {
-    position: 'absolute',
-    top: 40,
-    left: 10
-  },
-  confirmBtn:{
+  confirmBtn: {
     position: 'absolute',
     top: 40,
     right: 20

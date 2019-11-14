@@ -13,7 +13,7 @@ const accept = (orderId, courierId) => {
 /* Return the information of all avilable order */
 const getOrder = (courierId) => {
   const sql = `
-        select id, userid, courierid, content, lat, lng, deslat, deslng, status, time from orders where status = 1 or (courierid = '${courierId}' and status = 0);
+        select id, userid, courierid, content, lat, lng, deslat, deslng, status, time, locFrom, locTo from orders where status = 1 or (courierid = '${courierId}' and status = 0);
     `;
   return exec(sql).then(rows => {
     return rows;
@@ -21,9 +21,9 @@ const getOrder = (courierId) => {
 };
 
 /* Return the order accepted by the given courier id */
-const getAcceptedOrder = (courierId) => {
+const getUserOrder = (userId) => {
   const sql = `
-        select id, userid, courierid, content, lat, lng, deslat, deslng, status, time from orders where courierid = '${courierId}';
+        select id, content, locFrom, locTo, time from orders where ( userid = '${userId}' or courierid = '${userId}' ) and status = 0;
     `;
   return exec(sql).then(rows => {
     return rows;
@@ -31,10 +31,10 @@ const getAcceptedOrder = (courierId) => {
 };
 
 /* Place a order, and save all corresponding inforation into the database */
-const place = (userId, content, lat, lng, deslat, deslng, time) => {
+const place = (userId, content, lat, lng, deslat, deslng, time, locFrom, locTo) => {
   const sql = `
-    insert into orders (userid, courierid, content, lat, lng, deslat, deslng, status, time) values('${userId}', -1 ,'${content}',
-     '${lat}', '${lng}', '${deslat}', '${deslng}', 1, '${time}');
+    insert into orders (userid, courierid, content, lat, lng, deslat, deslng, status, time, locFrom, locTo) values('${userId}', -1 ,'${content}',
+     '${lat}', '${lng}', '${deslat}', '${deslng}', 1, '${time}', '${locFrom}', '${locTo}');
     `;
   return exec(sql).then(result => {
     return result;
@@ -54,7 +54,7 @@ const finish = (orderId) => {
 module.exports = {
   accept,
   getOrder,
-  getAcceptedOrder,
+  getUserOrder,
   place,
   finish
 };

@@ -84,4 +84,14 @@ router.post('/switch', (req, res) => {
   }
 });
 
+/* Set up user's phonenum */
+router.post('/setinfo', function (req, res) {
+  if (req.session.username) {
+    req.session.phonenum = req.body.phonenum;
+    res.json(new SuccessModel('Phone number Updated!'));
+  } else if (!req.session.username) {
+    res.json(new ErrorModel('User has not log in yet!'));
+  }
+});
+
 module.exports = router;

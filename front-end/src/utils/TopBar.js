@@ -6,7 +6,7 @@ import {
 import backicon from '../../assets/back.png';
 
 export default class TopBar extends Component {
-  render () {
+  render = (  ) => {
     return (
       <View style={{
         position: 'absolute',
@@ -16,7 +16,7 @@ export default class TopBar extends Component {
         height: 80,
         borderColor: 'grey',
         borderBottomWidth: 1,
-        shadowOffset: { width: 10, height: 10 },
+        shadowOffset: { width: 1, height: 1 },
         shadowColor: 'black',
         shadowOpacity: 1.0,
         elevation: 10,
@@ -27,14 +27,22 @@ export default class TopBar extends Component {
           top: 40,
           left: 10
         }}
-        onPress={this.props.onPress} >
+        onPress={this.props.onBackPress} >
           <Image source={backicon} style={ { width: 30, height: 30 }} />
+        </TouchableOpacity>
+        <TouchableOpacity style={{
+          position: 'absolute',
+          top: 40,
+          right: 20
+        }}
+        onPress={this.props.onIconPress} >
+          <Image source={this.props.source} style={{ width: 30, height: 30 }} />
         </TouchableOpacity>
         <Text style={{
           fontSize: 20,
-          fontWeight: "bold",
+          fontWeight: 'bold',
           color: 'black',
-          marginVertical: 40,
+          marginVertical: 40
         }}>{this.props.children}</Text>
       </View>
     );
