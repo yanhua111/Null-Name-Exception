@@ -3,6 +3,9 @@ const complexLogic = require("../bin/complexLogic/complexLogic");
 /*
  * pathFinding testing
 */
+/*
+ * pathFinding testing
+*/
 var pfTests = [
     [{lat:0, lng:0}, []],           //only courier location 
     [{lat:0, lng:0}, [{lat:2.5, lng:2.5, deslat: 1, deslng: 1, status: 0}]],   //1 order
@@ -32,16 +35,70 @@ var pfExpected = [
                        {lat: 5.5, lng: -1}, {lat: 3, lng: 3}, {lat: 4, lng: 4}, {lat: 45.00005, lng: 59.9995}],
 ];
 
-describe('pathFinding', () => {
-    for (let i = 0; i < pfTests.length; i++) {
-        it('asserts deep equality', () => {
-            expect(complexLogic.pathFinding(pfTests[i][1], pfTests[i][0].lat, pfTests[i][0].lng)).toEqual(pfExpected[i]);
-        });
-    }
-});
+var soTests = [
+    [{lat:0, lng:0}, []],           //only courier location 
+    [{lat:0, lng:0}, [{deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 0}]],   //1 accepted order
+    [{lat:0, lng:0}, [{deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1}]],   //1 unaccepted order
+    [{lat:0, lng:0}, [{deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1},     //2 identical orders
+                      {deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1}]],  
+    [{lat:0, lng:0}, [{deslat: 0.001, deslng: 0.0011, time: '20:01:00', status: 1},     //2 different orders
+                      {deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1}]],   
+    [{lat:0, lng:0}, [{deslat: 0.001, deslng: 0.0019, time: '20:00:00', status: 1},     //large test
+                      {deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1},
+                      {deslat: 0.0019, deslng: 0.0019, time: '20:00:00', status: 1}]],  
+    [{lat:0, lng:0}, [{deslat: 0.001, deslng: 0.0011, time: '20:02:00', status: 1},     //large test
+                      {deslat: 0.001, deslng: 0.0011, time: '20:01:00', status: 1},
+                      {deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1}]],   
+    [{lat:0, lng:0}, [{deslat: 0.001, deslng: 0.002, time: '20:01:00', status: 1},//2     //large tests, different status
+                      {deslat: 0.001, deslng: 0.001, time: '20:00:00', status: 1},//1
+                      {deslat: 0.003, deslng: 0.003, time: '20:00:00', status: 1},//3
+                      {deslat: 0.0007, deslng: 0.0012, time: '20:40:00', status: 1},//4
+                      {deslat: 0.0029, deslng: 0.0040, time: '21:00:00', status: 0},
+                      {deslat: 0.0019, deslng: 0.0019, time: '20:00:00', status: 0},
+                      {deslat: 0.0019, deslng: 0.0019, time: '20:00:00', status: 0}]], 
+
+]
+
+var soExpected = [
+    [],           //only courier location 
+    [{deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 0}],     //1 accepted order
+    [{deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1}],     //1 unaccepted order
+    [{deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1},      //2 identical orders
+     {deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1}],  
+    [{deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1},
+     {deslat: 0.001, deslng: 0.0011, time: '20:01:00', status: 1}],     //2 different orders
+    [{deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1},      //large test
+     {deslat: 0.001, deslng: 0.0019, time: '20:00:00', status: 1},     
+     {deslat: 0.0019, deslng: 0.0019, time: '20:00:00', status: 1}],   
+     [{deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1},      //large test
+     {deslat: 0.001, deslng: 0.0011, time: '20:01:00', status: 1},     
+     {deslat: 0.001, deslng: 0.0011, time: '20:02:00', status: 1}],      
+    [{deslat: 0.0029, deslng: 0.0040, time: '21:00:00', status: 0},
+     {deslat: 0.0019, deslng: 0.0019, time: '20:00:00', status: 0},
+     {deslat: 0.0019, deslng: 0.0019, time: '20:00:00', status: 0},
+     {deslat: 0.001, deslng: 0.001, time: '20:00:00', status: 1},
+     {deslat: 0.001, deslng: 0.002, time: '20:01:00', status: 1},
+     {deslat: 0.003, deslng: 0.003, time: '20:00:00', status: 1},
+     {deslat: 0.0007, deslng: 0.0012, time: '20:40:00', status: 1}]]
+
+
+     describe('pathFinding', () => {
+        for (let i = 0; i < pfTests.length; i++) {
+            it('asserts deep equality', () => {
+                expect(complexLogic.pathFinding(pfTests[i][1], pfTests[i][0].lat, pfTests[i][0].lng)).toEqual(pfExpected[i]);
+            });
+        }
+    });
 
 
 /*
  * sortOrders testing
 */
+describe('sortOrders', () => {
+    for (let i = 0; i < soTests.length; i++) {
+        it('asserts equality', () => {
+            expect(complexLogic.sortOrder(soTests[i][1], soTests[i][0].lat, soTests[i][0].lng)).toEqual(soExpected[i]);
+        });
+    }
+});
 
