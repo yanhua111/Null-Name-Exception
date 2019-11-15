@@ -29,7 +29,7 @@ io.sockets.on('connection', (socket) => {
     socket.emit('locationOut', { location: data });
   });
   socket.on('courierLocIn', (data) => {
-    socket.in(`${data.orderid}`).emit('courierLocOut', { location: data });
+    socket.to(`${data.orderid}`).emit('courierLocOut', { location: data });
   });
   socket.on('customerLocIn', (data) => {
     socket.to(`${data.orderid}`).emit('customerLocOut', { location: data });

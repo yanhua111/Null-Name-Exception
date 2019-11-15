@@ -2,5 +2,4 @@ bin/conf/
 node_modules/
 views/
 public/
-package.json
 package-lock.json
