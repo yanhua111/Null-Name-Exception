@@ -3,7 +3,7 @@ import {
   StyleSheet, Text, Image, View,
   TouchableOpacity, TimePickerAndroid, Alert, ToastAndroid
 } from "react-native";
-import MapView, { AnimatedRegion, Marker, ProviderPropType } from "react-native-maps";
+import MapView, { AnimatedRegion, Marker } from "react-native-maps";
 import io from "socket.io-client";
 import { URL, PORT, WebSocketPORT } from '../src/conf'
 import "../global";
@@ -16,6 +16,12 @@ import placeOrdericon from "../assets/plus.png"
 /* A random latitude and longitude, required for declaring animated Marker*/
 const LATITUDE = 49.267941;
 const LONGITUDE = -123.247360;
+const initRegion = {
+  latitude: 49.267941,
+  longitude: -123.247360,
+  latitudeDelta: 0.00922,
+  longitudeDelta: 0.0200
+};
 
 export default class CustomerScreen extends React.Component {
 
@@ -64,14 +70,11 @@ export default class CustomerScreen extends React.Component {
 /* locate courier's position and move to current location */
 locate = () => {
   navigator.geolocation.getCurrentPosition((position) => {
-    this.setState({
-      region: {
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-        latitudeDelta: 0.00922,
-        longitudeDelta: 0.00200
-      }
-    })
+    let location = {
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude,
+    };
+    this.animateRegion(location);
   }, (err) => Alert.alert("PLease enable location"));
   // this.setState({
   //   region: position
@@ -100,6 +103,18 @@ animate(location) {
   coordinate.timing(newCoordinate).start();
 }
 
+/* Animation for Map region */
+animateRegion = (location) => {
+  const region = {
+    latitude: location.latitude,
+    longitude: location.longitude,
+    latitudeDelta: 0.00922,
+    longitudeDelta: 0.0200
+  };
+
+  this.map.animateToRegion(region, 500);
+}
+
 /* When component mounts, set up interval to get user location repeatedly */
 componentDidMount() {
   interval = setInterval(() => {
@@ -109,6 +124,7 @@ componentDidMount() {
   if (global.id_ls != -1) {
     this.socket.emit("join", JSON.stringify({ orderid: global.id_ls }));
   }
+  this.locate();
 }
 
 /* Fetch order and check if user is in an order when entered */
@@ -167,9 +183,10 @@ render() {
   return (
     <View style={styles.container}>
       <MapView
-        provider={this.props.provider}
-        region={this.state.region}
-        onRegionChangeComplete={this.onRegionChange.bind(this)}
+        ref={(map) => {
+          this.map = map;
+        }}
+        initialRegion={initRegion}
         showsUserLocation={true}
         style={{ flex: 1 }} >
         {
@@ -204,11 +221,6 @@ render() {
 
 
 }
-
-
-CustomerScreen.propTypes = {
-  provider: ProviderPropType,
-};
 
 const styles = StyleSheet.create({
   container: {

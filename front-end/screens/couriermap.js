@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, Image, Text, View, Alert, TextInput, TouchableOpacity } from "react-native";
 import MapView, { AnimatedRegion, Marker, ProviderPropType } from "react-native-maps";
+// import { MapView } from 'expo';
 import SocketIOClient from "socket.io-client";
 import "../global";
 import { URL, PORT, WebSocketPORT } from '../src/conf'
@@ -15,9 +16,15 @@ import locateicon from "../assets/locate.png";
 /* A random latitude and longitude, required for declaring animated Marker
 * interval- set the interval for repeated retrieving the user's location
 */
-const LATITUDE = 49.267941;
-const LONGITUDE = -123.247360;
-let interval;
+const LATITUDE = 49.267941; //a random number for the initial region
+const LONGITUDE = -123.247360; //a random number as well.... 
+const initRegion = {
+  latitude: 49.267941,
+  longitude: -123.247360,
+  latitudeDelta: 0.00922,
+  longitudeDelta: 0.0200
+};
+var interval;
 
 export default class CourierMap extends React.Component {
 
@@ -26,12 +33,6 @@ export default class CourierMap extends React.Component {
     this.state = {
       apptoken: "",
       user_text: "",
-      region: {
-        latitude: 49.267941,
-        longitude: -123.247360,
-        latitudeDelta: 0.00922,
-        longitudeDelta: 0.00200
-      },
       text: "",
       coordinate: new AnimatedRegion({
         latitude: LATITUDE,
@@ -77,6 +78,7 @@ export default class CourierMap extends React.Component {
     if (global.id_ls != -1) {
       this.socket.emit("join", JSON.stringify({ orderid: global.id_ls }));
     }
+    this.locate();
   }
 
   /* Clear the interval when component unmount */
@@ -117,43 +119,21 @@ export default class CourierMap extends React.Component {
   /* locate user position and move to current location */
   locate = () => {
     navigator.geolocation.getCurrentPosition((position) => {
-      this.setState({
-        region: {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          latitudeDelta: 0.00922,
-          longitudeDelta: 0.00200
-        }
-      })
+      let location = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      };
+      this.animateRegion(location);
     }, (err) => Alert.alert("PLease enable location"));
   }
 
-  /* update the postion on map */
-  // setPosition = (position) => {
-  //   this.setState({
-  //     position: {
-  //       latitude: position.latitude,
-  //       longitude: position.longitude,
-  //       latitudeDelta: 0.00922,
-  //       longitudeDelta: 0.00200
-  //     }
-  //   });
-  // }
 
   /* Triggered when the region on map changes, update region state to current region */
   onRegionChange(region) {
     this.setState({ region });
   }
 
-  /* Move Marker with animation */
-  moveMarker() {
-    this.marker._component.animateMarkerToCoordinate({
-      latitude: 60.267941,
-      longitude: -123.247360
-    }, 500);
-  }
-
-  /* Animation */
+  /* Animation for marker*/
   animate(location) {
     const { coordinate } = this.state;
     const newCoordinate = {
@@ -164,15 +144,27 @@ export default class CourierMap extends React.Component {
     coordinate.timing(newCoordinate).start();
   }
 
+  /* Animation for Map region */
+  animateRegion = (location) => {
+    const region = {
+      latitude: location.latitude,
+      longitude: location.longitude,
+      latitudeDelta: 0.00922,
+      longitudeDelta: 0.0200
+    };
+
+    this.map.animateToRegion(region, 500);
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <MapView
-          provider={this.props.provider}
-          region={this.state.region}
+          ref={(map) => {
+            this.map = map;
+          }}
+          initialRegion={initRegion}
           showsUserLocation={true}
-          followsUserLocation={true}
-          onRegionChangeComplete={region => this.onRegionChange(region)}
           style={{ flex: 1 }} >
           {
             (global.id_ls != -1) && <Marker.Animated
@@ -203,10 +195,6 @@ export default class CourierMap extends React.Component {
 
 
 }
-
-CourierMap.propTypes = {
-  provider: ProviderPropType,
-};
 
 const styles = StyleSheet.create({
   container: {

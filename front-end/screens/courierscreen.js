@@ -58,7 +58,7 @@ export default class CourierScreen extends React.Component {
                 })
                 
               } 
-              ).catch((error) => console.log(error));
+              ).catch((error) => conso.le.log(error));
       }
 
       /*This function help us to create list of order button use for loop

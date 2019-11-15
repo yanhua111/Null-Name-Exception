@@ -52,7 +52,8 @@ router.get('/check', (req, res) => {
     res.json(
       new SuccessModel({
         username: req.session.username,
-        usermode: req.session.usermode
+        usermode: req.session.usermode,
+        phonenum: req.session.phonenum
       }, 'User have logged in!')
     );
   } else {
@@ -85,7 +86,7 @@ router.post('/switch', (req, res) => {
 });
 
 /* Set up user's phonenum */
-router.post('/setinfo', function (req, res) {
+router.post('/setinfo', (req, res) => {
   if (req.session.username) {
     req.session.phonenum = req.body.phonenum;
     res.json(new SuccessModel('Phone number Updated!'));
