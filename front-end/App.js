@@ -1,40 +1,38 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { createAppContainer, createSwitchNavigator } from "react-navigation";
+import { createAppContainer} from "react-navigation";
+import {createBottomTabNavigator,} from 'react-navigation-tabs';
 
-import LoginScreen from "./screens/login_screen";
-import DashboardScreen from "./screens/dashboard";
+
 import CustomerScreen from "./screens/customerscreen";
 import CourierScreen from "./screens/courierscreen";
 import CourierMap from "./screens/couriermap";
 import PlaceorderPage from './screens/PlaceorderPage';
 import AddressPage from './screens/address';
-
+import OrderList from "./screens/OrderList";
+import Setting from "./screens/setting";
+import OpenPage from "./screens/OpenPage";
 
 export default class App extends React.Component {
   render() {
     return <AppNavigator />;
   }
 }
-/* Navigation between each map
-*/
-const AppSwitchNavigator = createSwitchNavigator({
-  LoginScreen: LoginScreen,
-  DashboardScreen: DashboardScreen,
-  CourierScreen: CourierScreen,
-  CustomerScreen: CustomerScreen,
-  CourierMap: CourierMap,
-  OrderScreen: PlaceorderPage,
-  AddressPage: AddressPage
-});
 
-const AppNavigator = createAppContainer(AppSwitchNavigator);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center"
-  }
-});
+const APPNavigator = createAppContainer(
+  createBottomTabNavigator(
+    {
+      OpenPage: {screen: OpenPage},
+      Setting:  {screen: Setting},
+      OrderList: {screen: OrderList},
+      OrderScreen:{screen: OrderScreen},
+      OrderScreen: {PlaceorderPage},
+      CustomerScreen: { screen: CustomerScreen},
+      CourierScreen: {screen: CourierScreen},
+      CourierMap: {screen: CourierMap},
+      AddressPage:{screen: AddressPage},
+    },
+ 
+  )
+);
