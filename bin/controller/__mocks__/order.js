@@ -4,12 +4,12 @@
 var database = [
 ];
  
-const accept = jest.genMockFromModule('order');
-const getOrder = jest.genMockFromModule('order');
-const place = jest.genMockFromModule('order');
-const finish = jest.genMockFromModule('order');
+//const accept = jest.genMockFromModule('order');
+//const getOrder = jest.genMockFromModule('order');
+//const place = jest.genMockFromModule('order');
+//const finish = jest.genMockFromModule('order');
  
-accept = (orderId, courierId) => {
+const accept = (orderId, courierId) => {
   for(var i = 0; i < database.length; i++){
     if(database[i].id == orderId){
       database[i].status = 0;
@@ -19,7 +19,7 @@ accept = (orderId, courierId) => {
   return 1;
 }
  
-getOrder = (courierId) => {
+const getOrder = (courierId) => {
   var res = [];
     for(var i = 0; i < database.length; i++){
       if(database[i].status == 1 || (database[i].courierid == courierId && database[i].status == 0)){
@@ -29,12 +29,12 @@ getOrder = (courierId) => {
   return res;
 }
  
-place = (userId, content, lat, lng, deslat, deslng, time) => {
+const place = (userId, content, lat, lng, deslat, deslng, time) => {
   database.push({id: database.length, userid: userId, courierId: -1, content: content, lat: lat, lng: lng, deslat: deslat, deslng: deslng, status: 0, time: time});
   return 1;
 }
 
-finish = (orderId) => {
+const finish = (orderId) => {
   for(var i = 0; i < database.length; i++){
     if(database[i].id == orderId){
       database[i].status = -1;
