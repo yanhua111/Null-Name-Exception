@@ -8,7 +8,10 @@ jest.disableAutomock();
  * pathFinding testing
 */
 var pfTests = [
-    [{lat:0, lng:0}, []],           //only courier location 
+    [{lat:0, lng:0}, []],           //only courier location
+    [0, []],          //invalid data1 
+    [{lat:0, lng:0}, [{lat:2.5, lng:2.5, deslat: null, deslng: 1, status: 0}]],  //invalid data2
+    [{lat:0, lng:0}, [{lat:2.5, deslat: 1, deslng: 1, status: 0}]],              //invalid data3
     [{lat:0, lng:0}, [{lat:2.5, lng:2.5, deslat: 1, deslng: 1, status: 0}]],   //1 order
     [{lat:0, lng:0}, [{lat:2.5, lng:2.5, deslat: 1, deslng: 1, status: 1}]],   //1 order, not accepted
     [{lat:0, lng:0}, [{lat:3, lng:3, deslat: 1, deslng: 1, status: 0}, 
@@ -25,6 +28,9 @@ var pfTests = [
                         {lat:45.00005, lng:59.9995, deslat: 0.5, deslng: 5, status: 0}]]                      
 ];                      
 var pfExpected = [
+    [],
+    [],
+    [],
     [],
     [{lat: 0, lng: 0}, {lat: 1, lng: 1}, {lat: 2.5, lng: 2.5}],
     [],
@@ -90,7 +96,7 @@ var soExpected = [
 
 describe('pathFinding', () => {
     for (let i = 0; i < pfTests.length; i++) {
-        it('asserts deep equality', () => {
+        it('asserts deep equality ' + i, () => {
             expect(complexLogic.pathFinding(pfTests[i][1], pfTests[i][0].lat, pfTests[i][0].lng)).toEqual(pfExpected[i]);
         });
     }
@@ -103,7 +109,7 @@ describe('pathFinding', () => {
 */
 describe('sortOrders', () => {
     for (let i = 0; i < soTests.length; i++) {
-        it('asserts equality', () => {
+        it('asserts equality ' + i, () => {
             expect(complexLogic.sortOrder(soTests[i][1], soTests[i][0].lat, soTests[i][0].lng)).toEqual(soExpected[i]);
         });
     }
