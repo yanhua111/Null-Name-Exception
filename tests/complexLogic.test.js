@@ -41,8 +41,10 @@ var soTests = [
     [{lat:0, lng:0}, [{deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1}]],   //1 unaccepted order
     [{lat:0, lng:0}, [{deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1},     //2 identical orders
                       {deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1}]],  
-    [{lat:0, lng:0}, [{deslat: 0.001, deslng: 0.0011, time: '20:01:00', status: 1},     //2 different orders
+    [{lat:0, lng:0}, [{deslat: 0.001, deslng: 0.0011, time: '20:01:00', status: 1},     //2 different time orders
                       {deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1}]],   
+    [{lat:0, lng:0}, [{deslat: 0.001, deslng: 0.001, time: '20:00:00', status: 1},     //2 different places orders
+                      {deslat: 0.001, deslng: 0.003, time: '20:00:00', status: 1}]],
     [{lat:0, lng:0}, [{deslat: 0.001, deslng: 0.0019, time: '20:00:00', status: 1},     //large test
                       {deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1},
                       {deslat: 0.0019, deslng: 0.0019, time: '20:00:00', status: 1}]],  
@@ -66,7 +68,9 @@ var soExpected = [
     [{deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1},      //2 identical orders
      {deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1}],  
     [{deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1},
-     {deslat: 0.001, deslng: 0.0011, time: '20:01:00', status: 1}],     //2 different orders
+     {deslat: 0.001, deslng: 0.0011, time: '20:01:00', status: 1}],     //2 different time orders
+    [{deslat: 0.001, deslng: 0.001, time: '20:00:00', status: 1},     //2 different place orders
+     {deslat: 0.001, deslng: 0.003, time: '20:00:00', status: 1}],
     [{deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1},      //large test
      {deslat: 0.001, deslng: 0.0019, time: '20:00:00', status: 1},     
      {deslat: 0.0019, deslng: 0.0019, time: '20:00:00', status: 1}],   
@@ -80,7 +84,6 @@ var soExpected = [
      {deslat: 0.001, deslng: 0.002, time: '20:01:00', status: 1},
      {deslat: 0.003, deslng: 0.003, time: '20:00:00', status: 1},
      {deslat: 0.0007, deslng: 0.0012, time: '20:40:00', status: 1}]]
-
 
      describe('pathFinding', () => {
         for (let i = 0; i < pfTests.length; i++) {
