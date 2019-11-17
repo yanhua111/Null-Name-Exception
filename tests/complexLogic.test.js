@@ -1,4 +1,5 @@
 const complexLogic = require("../bin/complexLogic/complexLogic");
+jest.disableAutomock();
 
 /*
  * pathFinding testing
@@ -82,13 +83,13 @@ var soExpected = [
      {deslat: 0.0007, deslng: 0.0012, time: '20:40:00', status: 1}]]
 
 
-     describe('pathFinding', () => {
-        for (let i = 0; i < pfTests.length; i++) {
-            it('asserts deep equality', () => {
-                expect(complexLogic.pathFinding(pfTests[i][1], pfTests[i][0].lat, pfTests[i][0].lng)).toEqual(pfExpected[i]);
-            });
-        }
-    });
+describe('pathFinding', () => {
+    for (let i = 0; i < pfTests.length; i++) {
+        it('asserts deep equality', () => {
+            expect(complexLogic.pathFinding(pfTests[i][1], pfTests[i][0].lat, pfTests[i][0].lng)).toEqual(pfExpected[i]);
+        });
+    }
+});
 
 
 /*
