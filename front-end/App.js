@@ -15,7 +15,7 @@ import OpenPage from "./screens/OpenPage";
 
 export default class App extends React.Component {
   render() {
-    return <AppNavigator />;
+    return <APPNavigator />;
   }
 }
 
@@ -26,8 +26,7 @@ const APPNavigator = createAppContainer(
       OpenPage: {screen: OpenPage},
       Setting:  {screen: Setting},
       OrderList: {screen: OrderList},
-      OrderScreen:{screen: OrderScreen},
-      OrderScreen: {PlaceorderPage},
+      OrderScreen: {screen: PlaceorderPage},
       CustomerScreen: { screen: CustomerScreen},
       CourierScreen: {screen: CourierScreen},
       CourierMap: {screen: CourierMap},
