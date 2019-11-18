@@ -46,9 +46,15 @@ router.post('/finish', (req, res) => {
 /* Retrieve all the order */
 router.get('/list', function (req, res) {
   const result = getOrder(req.session.userid);
+  // let output;
   result.then(data => {
-    const output = sortOrder(data, req.body.curlat, req.body.curlng);
-    res.json(new SuccessModel({ list: output }));
+    // if (req.query.curlat && req.query.curlng) {
+    //   output = sortOrder(data, req.query.curlat, req.query.curlng);
+    //   res.json(new SuccessModel({ list: output }));
+    // } else {
+    //   res.json(new SuccessModel({ list: data }));
+    // }
+    res.json(new SuccessModel({ list: data }));
   }).catch(() => {
     res.json(new ErrorModel('Failed to fetch list!'));
   });

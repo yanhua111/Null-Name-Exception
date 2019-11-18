@@ -2,6 +2,10 @@
   "name": "skipwalk-express",
   "version": "0.0.0",
   "private": true,
+   "jest": {
+    "automock": true,
+    "coveragePathIgnorePatterns" : ["./node_modules", "./front-end"]
+  },
   "scripts": {
     "start": "node ./bin/www",
     "dev": "cross-env NODE_ENV=dev nodemon ./bin/www",
