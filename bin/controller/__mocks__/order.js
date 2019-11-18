@@ -27,7 +27,7 @@ const getOrder = (courierId) => {
 }
  
 
-const getUserOrder = (userId) -> {
+const getUserOrder = (userId) => {
   var res = [];
      for(var i = 0; i < database.length; i++){
       if((database[i].userid == userId || (database[i].courierid == uderId) && database[i].status == 0)){
