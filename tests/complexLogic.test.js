@@ -1,4 +1,5 @@
 const complexLogic = require("../bin/complexLogic/complexLogic");
+jest.disableAutomock();
 
 /*
  * pathFinding testing
@@ -7,7 +8,10 @@ const complexLogic = require("../bin/complexLogic/complexLogic");
  * pathFinding testing
 */
 var pfTests = [
-    [{lat:0, lng:0}, []],           //only courier location 
+    [{lat:0, lng:0}, []],           //only courier location
+    [0, []],          //invalid data1 
+    [{lat:0, lng:0}, [{lat:2.5, lng:2.5, deslat: null, deslng: 1, status: 0}]],  //invalid data2
+    [{lat:0, lng:0}, [{lat:2.5, deslat: 1, deslng: 1, status: 0}]],              //invalid data3
     [{lat:0, lng:0}, [{lat:2.5, lng:2.5, deslat: 1, deslng: 1, status: 0}]],   //1 order
     [{lat:0, lng:0}, [{lat:2.5, lng:2.5, deslat: 1, deslng: 1, status: 1}]],   //1 order, not accepted
     [{lat:0, lng:0}, [{lat:3, lng:3, deslat: 1, deslng: 1, status: 0}, 
@@ -25,6 +29,9 @@ var pfTests = [
 ];                      
 var pfExpected = [
     [],
+    [],
+    [],
+    [],
     [{lat: 0, lng: 0}, {lat: 1, lng: 1}, {lat: 2.5, lng: 2.5}],
     [],
     [{lat: 0, lng: 0}, {lat: 1, lng: 1}, {lat: 2.5, lng: 2.5}, {lat: 3, lng: 3}, {lat: 4, lng: 4}],
@@ -41,8 +48,10 @@ var soTests = [
     [{lat:0, lng:0}, [{deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1}]],   //1 unaccepted order
     [{lat:0, lng:0}, [{deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1},     //2 identical orders
                       {deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1}]],  
-    [{lat:0, lng:0}, [{deslat: 0.001, deslng: 0.0011, time: '20:01:00', status: 1},     //2 different orders
+    [{lat:0, lng:0}, [{deslat: 0.001, deslng: 0.0011, time: '20:01:00', status: 1},     //2 different time orders
                       {deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1}]],   
+    [{lat:0, lng:0}, [{deslat: 0.001, deslng: 0.001, time: '20:00:00', status: 1},     //2 different places orders
+                      {deslat: 0.001, deslng: 0.003, time: '20:00:00', status: 1}]],
     [{lat:0, lng:0}, [{deslat: 0.001, deslng: 0.0019, time: '20:00:00', status: 1},     //large test
                       {deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1},
                       {deslat: 0.0019, deslng: 0.0019, time: '20:00:00', status: 1}]],  
@@ -66,7 +75,9 @@ var soExpected = [
     [{deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1},      //2 identical orders
      {deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1}],  
     [{deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1},
-     {deslat: 0.001, deslng: 0.0011, time: '20:01:00', status: 1}],     //2 different orders
+     {deslat: 0.001, deslng: 0.0011, time: '20:01:00', status: 1}],     //2 different time orders
+    [{deslat: 0.001, deslng: 0.001, time: '20:00:00', status: 1},     //2 different place orders
+     {deslat: 0.001, deslng: 0.003, time: '20:00:00', status: 1}],
     [{deslat: 0.001, deslng: 0.0011, time: '20:00:00', status: 1},      //large test
      {deslat: 0.001, deslng: 0.0019, time: '20:00:00', status: 1},     
      {deslat: 0.0019, deslng: 0.0019, time: '20:00:00', status: 1}],   
@@ -82,13 +93,15 @@ var soExpected = [
      {deslat: 0.0007, deslng: 0.0012, time: '20:40:00', status: 1}]]
 
 
-     describe('pathFinding', () => {
-        for (let i = 0; i < pfTests.length; i++) {
-            it('asserts deep equality', () => {
-                expect(complexLogic.pathFinding(pfTests[i][1], pfTests[i][0].lat, pfTests[i][0].lng)).toEqual(pfExpected[i]);
-            });
-        }
-    });
+
+describe('pathFinding', () => {
+    for (let i = 0; i < pfTests.length; i++) {
+        it('asserts deep equality ' + i, () => {
+            expect(complexLogic.pathFinding(pfTests[i][1], pfTests[i][0].lat, pfTests[i][0].lng)).toEqual(pfExpected[i]);
+        });
+    }
+});
+
 
 
 /*
@@ -96,7 +109,7 @@ var soExpected = [
 */
 describe('sortOrders', () => {
     for (let i = 0; i < soTests.length; i++) {
-        it('asserts equality', () => {
+        it('asserts equality ' + i, () => {
             expect(complexLogic.sortOrder(soTests[i][1], soTests[i][0].lat, soTests[i][0].lng)).toEqual(soExpected[i]);
         });
     }
