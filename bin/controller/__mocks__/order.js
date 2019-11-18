@@ -4,10 +4,7 @@
 var database = [
 ];
  
-//const accept = jest.genMockFromModule('order');
-//const getOrder = jest.genMockFromModule('order');
-//const place = jest.genMockFromModule('order');
-//const finish = jest.genMockFromModule('order');
+
  
 const accept = (orderId, courierId) => {
   for(var i = 0; i < database.length; i++){
@@ -29,6 +26,15 @@ const getOrder = (courierId) => {
   return res;
 }
  
+
+const getUserOrder = (userId) -> {
+  var res = [];
+     for(var i = 0; i < database.length; i++){
+      if((database[i].userid == userId || (database[i].courierid == uderId) && database[i].status == 0)){
+        res.push({id: database[i].id, content: database[i].content, locFrom: {lat: database[i].lat, lng: database[i].lng}, locTo: {deslat: database[i].deslat, deslng: database[i].deslng}, time: database[i].time});
+    }
+}
+
 const place = (userId, content, lat, lng, deslat, deslng, time) => {
   database.push({id: database.length, userid: userId, courierId: -1, content: content, lat: lat, lng: lng, deslat: deslat, deslng: deslng, status: 0, time: time});
   return 1;
