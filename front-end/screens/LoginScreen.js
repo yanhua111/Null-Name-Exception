@@ -37,11 +37,11 @@ export default class LoginScreen extends React.Component {
                 credentials: "include",
               }).then((response) => {
                 response.json().then((result) => {
-                  if(result.errno == 1){
+                  if(result.errno == -1){
                     alert(`Please Log in or Sign Up`);
                  }else{
                     if(result.data.usermode == "courier"){
-                        this.props.navigation.navigate("CourierScreen");
+                        this.props.navigation.navigate("OrderList");
                         }else if(result.data.usermode == "customer"){
                         this.props.navigation.navigate("CustomerScreen");
                         }
@@ -107,7 +107,7 @@ export default class LoginScreen extends React.Component {
 
     render() {
         return (
-            <View style = {style.container}>
+            <View style = {styles.container}>
                 <TextInput style = {styles.input}
                     underlineColorAndroid = "transparent"
                     placeholder = "User Name"

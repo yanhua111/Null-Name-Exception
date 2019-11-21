@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, Button, TouchableOpacity, TextInput } from "react-native";
+import { StyleSheet, Text, View, Button, TouchableOpacity, TextInput,Picker } from "react-native";
 import * as Facebook from "expo-facebook";
 import { Notifications } from "expo";
 import * as Permissions from "expo-permissions";
@@ -109,7 +109,7 @@ export default class SignupScreen extends React.Component {
 
     render() {
         return (
-            <View style = {style.container}>
+            <View style = {styles.container}>
                 <TextInput style = {styles.input}
                     underlineColorAndroid = "transparent"
                     placeholder = "User Name"

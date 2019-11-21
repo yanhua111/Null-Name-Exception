@@ -36,9 +36,9 @@ export default class phonemodeScreen extends React.Component {
         this.user_info(phonenum, usermode);
         if(usermode == 'courier'){
             ///////////////set globel usermode
-            this.props.navigation.navigate("CourierScreen");
+            this.props.navigation.navigate("OrderList");
         } else {
-            this.props.navigation
+            this.props.navigation.navigate("CustomerScreen");
             ///////////////set globel usermode
         }
     }
