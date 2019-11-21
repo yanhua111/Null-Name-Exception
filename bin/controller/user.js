@@ -1,16 +1,47 @@
 const { exec } = require('../database/mysql');
 
-/* Facebook login, save fbtoken and apptoken into database */
-const login = (username, fbtoken, apptoken) => {
+// /* Facebook login, save fbtoken and apptoken into database */
+// const login = (username, fbtoken, apptoken) => {
+//   const sql = `
+//         insert into users (username, fbtoken, apptoken) values('${username}', '${fbtoken}', '${apptoken}');
+//     `;
+//   return exec(sql).then(result => {
+//     console.log(result);
+//     return {
+//       id: result.insertId
+//     };
+//   });
+// };
+
+/* Sign up */
+const signup = (username, password, fbtoken, apptoken) => {
   const sql = `
-        insert into users (username, fbtoken, apptoken) values('${username}', '${fbtoken}', '${apptoken}');
+        insert into users (username, fbtoken, apptoken, password) values('${username}', '${fbtoken}', '${apptoken}', '${password}' );
+  `;
+  return exec(sql).then(result => {
+    return {
+      id: result.insertId
+    };
+  });
+};
+
+/* Helper for signup, check whether username has been registered */
+const signupHelper = (username) => {
+  const sql = `
+        select id from users where username = '${username}';
+  `;
+  return exec(sql).then(result => {
+    return result;
+  });
+};
+
+/* Log in */
+const login = (username, password) => {
+  const sql = `
+        select id from users where username = '${username}' and password = '${password}';
     `;
   return exec(sql).then(result => {
-    console.log(result);
-    return {
-      id: result.insertId,
-      affectedRows: result.affectedRows
-    };
+    return result;
   });
 };
 
@@ -39,6 +70,8 @@ const del = (userId, username) => {
 
 module.exports = {
   login,
+  signup,
+  signupHelper,
   getAppToken,
   del
 };

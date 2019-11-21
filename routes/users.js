@@ -1,46 +1,85 @@
 var express = require('express');
+const https = require('https');
 var router = express.Router();
-const { login, getAppToken, del } = require('../bin/controller/user');
+const {
+  login,
+  signup,
+  signupHelper,
+  getAppToken,
+  del
+} = require('../bin/controller/user');
 const { SuccessModel, ErrorModel } = require('../bin/controller/resMod');
 
-/* Facebook login, post username, fbtoken and apptoken */
-router.post('/login', (req, res, next) => {
-  const result = login(req.body.username, req.body.fbtoken, req.body.apptoken);
-  result.then(data => {
-    if (data.id) {
-      req.session.userid = data.id;
-      req.session.username = req.body.username;
-      req.session.usermode = req.body.usermode;
-      res.json({
-        errno: 0,
-        message: 'Login successully!'
+/* TODO: delet this; testing */
+router.get('/test', (req, res) => {
+  https.get('https://graph.facebook.com/me/picture?access_token=EAAHZAdqgZBRiwBAKNmdTcvwQZAEQfU0RUKEUPzIYQvMyfgffAzJh8dZAitdUT4ZBZBtAf6CiOV6CztCWzPylwWPZAW1CfiluatwXIgwabZCZCd3sH20klj6Xrz39PuHcyW9BJpNZC3aJIOpqr55aAEUwVaa1Ry2jrGOGGHm3oVC5y0ztvrI1s8dKJRsvqULS7WFVbXZAuEfopPvZC9noXzwvKW1W9ommZB0szjo4ZD', res => {
+    // res.setEncoding('utf8');
+    let body = '';
+    res.on('data', data => {
+      body += data;
+    });
+    res.on('end', () => {
+      // body = JSON.parse(body);
+      console.log(body);
+    });
+  });
+  res.json('Hello!');
+});
+
+/* Signup, For users that do not choose to use facebook login... */
+router.post('/signup', (req, res) => {
+  const resHelper = signupHelper(req.body.username);
+  resHelper.then(data => {
+    if (data.length === 0) {
+      const result = signup(
+        req.body.username,
+        req.body.password,
+        req.body.fbtoken,
+        req.body.apptoken
+      );
+      result.then(data => {
+        req.session.userid = data.id;
+        req.session.username = req.body.username;
+        req.session.phonenum = req.body.phonenum;
+        req.session.usermode = req.body.usermode;
+        res.json(new SuccessModel('User log in Succeed!'));
       });
     } else {
-      res.json({
-        errno: -1,
-        message: 'Unexpected Error, please try again!'
-      });
+      res.json(new ErrorModel('Username Exist! Please try another one'));
     }
-  }).catch(error => {
-    res.json({
-      message: 'Login failed'
-    });
-    console.log(error);
   });
 });
 
+/* Log in */
+router.post('/login', (req, res) => {
+  const result = login(req.body.username, req.body.password);
+  result.then(data => {
+    if (data.length === 0) {
+      res.json(new ErrorModel('Invalid Username and Password Combination!'));
+    } else {
+      req.session.userid = data[0].id;
+      req.session.username = req.body.username;
+      res.json(new SuccessModel('Log in Succeed!'));
+    }
+  });
+});
+
+/* Log Out the current user */
+router.get('/logout', (req, res) => {
+  if (!req.session.username) {
+    res.json(new ErrorModel('User Not Even Logged in!!!'));
+  } else {
+    req.session.username = null;
+    res.json(new SuccessModel('User has logged out'));
+  }
+});
+
 /* Delete a user */
-router.post('/delete', (req, res, next) => {
+router.post('/delete', (req, res) => {
   const result = del(req.body.userId, req.body.username);
   result.then(data => {
     if (data.affectedRows === 1) {
-      res.json(
-        new SuccessModel('User deleted!')
-      );
-    } else {
-      res.json(
-        new ErrorModel('Delete Failed!')
-      );
+      res.json(new SuccessModel('User deleted!'));
     }
   });
 });
@@ -48,18 +87,18 @@ router.post('/delete', (req, res, next) => {
 /* Check for login */
 router.get('/check', (req, res) => {
   if (req.session.username) {
-    console.log(req.session.userid);
     res.json(
-      new SuccessModel({
-        username: req.session.username,
-        usermode: req.session.usermode,
-        phonenum: req.session.phonenum
-      }, 'User have logged in!')
+      new SuccessModel(
+        {
+          username: req.session.username,
+          usermode: req.session.usermode,
+          phonenum: req.session.phonenum
+        },
+        'User have logged in!'
+      )
     );
   } else {
-    res.json(
-      new ErrorModel('Not logged in!')
-    );
+    res.json(new ErrorModel('Not logged in!'));
   }
 });
 
@@ -67,9 +106,11 @@ router.get('/check', (req, res) => {
 router.post('/get_token', (req, res) => {
   const result = getAppToken(req.body.userid);
   result.then(result => {
-    res.json(new SuccessModel({
-      apptoken: result[0].apptoken
-    }));
+    res.json(
+      new SuccessModel({
+        apptoken: result[0].apptoken
+      })
+    );
   });
 });
 
@@ -77,9 +118,7 @@ router.post('/get_token', (req, res) => {
 router.post('/switch', (req, res) => {
   if (!req.body.usermode) {
     res.json(new ErrorModel('Please send the mode you want to switch to'));
-    return;
-  }
-  if (req.body.usermode) {
+  } else {
     req.session.usermode = req.body.usermode;
     res.json(new SuccessModel('Update Successully!'));
   }

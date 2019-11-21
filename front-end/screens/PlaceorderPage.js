@@ -4,7 +4,7 @@ import {
   Text,
   Image,
   View,
-  Button,
+  Platform,
   TextInput,
   TouchableOpacity,
   TimePickerAndroid,
@@ -20,6 +20,7 @@ import timeIcon from "../assets/time.png";
 import contentIcon from "../assets/content.png";
 import TopBar from "../src/utils/TopBar";
 import Cell from "../src/utils/Cell";
+let ordertime;
 // import righticon from "../assets/arrow_right.png";
 
 export default class PlaceOrderScreen extends React.Component {
@@ -35,8 +36,8 @@ export default class PlaceOrderScreen extends React.Component {
         longitudeDelta: 0.02
       },
       orderTime: {
-        hour: '00',
-        minute: '00'
+        hour: "00",
+        minute: "00"
       },
       showloader: false
     };
@@ -44,8 +45,14 @@ export default class PlaceOrderScreen extends React.Component {
 
   componentWillUnmount() {
     this.setState({
-      showloader: false
+      showloader: false,
     });
+  }
+  
+  componentDidMount() {
+    this.setState({
+      orderTime: ordertime
+    })
   }
 
   /* Update position set by user */
@@ -132,35 +139,47 @@ export default class PlaceOrderScreen extends React.Component {
 
   /* Time picker */
   async pickTime() {
-    try {
-      const { action, hour, minute } = await TimePickerAndroid.open({
-        hour: 14,
-        minute: 0,
-        is24Hour: true, // Will display '14 PM'
-        mode: "spinner"
-      });
-      if (action !== TimePickerAndroid.dismissedAction) {
+    if(Platform.OS === 'android') {
+      try {
+        const { action, hour, minute } = await TimePickerAndroid.open({
+          hour: parseFloat(this.state.orderTime.hour),
+          minute: parseFloat(this.state.orderTime.minute),
+          is24Hour: true, // Will display '14 PM'
+          mode: "spinner"
+        });
+        if (action !== TimePickerAndroid.dismissedAction) {
           let setHour, setMin;
           if (hour <= 9) {
-              setHour = `0${hour}`;
+            setHour = `0${hour}`;
           } else {
-              setHour = hour;
+            setHour = hour;
           }
           if (minute <= 9) {
-              setMin = `0${minute}`;
+            setMin = `0${minute}`;
           } else {
-              setMin = minute;
+            setMin = minute;
           }
-        this.setState({
-          orderTime: {
-            hour: setHour,
-            minute: setMin
-          }
-        })
+          console.log(setHour);
+          console.log(setMin);
+          this.setState({
+            orderTime: {
+              hour: setHour,
+              minute: setMin
+            }
+          });
+        }
+      } catch ({ code, message }) {
+        console.warn("Cannot open time picker", message);
       }
-    } catch ({ code, message }) {
-      console.warn("Cannot open time picker", message);
+    } else {
+      this.setState({
+        orderTime: {
+          hour: '12',
+          minute: '00'
+        }
+      });
     }
+    
   }
 
   render() {
@@ -181,7 +200,10 @@ export default class PlaceOrderScreen extends React.Component {
       "content",
       "Please enter any additional information here ..."
     );
-    this.state.orderTime = this.props.navigation.getParam("orderTime", this.state.orderTime);
+    ordertime = this.props.navigation.getParam(
+      "orderTime",
+      this.state.orderTime
+    );
     return (
       <View style={styles.container}>
         <Modal
@@ -203,46 +225,53 @@ export default class PlaceOrderScreen extends React.Component {
           Order Information
         </TopBar>
 
-        <Cell 
-        source={locIcon}
-        title = "From:"
-        placeholder = {locFrom}
-        onPress={() => {
-          this.props.navigation.navigate("AddressPage", {
-            selection: "from",
-            locFrom: locFrom,
-            locTo: locTo,
-            fromLat: fromLat,
-            fromLng: fromLng,
-            toLat: toLat,
-            toLng: toLng,
-            content: this.state.user_text,
-            orderTime: this.state.orderTime
-          });
-        }}
+        <Cell
+          source={locIcon}
+          title="From:"
+          placeholder={locFrom}
+          showarrow={true} //default: show right arrow
+          onPress={() => {
+            this.props.navigation.navigate("AddressScreen", {
+              selection: "from",
+              locFrom: locFrom,
+              locTo: locTo,
+              fromLat: fromLat,
+              fromLng: fromLng,
+              toLat: toLat,
+              toLng: toLng,
+              content: this.state.user_text,
+              orderTime: this.state.orderTime
+            });
+          }}
         />
 
-        <Cell 
-        source={locIcon}
-        title="To:"
-        placeholder = {locTo}
-        onPress={() => {
-          this.props.navigation.navigate("AddressPage", {
-            selection: "to",
-            locFrom: locFrom,
-            locTo: locTo,
-            fromLat: fromLat,
-            fromLng: fromLng,
-            toLat: toLat,
-            toLng: toLng,
-            content: this.state.user_text,
-            orderTime: this.state.orderTime
-          });
-        }}
+        {/* <Cell
+          source={locIcon}
+          title="From:"
+          placeholder={locFrom}
+          showarrow={true} //default: show right arrow
+          onPress={} //Put the function you want to call here 
+        /> */}
+
+        <Cell
+          source={locIcon}
+          title="To:"
+          placeholder={locTo}
+          onPress={() => {
+            this.props.navigation.navigate("AddressScreen", {
+              selection: "to",
+              locFrom: locFrom,
+              locTo: locTo,
+              fromLat: fromLat,
+              fromLng: fromLng,
+              toLat: toLat,
+              toLng: toLng,
+              content: this.state.user_text,
+              orderTime: this.state.orderTime
+            });
+          }}
         />
 
-
-        
         <View style={styles.locTo}>
           <Image source={timeIcon} style={styles.icon} />
           <Text onPress={() => this.pickTime()} style={styles.shorttext}>
@@ -308,12 +337,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 20,
     paddingVertical: 10,
-    justifyContent: 'flex-start',
+    justifyContent: "flex-start",
     // borderBottomWidth: 1,
     borderColor: "#c7c7c7",
     height: 50,
     flexDirection: "row",
-    marginBottom: 20,
+    marginBottom: 20
   },
   locTo: {
     width: "100%",

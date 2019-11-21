@@ -6,28 +6,56 @@ const accept = (orderId, courierId) => {
         update orders set courierid='${courierId}', status=0 where id='${orderId}';
     `;
   return exec(sql).then(rows => {
-    return rows[0] || {};
+    return rows;
   });
 };
 
 /* Return the information of all avilable order */
 const getOrder = (courierId) => {
-  const sql = `
-        select id, userid, courierid, content, lat, lng, deslat, deslng, status, time, locFrom, locTo from orders where status = 1 or (courierid = '${courierId}' and status = 0);
-    `;
+  const result = fetchOrder(courierId, 'courier', 1, 0);
+  return result;
+};
+
+/* General getOrder function
+* param == -1 means we don't want it
+*/
+const fetchOrder = (userId, usermode, status, short) => {
+  let sql = '';
+  if (short === 1) {
+    sql += 'select id, content, locFrom, locTo, time, status from orders where ';
+  } else {
+    sql += 'select id, userid, courierid, content, lat, lng, deslat, deslng, status, time, locFrom, locTo from orders where ';
+  }
+  // Check all order that courier accept or can acccept
+  if (status === 1) {
+    sql += `status = 1 or (courierid = '${userId}' and status = 0); `;
+  }
+  // check all orders the user placed(except for finished orders)
+  else if (status === 0) {
+    sql += `userid = '${userId}' and (status = 0 or status = 1); `;
+  } else if (status === -1) {
+    sql += 'status = -1 ';
+    if (usermode === 'customer') {
+      sql += `and userid = '${userId}'; `;
+    } else if (usermode === 'courier') {
+      sql += `and courierid = '${userId}'; `;
+    }
+  }
   return exec(sql).then(rows => {
     return rows;
   });
 };
 
-/* Return the order accepted by the given courier id */
-const getUserOrder = (userId) => {
-  const sql = `
-        select id, content, locFrom, locTo, time from orders where ( userid = '${userId}' or courierid = '${userId}' ) and status = 0;
-    `;
-  return exec(sql).then(rows => {
-    return rows;
-  });
+/* Get All order placed by the current user(For Customer) */
+const getCustomerOrder = (userId) => {
+  const result = fetchOrder(userId, 'customer', 0, 1);
+  return result;
+};
+
+/* Get finished order(Can be used by customer or courier) */
+const getHistoryOrder = (userId, usermode) => {
+  const result = fetchOrder(userId, usermode, -1, 0);
+  return result;
 };
 
 /* Place a order, and save all corresponding inforation into the database */
@@ -54,7 +82,8 @@ const finish = (orderId) => {
 module.exports = {
   accept,
   getOrder,
-  getUserOrder,
+  getCustomerOrder,
+  getHistoryOrder,
   place,
   finish
 };
