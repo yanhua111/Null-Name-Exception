@@ -73,9 +73,7 @@ export default class OrderList extends React.Component {
 
   _onEndReached = () => {
     console.log("on end reached");
-    // this.state.reachedEnd =  true;
     this.setState({ reachedEnd: true });
-    // this.forceUpdate();
     console.log(this.state.reachedEnd);
   };
 
@@ -95,7 +93,7 @@ export default class OrderList extends React.Component {
     return buttons;
   };
 
-  accept_order = order_id => {
+  accept_order = (order_id,curlat,curlng) => { //这里需要current longtitude 和latitude
     if (this.state.myArray[order_id].status == 1) {
       Alert.alert("This order is already accepted");
     } else {
@@ -107,7 +105,9 @@ export default class OrderList extends React.Component {
         },
         credentials: "include",
         body: JSON.stringify({
-          orderid: order_id //????????????
+          orderid: order_id,//????????????
+          curlat: curlat,
+          curlng: curlng,
         })
       });
       Alert.alert("successfully accepted");

@@ -5,6 +5,7 @@ import { Notifications } from "expo";
 import * as Permissions from "expo-permissions";
 import courier from "../assets/runningman.png";
 import customer from "../assets/standperson.png";
+import "../global";
 
 
 
@@ -31,7 +32,7 @@ const FadeInView = (props) => {
           })
       ]),
       {
-        iterations: 9999 //Make the button keep animating
+        iterations: 9999
       }
     ).start();
   }, []);
@@ -69,16 +70,22 @@ check_login = () => {
             credentials: "include",
           }).then((response) => {
             response.json().then((result) => {
-              if(result.errno == 1){
+              if(result.errno == -1){
                 alert(`Please Choose Your Role and Sign In with Facebook`);
              }else{
                 if(result.data.usermode == "courier"){
-                    this.props.navigation.navigate("CourierScreen");
+                    global.role = "courier";
+                    this.props.navigation.navigate("OrderList");
                     }else if(result.data.usermode == "customer"){
+                    global.role = "customer";
                     this.props.navigation.navigate("CustomerScreen");
                     }
-               
              }
+             global.username = result.data.username;
+             global.phoneNum = result.data.phonenum;
+             console.log("result");
+             console.log(result.data.username);
+             console.log(global.username);
             });
             
           } 
@@ -136,7 +143,7 @@ check_login = () => {
               username: username,
               fbtoken: fbtoken,
               apptoken: apptoken,
-              usermode: global.role
+              usermode: global.role,
             }),
           });
   }
@@ -146,7 +153,7 @@ check_login = () => {
     console.log("Pressed left");
     global.role = "courier";
     this.loginWithFb();
-    this.props.navigation.navigate("CourierScreen");
+    this.props.navigation.navigate("OrderList");
     
     
   }
@@ -164,7 +171,7 @@ check_login = () => {
   render() {
     return (
       <View style={{flex: 1, flexDirection: "row", alignSelf: "stretch" }}>
-        <TouchableOpacity testID="customerBtn" style={{flex:1, flexDirection: "column", backgroundColor: "powderblue", justifyContent:"center", alignItems: "center"}} onPress={() => this.pressLeft()} >
+        <TouchableOpacity style={{flex:1, flexDirection: "column", backgroundColor: "powderblue", justifyContent:"center", alignItems: "center"}} onPress={() => this.pressLeft()} >
             
             <Image source={customer} style= {styles.pic2} />
             <Text style = {styles.text}> I want to order! </Text>

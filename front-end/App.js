@@ -1,37 +1,42 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { createAppContainer} from "react-navigation";
+import React from 'react';
+import { Button, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
+// import {createStackNavigator,} from 'react-navigation-stack';
 import {createBottomTabNavigator,} from 'react-navigation-tabs';
 
-
+//import DashboardScreen from "./screens/dashboard";
+//import  {DashBoardStack } from "./screens/dashboard";
+//import CourierScreen from "./screens/courierscreen";
+import OpenPage from "./screens/OpenPage";
 import CustomerScreen from "./screens/customerscreen";
-import CourierScreen from "./screens/courierscreen";
 import CourierMap from "./screens/couriermap";
-import PlaceorderPage from './screens/PlaceorderPage';
-import AddressPage from './screens/address';
 import OrderList from "./screens/OrderList";
 import Setting from "./screens/setting";
-import OpenPage from "./screens/OpenPage";
+import OrderScreen from "./screens/PlaceorderPage";
+import AddressScreen from "./screens/address";
+import {CourierMapStack} from "./screens/couriermap";
+import {CustomerStack} from "./screens/customerscreen";
+import {PlaceOrderStack} from "./screens/PlaceorderPage";
+import {courierStack} from "./src/utils/navigators";
+import {customerStack} from "./src/utils/navigators";
 
 export default class App extends React.Component {
   render() {
-    return <APPNavigator />;
+    return <APPNavigator/>;
   }
 }
 
 
 const APPNavigator = createAppContainer(
-  createBottomTabNavigator(
-    {
+  createSwitchNavigator({
       OpenPage: {screen: OpenPage},
-      Setting:  {screen: Setting},
-      OrderList: {screen: OrderList},
-      OrderScreen: {screen: PlaceorderPage},
-      CustomerScreen: { screen: CustomerScreen},
-      CourierScreen: {screen: CourierScreen},
-      CourierMap: {screen: CourierMap},
-      AddressPage:{screen: AddressPage},
-    },
- 
-  )
-);
+      courierStack: courierStack,
+      customerStack: customerStack,
+  })
+)
+
+
+
+
+
