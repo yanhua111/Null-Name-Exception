@@ -8,6 +8,7 @@ import { URL, PORT} from "../src/conf";
 import self from "../assets/self.png";
 import userMode from "../assets/usermode.png";
 import phone from "../assets/phone.png";
+import TopBar from "../src/utils/TopBar";
 
 export default class Setting extends React.Component { 
 
@@ -73,9 +74,10 @@ export default class Setting extends React.Component {
       return(
         <View style = {styles.container}>
           {/**this is the view for top bar */}
-          <View style  = {styles.topbar}>
-           <Text style = {styles.title}>Personal Profile</Text> 
-            </View>
+          <TopBar
+          showback = {false}>
+          Personal Profile
+          </TopBar>
             {/**here is the view for text*/}
           
         <View style = {styles.infoStyle}>

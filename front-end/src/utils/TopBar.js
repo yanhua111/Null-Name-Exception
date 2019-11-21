@@ -11,7 +11,7 @@ export default class TopBar extends Component {
       <View style={{
         alignSelf: 'flex-start',
         justifyContent: 'center',
-        alignItems: 'center',
+        // alignItems: 'center',
         flexDirection: 'row',
         backgroundColor: 'white',
         width: '100%',
@@ -43,7 +43,7 @@ export default class TopBar extends Component {
           fontSize: 20,
           fontWeight: 'bold',
           color: 'black',
-          marginVertical: 30
+          marginTop: 40
         }}>{this.props.children}</Text>
       </View>
     );
