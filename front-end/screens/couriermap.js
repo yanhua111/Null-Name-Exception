@@ -178,7 +178,7 @@ export default class CourierMap extends React.Component {
           }
         </MapView>
         <TouchableOpacity style={styles.backbtn}
-          onPress={() => { this.props.navigation.navigate("CourierScreen"); }} >
+          onPress={() => { this.props.navigation.navigate("OrderList"); }} >
           <Image source={backicon} style={styles.icon} />
         </TouchableOpacity>
         <TouchableOpacity style={{ position: "absolute", bottom: 60, right: 20, borderColor: 'black' }}
