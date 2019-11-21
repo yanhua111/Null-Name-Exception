@@ -1,7 +1,10 @@
-jest.disableAutomock();    
+jest.disableAutomock();
+jest.mock('../bin/controller/user'); 
+jest.mock('express');   
 const fetch = require("node-fetch");
 
-test('the data is peanut butter', () => {
+//Orders
+test('Sorted list of available orders', () => {
     return fetch(`http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/order/list`, {
         method: "GET",
         headers: {
@@ -22,7 +25,47 @@ test('the data is peanut butter', () => {
     });
   });
 
-  
+  test('Accept an order and returns pathfinding logic', () => {
+    return fetch(`${URL}:${PORT}/order/accept`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+         orderid: order_id, 
+         }),
+      }).then(data => {
+          data.json().then(result =>{
+            expect(result).toEqual({"data": {}});
+          }).catch((error) => console.log(error));
+      
+    });
+  });
+
+  test('Known user login', () => {
+    return fetch(`${URL}:${PORT}/users/get_token`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          //userid: global.user_id_ls,
+          userid: userid
+          }),
+      }).then(data => {
+          data.json().then(result =>{
+            expect(result).toEqual({"data": {
+                errno: 0,
+                message: 'Login successully!'
+              }});
+          }).catch((error) => console.log(error));
+      
+    });
+  });
         
 // check_login = () => {
 //     fetch("http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/users/check", {

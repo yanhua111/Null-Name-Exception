@@ -31,7 +31,7 @@ const FadeInView = (props) => {
           })
       ]),
       {
-        iterations: 9999
+        iterations: 9999 //Make the button keep animating
       }
     ).start();
   }, []);
@@ -164,7 +164,7 @@ check_login = () => {
   render() {
     return (
       <View style={{flex: 1, flexDirection: "row", alignSelf: "stretch" }}>
-        <TouchableOpacity style={{flex:1, flexDirection: "column", backgroundColor: "powderblue", justifyContent:"center", alignItems: "center"}} onPress={() => this.pressLeft()} >
+        <TouchableOpacity testID="customerBtn" style={{flex:1, flexDirection: "column", backgroundColor: "powderblue", justifyContent:"center", alignItems: "center"}} onPress={() => this.pressLeft()} >
             
             <Image source={customer} style= {styles.pic2} />
             <Text style = {styles.text}> I want to order! </Text>
