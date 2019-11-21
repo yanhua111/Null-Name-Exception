@@ -9,9 +9,11 @@ export default class TopBar extends Component {
   render = (  ) => {
     return (
       <View style={{
-        position: 'absolute',
+        alignSelf: 'flex-start',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
         backgroundColor: 'white',
-        marginBottom: 20,
         width: '100%',
         height: 80,
         borderColor: 'grey',
@@ -20,15 +22,14 @@ export default class TopBar extends Component {
         shadowColor: 'black',
         shadowOpacity: 1.0,
         elevation: 10,
-        alignItems: 'center'
       }}>
         <TouchableOpacity style={{
           position: 'absolute',
+          left: 20,
           top: 40,
-          left: 10
         }}
         onPress={this.props.onBackPress} >
-          <Image source={backicon} style={ { width: 30, height: 30 }} />
+        { this.props.showback && <Image source={backicon} style={ { width: 30, height: 30 }} />}
         </TouchableOpacity>
         <TouchableOpacity style={{
           position: 'absolute',
@@ -42,9 +43,13 @@ export default class TopBar extends Component {
           fontSize: 20,
           fontWeight: 'bold',
           color: 'black',
-          marginVertical: 40
+          marginVertical: 30
         }}>{this.props.children}</Text>
       </View>
     );
   }
+  static defaultProps = {
+    showback: true
+  };
 }
+
