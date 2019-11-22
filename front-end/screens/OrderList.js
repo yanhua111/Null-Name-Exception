@@ -8,7 +8,6 @@ import {
   Button,
   Alert,
   Image,
-  RefreshControl,
   TouchableOpacity
 } from "react-native";
 import "../global";
@@ -17,6 +16,10 @@ import TopBar from "../src/utils/TopBar";
 import profilepic from "../assets/courier.png";
 import despic from "../assets/destination.png";
 import originpic from "../assets/origin.png";
+import OrderView from "../src/utils/OrderView";
+import dotpic from "../assets/dot.png";
+import righticon from "../assets/arrow_right.png";
+
 
 export default class OrderList extends React.Component {
   state = {
@@ -73,7 +76,9 @@ export default class OrderList extends React.Component {
 
   _onEndReached = () => {
     console.log("on end reached");
+    // this.state.reachedEnd =  true;
     this.setState({ reachedEnd: true });
+    // this.forceUpdate();
     console.log(this.state.reachedEnd);
   };
 
@@ -93,7 +98,7 @@ export default class OrderList extends React.Component {
     return buttons;
   };
 
-  accept_order = (order_id,curlat,curlng) => { //这里需要current longtitude 和latitude
+  accept_order = order_id => {
     if (this.state.myArray[order_id].status == 1) {
       Alert.alert("This order is already accepted");
     } else {
@@ -105,9 +110,7 @@ export default class OrderList extends React.Component {
         },
         credentials: "include",
         body: JSON.stringify({
-          orderid: order_id,//????????????
-          curlat: curlat,
-          curlng: curlng,
+          orderid: order_id //????????????
         })
       });
       Alert.alert("successfully accepted");
@@ -166,47 +169,31 @@ export default class OrderList extends React.Component {
   };
 
   _renderItem = ({ item }) => (
-    <View style={styles.order}>
-      <Image source={profilepic} style={styles.profilepic} />
-      <View style={styles.locContainer}>
-        <View style={styles.locLine}>
-          <Image style={styles.smallpic} source={originpic} />
-          <Text>
-            {item.locFrom}
-          </Text>
-        </View>
-        <View style={styles.locLine}>
-          <Image style={styles.smallpic} source={despic} />
-          <Text>
-            {item.locTo}
-          </Text>
-        </View>
-      </View>
-      {item.status === 1 ? (
-        <Text > placed</Text>
-      ) :  (
-        <Text > accepted</Text>
-      )}
-      {/* {item.status === 1 ? (
-        <Text >content={item.content}| placed</Text>
-      ) : item.status === 0 ? (
-        <Text >content={item.content}| accepted</Text>
-      ) : (
-        <Text >content={item.content} | finished</Text>
-      )} */}
-      {/* <View >
-        <Button
-          title={`order ${item.id} accept above order`}
-          onPress={() => this.accept_order(item.id)}
-        ></Button>
-      </View>
-      <View >
-        <Button
-          title={"Finish this order"}
-          onPress={() => this.finish_order(item.id, item.userid)}
-        ></Button>
-      </View> */}
-    </View>
+
+    <OrderView
+    profilepic = {profilepic}
+    originpic = {originpic}
+    locFrom = {item.locFrom}
+    dotpic = {dotpic}
+    despic = {despic}
+    locTo = {item.locTo}
+    status = {item.status}
+    righticon = {righticon}
+    />
+
+      // {/* <View >
+      //   <Button
+      //     title={`order ${item.id} accept above order`}
+      //     onPress={() => this.accept_order(item.id)}
+      //   ></Button>
+      // </View>
+      // <View >
+      //   <Button
+      //     title={"Finish this order"}
+      //     onPress={() => this.finish_order(item.id, item.userid)}
+      //   ></Button>
+      // </View> */}
+    // </View>
   );
 
   render() {
@@ -216,7 +203,7 @@ export default class OrderList extends React.Component {
           <TopBar showback={false}>My Order</TopBar>
         </View>
         <FlatList
-          style={{marginTop: 100}}
+          // style={{ marginTop: 100 }}
           data={this.state.myArray}
           extraData={this.state}
           onRefresh={() => this.onRefresh()}
@@ -237,39 +224,60 @@ const styles = StyleSheet.create({
   },
   order: {
     width: "90%",
-    alignSelf:'center',
-    backgroundColor: 'white',
+    alignSelf: "center",
+    backgroundColor: "white",
     paddingHorizontal: 10,
-    paddingVertical: 20,
+    paddingVertical: 10,
     borderRadius: 5,
     borderColor: "grey",
-    height: 100,
+    height: 200,
     flexDirection: "row",
     marginBottom: 20,
     elevation: 10,
     shadowOffset: { width: 1, height: 1 },
-    shadowColor: 'black',
+    shadowColor: "black",
     shadowOpacity: 1.0,
-    borderBottomWidth:1,
+    borderBottomWidth: 1,
+    justifyContent: "flex-start"
   },
   locContainer: {
-    flexDirection: 'column'
+    flexDirection: "column",
+    marginTop: 20,
+    justifyContent: "space-around"
   },
   locLine: {
-    flexDirection: 'row'
+    flexDirection: "row",
+    width: 200,
+    marginVertical: 2,
+    flexShrink: 1
   },
-  smallpic:{
+  dotpic: {
     width: 20,
-    height: 20
+    height: 30
   },
-  profilepic:{
+  smallpic: {
+    width: 20,
+    height: 20,
+    marginRight: 2
+  },
+  largepic: {
+    width: 50,
+    height: 50,
+    marginTop: 100
+  },
+  optionContainer: {
+    flex: 1,
+    height: 30,
+    alignItems: "flex-end",
+    flexDirection: 'column'
+  },
+  profilepic: {
     width: 50,
     height: 50,
     borderRadius: 5,
     borderWidth: 1,
     backgroundColor: "white",
-    elevation: 10,
-    borderColor: 'grey',
+    borderColor: "grey",
     marginRight: 10
   }
 });

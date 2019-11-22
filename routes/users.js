@@ -1,7 +1,7 @@
 var express = require('express');
-const https = require('https');
 var router = express.Router();
 const {
+  update,
   login,
   signup,
   signupHelper,
@@ -9,22 +9,6 @@ const {
   del
 } = require('../bin/controller/user');
 const { SuccessModel, ErrorModel } = require('../bin/controller/resMod');
-
-/* TODO: delet this; testing */
-router.get('/test', (req, res) => {
-  https.get('https://graph.facebook.com/me/picture?access_token=EAAHZAdqgZBRiwBAKNmdTcvwQZAEQfU0RUKEUPzIYQvMyfgffAzJh8dZAitdUT4ZBZBtAf6CiOV6CztCWzPylwWPZAW1CfiluatwXIgwabZCZCd3sH20klj6Xrz39PuHcyW9BJpNZC3aJIOpqr55aAEUwVaa1Ry2jrGOGGHm3oVC5y0ztvrI1s8dKJRsvqULS7WFVbXZAuEfopPvZC9noXzwvKW1W9ommZB0szjo4ZD', res => {
-    // res.setEncoding('utf8');
-    let body = '';
-    res.on('data', data => {
-      body += data;
-    });
-    res.on('end', () => {
-      // body = JSON.parse(body);
-      console.log(body);
-    });
-  });
-  res.json('Hello!');
-});
 
 /* Signup, For users that do not choose to use facebook login... */
 router.post('/signup', (req, res) => {
@@ -132,6 +116,36 @@ router.post('/setinfo', (req, res) => {
   } else if (!req.session.username) {
     res.json(new ErrorModel('User has not log in yet!'));
   }
+});
+
+/* Set up user's phonenum */
+router.post('/update', (req, res) => {
+  if (req.body.usermode) {
+    req.session.usermode = req.body.usermode;
+  }
+  if (req.body.phonenum) {
+    req.session.phonenum = req.body.phonenum;
+  }
+  if (req.body.username) {
+    const result = signupHelper(req.body.username);
+    result.then(data => {
+      if (data.length !== 0) {
+        if (data[0].id !== req.session.userid) {
+          res.json(new ErrorModel('User already exist, please try another username!'));
+        } else {
+          res.json(new SuccessModel('Profile Updated Succeed!'));
+        }
+      } else {
+        const updateres = update(req.body.username, req.session.userid);
+        updateres.then(data => {
+          if (data.affectedRows === 1) {
+            res.json(new SuccessModel('User deleted!'));
+          }
+        });
+      }
+    });
+  }
+  res.json(new SuccessModel('Profile Updated Succeed!'));
 });
 
 module.exports = router;

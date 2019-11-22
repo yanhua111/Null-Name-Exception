@@ -1,17 +1,15 @@
 const { exec } = require('../database/mysql');
 
-// /* Facebook login, save fbtoken and apptoken into database */
-// const login = (username, fbtoken, apptoken) => {
-//   const sql = `
-//         insert into users (username, fbtoken, apptoken) values('${username}', '${fbtoken}', '${apptoken}');
-//     `;
-//   return exec(sql).then(result => {
-//     console.log(result);
-//     return {
-//       id: result.insertId
-//     };
-//   });
-// };
+const update = (username, userId) => {
+  const sql = `
+        update users set username='${username}' where id = ${userId};
+  `;
+  return exec(sql).then(result => {
+    return {
+      affectedRows: result.affectedRows
+    };
+  });
+};
 
 /* Sign up */
 const signup = (username, password, fbtoken, apptoken) => {
@@ -61,7 +59,6 @@ const del = (userId, username) => {
     delete from users where id='${userId}' and username ='${username}';
     `;
   return exec(sql).then(result => {
-    console.log(result);
     return {
       affectedRows: result.affectedRows
     };
@@ -69,6 +66,7 @@ const del = (userId, username) => {
 };
 
 module.exports = {
+  update,
   login,
   signup,
   signupHelper,
