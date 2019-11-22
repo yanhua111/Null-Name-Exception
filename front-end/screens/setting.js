@@ -10,70 +10,35 @@ import userMode from "../assets/usermode.png";
 import phone from "../assets/phone.png";
 import TopBar from "../src/utils/TopBar";
 
+
 export default class Setting extends React.Component { 
+  
+  componentDidMount() {
+    if(global.change_screen == 1){
+      this.check_navigate();
+      
+    }
+  }
 
-    state = { 
-        isModalVisible: false,
-        isModalVisible1: false,
-        user_text:"",
-    }; 
-
-
-    Switch_role = (mode) => {
-      console.log(1);
-      console.log(this.state.role);
-        fetch(`${URL}:${PORT}/users/switch`, {
-                method: "POST",
-                headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json",
-                },
-                credentials: "include",
-                body: JSON.stringify({
-                 usermode: mode, 
-                 }),
-              }); 
-              global.role = mode;
-              this.toggleModal();
-              if(global.role === "courier"){
-                this.props.navigation.navigate("OrderList");
-              }else{
-                this.props.navigation.navigate("CustomerScreen");
-              }
+    
+    check_navigate = () => {
+      
+      if(global.role == "courier"){
+        global.change_screen = 0;
+        this.props.navigation.navigate("OrderList");
+      }else{
+        global.change_screen = 0;
+      this.props.navigation.navigate("CustomerScreen");
       }
+    }
 
-      set_phone = () => {
-        console.log(1);
-        console.log(this.state.role);
-          fetch(`${URL}:${PORT}/users/setinfo`, {
-                  method: "POST",
-                  headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                  },
-                  credentials: "include",
-                  body: JSON.stringify({
-                   phonenum: this.state.user_text, 
-                   }),
-                }); 
-                global.phoneNum = this.state.user_text;
-                this.toggleModal1();
-        }
-
-      toggleModal = () => {
-        this.setState({ isModalVisible: !this.state.isModalVisible });
-      };
-
-      toggleModal1 = () => {
-        this.setState({ isModalVisible1: !this.state.isModalVisible1 });
-      };
-
-   
     render() { 
-      // Defined on step 4   <View style={{flexDirection:'row', flexWrap:'wrap'}}>
+      const Phone = this.props.navigation.getParam('Phone', global.phoneNum);
+      const Name = this.props.navigation.getParam('Name', global.username);
+      const UserMode = this.props.navigation.getParam('UserMode', global.role);
+      const Change = this.props.navigation.getParam('UserMode', global.change_screen);
       return(
         <View style = {styles.container}>
-          {/**this is the view for top bar */}
           <TopBar
           showback = {false}>
           Personal Profile
@@ -107,91 +72,18 @@ export default class Setting extends React.Component {
      
       <View style={styles.touchBtn1}>
             <TouchableOpacity 
-             onPress={this.toggleModal}>
-            <Text style={styles.text_opacity}>Change Role</Text>
+             onPress={ ()=> this.props.navigation.navigate("ChangeSetting",
+             {
+               Name : Name,
+               UserMode: UserMode,
+               Phone: Phone,
+               Change: Change,
+             }
+            )
+              }>
+            <Text style={styles.text_opacity}>Change Setting</Text>
             </TouchableOpacity>
           </View>
-    
-
-      <View style={styles.touchBtn2}>
-            <TouchableOpacity 
-              onPress={this.toggleModal1}>
-            <Text style={styles.textbtn}>Press to enter phone number</Text>
-            </TouchableOpacity>
-           </View>
-     
-    {/**all the modals goes here */}
-     {/**First Modal */}
-           <View style = {styles.container}>
-          <Modal isVisible={this.state.isModalVisible}>
-      {/**Title */}    
-      <View style = {styles.container1}>
-          <View>
-            <Text style = {styles.text1}>Please choose your role</Text>
-            </View>
-      </View>
-    {/**Courier Button */}
-      <View style = {styles.container1}>
-            <View style={styles.touchBtn3}>
-            <TouchableOpacity 
-              onPress={() => {this.Switch_role("courier");}}>
-            <Text style={styles.textbtn}>  Courier  </Text>
-            </TouchableOpacity>
-           </View>
-      </View>    
-  {/**Customer Button */}
-      <View style = {styles.container1}>
-           <View style={styles.touchBtn3}>
-            <TouchableOpacity 
-              onPress={() => {this.Switch_role("customer");}}>
-            <Text style={styles.textbtn}>Customer</Text>
-            </TouchableOpacity>
-           </View>
-      </View> 
-  {/**Quit button */}
-      <View style = {styles.container1}>
-           <View style={styles.touchBtn3}>
-            <TouchableOpacity 
-              onPress={this.toggleModal}>
-            <Text style={styles.textbtn}>Quit</Text>
-            </TouchableOpacity>
-           </View>
-      </View> 
-        </Modal>
-
-         {/**Second Modal */}
-        <Modal isVisible={this.state.isModalVisible1}>
-          <View>
-            <Text style = {styles.text1}>Enter Your Phone Number</Text>
-            <TextInput
-              placeholder="Enter phone number here : eg 123456789"
-              placeholderTextColor = "grey"
-              color = "black" 
-              underlineColorAndroid={"transparent"}
-              onChangeText={(user_text) => this.setState({user_text})}
-              style={{ marginVertical: 20,backgroundColor:"white",padding: 20, fontWeight: "bold",fontSize:14}} />
-          </View>
-          
-          <View style = {styles.container2}>
-           <View style={styles.touchBtn3}>
-            <TouchableOpacity 
-              onPress={this.set_phone}>
-            <Text style={styles.textbtn1}>confirm</Text>
-            </TouchableOpacity>
-           </View>
-          </View> 
-          
-          <View style = {styles.container2}>
-           <View style={styles.touchBtn3}>
-            <TouchableOpacity 
-              onPress={this.toggleModal1}>
-            <Text style={styles.textbtn1}>Quit</Text>
-            </TouchableOpacity>
-           </View>
-          </View> 
-        </Modal>
-
-        </View>
         </View> 
       );
     } 
