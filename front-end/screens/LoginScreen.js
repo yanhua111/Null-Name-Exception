@@ -108,8 +108,8 @@ export default class LoginScreen extends React.Component {
           const response = await fetch(
             `https://graph.facebook.com/me?access_token=${token}`);
     
-           let id = (await response.json()).id;
-           this.user_fbsignup(id,token,apptoken);
+           let name = (await response.json()).name;
+           this.user_fbsignup(name,token,apptoken);
         }
       }catch ({ message }) {
             alert(`${message}`);
@@ -135,7 +135,11 @@ export default class LoginScreen extends React.Component {
                 apptoken: apptoken,
                 usermode: global.role
             }),
-            });
+            }).then(() => {
+                global.username = username;
+                console.log("username");
+                console.log(global.username);
+              });
     }
 
 
