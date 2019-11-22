@@ -1,4 +1,4 @@
-const { exec } = require('../database/mysql');
+const { exec } = require("../database/mysql");
 
 const update = (username, userId) => {
   const sql = `
@@ -24,7 +24,7 @@ const signup = (username, password, fbtoken, apptoken) => {
 };
 
 /* Helper for signup, check whether username has been registered */
-const signupHelper = (username) => {
+const signupHelper = username => {
   const sql = `
         select id from users where username = '${username}';
   `;
@@ -34,17 +34,25 @@ const signupHelper = (username) => {
 };
 
 /* Log in */
-const login = (username, password) => {
-  const sql = `
-        select id from users where username = '${username}' and password = '${password}';
-    `;
+const login = (username, password, fbtoken) => {
+  let sql;
+  if (fbtoken === -1) {
+    sql = `
+    select id from users where username = '${username}' and password = '${password}';
+`;
+  } else {
+    sql = `
+    select id, username from users where fbtoken = '${fbtoken}';
+`;
+  }
+
   return exec(sql).then(result => {
     return result;
   });
 };
 
 /* Get the app token given a known user id, used for courier to push notification to customer */
-const getAppToken = (userId) => {
+const getAppToken = userId => {
   const sql = `
         select apptoken from users where id='${userId}';
     `;

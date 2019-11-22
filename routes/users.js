@@ -12,26 +12,55 @@ const { SuccessModel, ErrorModel } = require('../bin/controller/resMod');
 
 /* Signup, For users that do not choose to use facebook login... */
 router.post('/signup', (req, res) => {
-  const resHelper = signupHelper(req.body.username);
-  resHelper.then(data => {
-    if (data.length === 0) {
-      const result = signup(
-        req.body.username,
-        req.body.password,
-        req.body.fbtoken,
-        req.body.apptoken
-      );
-      result.then(data => {
-        req.session.userid = data.id;
-        req.session.username = req.body.username;
+  // For facebook user, this could be login or signup
+  if (req.body.fbtoken) {
+    const result = login('', '', req.body.fbtoken);
+    result.then(data => {
+      if (data.length === 0) {
+        const result = signup(
+          req.body.username,
+          'FACEBOOK USER',
+          req.body.fbtoken,
+          req.body.apptoken
+        );
+        result.then(data => {
+          req.session.userid = data.id;
+          req.session.username = req.body.username;
+          req.session.phonenum = req.body.phonenum;
+          req.session.usermode = req.body.usermode;
+          res.json(new SuccessModel('User log in Succeed!'));
+        });
+      } else {
+        req.session.userid = data[0].id;
+        req.session.username = data[0].username;
         req.session.phonenum = req.body.phonenum;
         req.session.usermode = req.body.usermode;
         res.json(new SuccessModel('User log in Succeed!'));
-      });
-    } else {
-      res.json(new ErrorModel('Username Exist! Please try another one'));
-    }
-  });
+      }
+    });
+  } else {
+    // This is only for user signup, login should call /login
+    const resHelper = signupHelper(req.body.username);
+    resHelper.then(data => {
+      if (data.length === 0) {
+        const result = signup(
+          req.body.username,
+          req.body.password,
+          req.body.fbtoken,
+          req.body.apptoken
+        );
+        result.then(data => {
+          req.session.userid = data.id;
+          req.session.username = req.body.username;
+          req.session.phonenum = req.body.phonenum;
+          req.session.usermode = req.body.usermode;
+          res.json(new SuccessModel('User log in Succeed!'));
+        });
+      } else {
+        res.json(new ErrorModel('Username Exist! Please try another one'));
+      }
+    });
+  }
 });
 
 /* Log in */
@@ -131,7 +160,9 @@ router.post('/update', (req, res) => {
     result.then(data => {
       if (data.length !== 0) {
         if (data[0].id !== req.session.userid) {
-          res.json(new ErrorModel('User already exist, please try another username!'));
+          res.json(
+            new ErrorModel('User already exist, please try another username!')
+          );
         } else {
           res.json(new SuccessModel('Profile Updated Succeed!'));
         }
