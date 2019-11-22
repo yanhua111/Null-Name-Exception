@@ -1,14 +1,19 @@
 import React from "react";
-import { StyleSheet, Text, View, Button, TouchableOpacity, TextInput,Picker } from "react-native";
+import { StyleSheet, Text, View, Button, TouchableOpacity, TextInput,Picker, Image } from "react-native";
 import * as Facebook from "expo-facebook";
 import { Notifications } from "expo";
 import * as Permissions from "expo-permissions";
+import fbicon from "../assets/facebook.png";
+import courier from "../assets/runningman.png";
+import customer from "../assets/standperson.png";
+
 export default class SignupScreen extends React.Component {
+    
     state = {
         username: '',
         passward: '',
         phonenum: '',
-        usermode: '',
+        usermode: 'Courier',
     }
     handelUserName = (text) => {
         this.setState({username: text});
@@ -41,11 +46,11 @@ export default class SignupScreen extends React.Component {
     });
 
         if(usermode == 'courier'){
+            global.role = 'courier';
             this.props.navigation.navigate("CourierScreen");
-            ///////////////set globel usermode
         } else {
+            global.role = 'customer';
             this.props.navigation.navigate("CustomerScreen");
-            ///////////////set globel usermode
         }
     }
 
@@ -100,7 +105,6 @@ export default class SignupScreen extends React.Component {
                 username: username,
                 fbtoken: fbtoken,
                 apptoken: apptoken,
-                usermode: global.role
             }),
             });
     }
@@ -110,25 +114,34 @@ export default class SignupScreen extends React.Component {
     render() {
         return (
             <View style = {styles.container}>
+                <Picker selectedValue = {this.state.usermode} onValueChange = {this.handelUsermode}>
+                    <Picker.Item label = "Courier" value = 'courier' />
+                    <Picker.Item label = "Customer" value = "customer" />
+                </Picker>
+                <Text style={styles.mode}>I want to be a {this.state.usermode}</Text>
+
                 <TextInput style = {styles.input}
                     underlineColorAndroid = "transparent"
-                    placeholder = "User Name"
+                    placeholder = " User Name"
                     placeholderTextColor = "#9a73ef"
                     autoCapitalize = "none"
                     onChangeText = {this.handelUserName}/>
                 
                 <TextInput style = {styles.input}
                     underlineColorAndroid = "transparent"
-                    placeholder = "Password"
+                    placeholder = " Password"
                     placeholderTextColor = "#9a73ef"
                     autoCapitalize = "none"
                     onChangeText = {this.handlePassword}/>
-                
-                <Picker selectedValue = {this.state.usermode} onValueChange = {this.handelUsermode}>
-                    <Picker.Item label = "Courier" value = 'courier' />
-                    <Picker.Item label = "Customer" value = "customer" />
-                </Picker>
-                <Text style = {styles.text}>{this.state.usermode}</Text>
+
+                <TextInput style = {styles.input}
+                    underlineColorAndroid = "transparent"
+                    placeholder = " Phone Number"
+                    placeholderTextColor = "#9a73ef"
+                    autoCapitalize = "none"
+                    onChangeText = {this.handelPhonenum}/>
+
+
 
                 <TouchableOpacity
                     style = {styles.submitButton}
@@ -138,14 +151,16 @@ export default class SignupScreen extends React.Component {
                     <Text style = {styles.submitButtonText}> Sign Up </Text>
                 </TouchableOpacity>
 
+                <Text style = {styles.option}>or login with</Text>
                 <TouchableOpacity
-                    style = {styles.fbloginButton}
+                    style = {styles.fbButtom}
                     onPress = {
-                    () => this.loginWithFb()
+                    () => this.fbsignupComb()
                     }>
-                    <Text style = {styles.submitButtonText}> Login With Facebook </Text>
+                    <Image source={fbicon} style={styles.fbicon}/>
                 </TouchableOpacity>
             </View>
+
         )
     }
 }
@@ -167,8 +182,29 @@ const styles = StyleSheet.create({
         padding: 10,
         margin: 15,
         height: 40,
+        borderRadius: 20
      },
      submitButtonText:{
-        color: 'white'
-     }
+        color: 'white',
+        textAlign: 'center'
+     },
+     fbicon: {
+        width: 49,
+        height: 50,
+    },
+    fbButtom: {
+        marginTop: 10,
+        marginLeft: 160,
+        width: 90,
+        height: 70,
+    },
+    option:{
+        color: 'grey',
+        textAlign: 'center'
+    },
+    mode:{
+        fontSize:20,
+        textAlign: 'center',
+        marginTop: -20
+    }
 })
