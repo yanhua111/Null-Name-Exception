@@ -81,7 +81,7 @@ export default class AddressScreen extends React.Component {
             }}
             isRowScrollable={true}
             textInputProps={{
-              onChangeText: (user_text) => this.setState({ user_text })
+              onChangeText: (user_text) => this.setState({ user_text }),
             }}
             query={{
               // available options: https://developers.google.com/places/web-service/autocomplete
