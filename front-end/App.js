@@ -34,13 +34,12 @@ export default class App extends React.Component {
 
 const APPNavigator = createAppContainer(
   createSwitchNavigator({
-      OpenPage: {screen: OpenPage},
-      courierStack: courierStack,
-      customerStack: customerStack,
-    /////////
-  LoginScreen: LoginScreen,
+      //OpenPage: {screen: OpenPage},
+      LoginScreen: LoginScreen,
   SignupScreen: SignupScreen,
   phonemodeScreen: phonemodeScreen,
+      courierStack: courierStack,
+      customerStack: customerStack,
   })
 )
 
