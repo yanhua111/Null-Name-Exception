@@ -6,6 +6,7 @@ import { Notifications } from "expo";
 import * as Permissions from "expo-permissions";
 import "../global";
 export default class phonemodeScreen extends React.Component {
+    
     state = {
         phonenum: '',
         usermode: 'Courier',
@@ -19,8 +20,8 @@ export default class phonemodeScreen extends React.Component {
     }
 
 
-    user_info = (phonenum, usermode) => {
-        fetch("http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/users/login", {
+    user_info = (username, phonenum, usermode, fbtoken, apptoken) => {
+        fetch("http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/users/signup", {
             method: "POST",
             headers: {
                 Accept: "application/json",
@@ -28,14 +29,17 @@ export default class phonemodeScreen extends React.Component {
             },
             credentials: "include",
             body: JSON.stringify({
+                username: username,
                 phonenum: phonenum,
                 usermode: usermode,
+                fbtoken:  fbtoken,//navigation.getParam('fbtoken'),
+                apptoken: apptoken,
             }),
     });
     }
 
-    signupComb = (phonenum, usermode) => {
-        this.user_info(phonenum, usermode);
+    signupComb = (phonenum, usermode, username, fbtoken, apptoken) => {
+        this.user_info(username, phonenum, usermode, fbtoken, apptoken);
         if(usermode == 'courier'){
             global.role = 'courier';
             this.props.navigation.navigate("OrderList");
@@ -46,6 +50,9 @@ export default class phonemodeScreen extends React.Component {
     }
 
     render() {
+        const username = this.props.navigation.getParam('username', 'EMPTY');
+        const fbtoken = this.props.navigation.getParam('fbtoken', 'EMPTY');
+        const apptoken = this.props.navigation.getParam('apptoken', 'EMPTY');
         return (
             <View style = {styles.container}>
                 
@@ -67,7 +74,7 @@ export default class phonemodeScreen extends React.Component {
                 <TouchableOpacity
                     style = {styles.submitButton}
                     onPress = {
-                    () => this.signupComb(this.state.phonenum, this.state.usermode)
+                    () => this.signupComb(this.state.phonenum, this.state.usermode, username, fbtoken, apptoken)
                     }>
                     <Text style = {styles.submitButtonText}>next </Text>
                 </TouchableOpacity>
