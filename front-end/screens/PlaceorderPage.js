@@ -21,14 +21,14 @@ import contentIcon from "../assets/content.png";
 import TopBar from "../src/utils/TopBar";
 import Cell from "../src/utils/Cell";
 let ordertime;
-// import righticon from "../assets/arrow_right.png";
+let content;
 
 export default class PlaceOrderScreen extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      user_text: "",
+      user_text: "Please enter any additional information here ...",
       position: {
         latitude: 49.267941,
         longitude: -123.24736,
@@ -50,9 +50,15 @@ export default class PlaceOrderScreen extends React.Component {
   }
   
   componentDidMount() {
+    this.setTimeContent();
+  }
+  setTimeContent = () => {
     this.setState({
-      orderTime: ordertime
+      orderTime: ordertime,
+      user_text: content
     })
+    console.log(content)
+    console.log(this.state.user_text)
   }
 
   /* Update position set by user */
@@ -139,6 +145,7 @@ export default class PlaceOrderScreen extends React.Component {
 
   /* Time picker */
   async pickTime() {
+    console.log(this.state.user_text)
     if(Platform.OS === 'android') {
       try {
         const { action, hour, minute } = await TimePickerAndroid.open({
@@ -196,14 +203,15 @@ export default class PlaceOrderScreen extends React.Component {
     const fromLng = this.props.navigation.getParam("fromLng", 0);
     const toLat = this.props.navigation.getParam("toLat", 0);
     const toLng = this.props.navigation.getParam("toLng", 0);
-    this.state.user_text = this.props.navigation.getParam(
+    content = this.props.navigation.getParam(
       "content",
-      "Please enter any additional information here ..."
+      this.state.user_text
     );
     ordertime = this.props.navigation.getParam(
       "orderTime",
       this.state.orderTime
     );
+    
     return (
       <View style={styles.container}>
         <Modal
@@ -294,7 +302,7 @@ export default class PlaceOrderScreen extends React.Component {
             <Text style={styles.shorttext}> Order Details: </Text>
           </View>
           <TextInput
-            placeholder="Please enter any additional information here ..."
+            placeholder="Please enter any additional information here"
             underlineColorAndroid={"transparent"}
             onChangeText={user_text => this.setState({ user_text })}
             style={{ marginVertical: 20 }}

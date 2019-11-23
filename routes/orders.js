@@ -46,7 +46,7 @@ router.get('/list', function (req, res) {
   result.then(data => {
     if (req.query.curlat && req.query.curlng) {
       if (req.query.pathfinding) {
-        output = (data, req.query.curlat, req.query.curlng);
+        output = pathFinding(data, req.query.curlat, req.query.curlng);
       } else {
         output = sortOrder(data, req.query.curlat, req.query.curlng);
       }

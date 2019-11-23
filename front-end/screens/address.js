@@ -9,6 +9,7 @@ import { APIKEY } from '../src/conf';
 import searchIcon from '../assets/search.png';
 import confirmIcon from '../assets/confirm.png';
 import TopBar from '../src/utils/TopBar.js';
+let content;
 
 export default class AddressScreen extends React.Component {
   constructor(props) {
@@ -21,6 +22,10 @@ export default class AddressScreen extends React.Component {
     };
   }
 
+  componentDidMount () {
+    console.log(content);
+  }
+
   render() {
     const selection = this.props.navigation.getParam('selection', 'NO SELECTION');
     const locFrom = this.props.navigation.getParam('locFrom', 'NO SELECTION');
@@ -30,7 +35,7 @@ export default class AddressScreen extends React.Component {
     const fromLng = this.props.navigation.getParam('fromLng', 0);
     const toLat = this.props.navigation.getParam('toLat', 0);
     const toLng = this.props.navigation.getParam('toLng', 0);
-    const content = this.props.navigation.getParam('content', 'Please enter any additional information here ...');
+    content = this.props.navigation.getParam('content', 'Please enter any additional information here ...');
     const orderTime = this.props.navigation.getParam('orderTime', { hour: 0, minute: 0 });
     return (
       <View style={styles.container}>
@@ -67,7 +72,7 @@ export default class AddressScreen extends React.Component {
         <View style={styles.searchBar}>
           <GooglePlacesAutocomplete
             placeholder={this.state.user_text}
-            minLength={2}
+            minLength={1}
             autoFocus={true}
             returnKeyType={'default'}
             fetchDetails={true}
@@ -86,11 +91,24 @@ export default class AddressScreen extends React.Component {
             query={{
               // available options: https://developers.google.com/places/web-service/autocomplete
               key: APIKEY,
-              language: 'en' // language of the results
-              // types: '(cities)' // default: 'geocode'
+              language: 'en'
+              // location: '49.267941, -123.247360',
+              // radius: '15000'
+              // types: '' // default: 'geocode'
             }}
             currentLocation={true}
             currentLocationLabel="Current location"
+            nearbyPlacesAPI='GoogleReverseGeocoding'
+            GooglePlacesSearchQuery={{
+              // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
+              rankby: 'distance'
+              // types: 'food',
+              // locationbias: ''
+            }}
+            // filterReverseGeocodingByTypes={[
+            //   'locality',
+            //   'administrative_area_level_3'
+            // ]}
             styles={{
               textInputContainer: {
                 borderColor: 'grey',
