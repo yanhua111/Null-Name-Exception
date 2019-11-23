@@ -4,11 +4,11 @@
 /* 
  * Traveling salesman pathfinding
  */
-const pathFinding = (getOrders, lat, lng) => {
+const pathFinding = (getOrders, latitude, longitude) => {
   if (getOrders.length == 0) {
     return getOrders; //return empty array
   }
-  let startPos = {lat: lat, lng: lng};
+  let startPos = {latitude: latitude, longitude: longitude};
   
   let allOrders = [];
   for (let i = 0; i < getOrders.length; i++) {
@@ -22,20 +22,20 @@ const pathFinding = (getOrders, lat, lng) => {
 
   let desArray = [], custArray = [];
   for (let i = 0; i < allOrders.length; i++) {               
-    let loc = {lat: allOrders[i].deslat, lng: allOrders[i].deslng};
+    let loc = {latitude: allOrders[i].deslat, longitude: allOrders[i].deslng};
     desArray.push(loc);
-    loc = {lat: allOrders[i].lat, lng: allOrders[i].lng};
+    loc = {latitude: allOrders[i].lat, longitude: allOrders[i].lng};
     custArray.push(loc);
   } 
   //removes repeating locations
   desArray = desArray.filter((desArray, index, self) =>   
     index === self.findIndex((t) => (
-      t.lat === desArray.lat && t.lng === desArray.lng
+      t.latitude === desArray.latitude && t.longitude === desArray.longitude
     ))
   )
   custArray = custArray.filter((custArray, index, self) =>
     index === self.findIndex((t) => (
-      t.lat === custArray.lat && t.lng === custArray.lng
+      t.latitude === custArray.latitude && t.longitude === custArray.longitude
     ))
   )
   //finds min weight path first for locations, then for destination
@@ -88,16 +88,16 @@ const getWeight = (toVisit) => {
   return weight;
 }
 
-const getDist = (start, end) => Math.sqrt(Math.pow(start.lat - end.lat, 2) + Math.pow(start.lng - end.lng, 2));
+const getDist = (start, end) => Math.sqrt(Math.pow(start.latitude - end.latitude, 2) + Math.pow(start.longitude - end.longitude, 2));
 
 /*  
  * return an array of sorted orders id
  */
-const sortOrder = (allOrders, lat, lng) => {
+const sortOrder = (allOrders, latitude, longitude) => {
   if (allOrders.length == 0) {
     return allOrders; //return empty array
   }
-  let startPos = {lat: lat, lng: lng};
+  let startPos = {latitude: latitude, longitude: longitude};
 
   var available = [], current = [];
   for (let i = 0; i < allOrders.length; i++) {
@@ -142,11 +142,11 @@ const merge = (L, R, startPos) => {
   var time = today.getHours()+":"+today.getMinutes()+":"+today.getSeconds();
   var curTime = parseInt(time[0])*60 + parseInt(time[1]);
   while(i < L.length && j < R.length){
-      var iloc = {lat:L[i].deslat, lng:L[i].deslng};
+      var iloc = {latitude:L[i].deslat, longitude:L[i].deslng};
       var itimeArr =L[i].time.split(':');
       var itime = Math.abs( parseInt(itimeArr[0])*60 + parseInt(itimeArr[1]) - curTime);
       var iref = getDist(startPos, iloc) * 1000 + itime; 
-      var jloc = {lat:R[j].deslat, lng:R[j].deslng};
+      var jloc = {latitude:R[j].deslat, longitude:R[j].deslng};
       var jtimeArr =R[j].time.split(':');
       var jtime = Math.abs(parseInt(jtimeArr[0])*60 + parseInt(jtimeArr[1]) - curTime);
       var jref = getDist(startPos, jloc) * 1000 + jtime;
