@@ -4,8 +4,7 @@ import * as Facebook from "expo-facebook";
 import { Notifications } from "expo";
 import * as Permissions from "expo-permissions";
 import fbicon from "../assets/facebook.png";
-import courier from "../assets/runningman.png";
-import customer from "../assets/standperson.png";
+import backicon from "../assets/back.png";
 
 export default class SignupScreen extends React.Component {
 
@@ -142,6 +141,10 @@ export default class SignupScreen extends React.Component {
     render() {
         return (
             <View style = {styles.container}>
+                <TouchableOpacity style={styles.backbtn}
+                    onPress={() => { this.props.navigation.navigate("DashboardScreen"); }} >
+                    <Image source={backicon} style={styles.icon} />
+                </TouchableOpacity>
                 <Picker selectedValue = {this.state.usermode} onValueChange = {this.handelUsermode}>
                     <Picker.Item label = "Courier" value = "courier" />
                     <Picker.Item label = "Customer" value = "customer" />
@@ -234,5 +237,10 @@ const styles = StyleSheet.create({
         fontSize:20,
         textAlign: 'center',
         marginTop: -20
-    }
+    },
+    placebtn: {
+        position: 'absolute',
+        bottom: 30,
+        left: 30,
+      }
 })
