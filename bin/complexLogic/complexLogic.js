@@ -8,7 +8,7 @@ const pathFinding = (getOrders, latitude, longitude) => {
   if (getOrders.length == 0) {
     return getOrders; //return empty array
   }
-  let startPos = {latitude: latitude, longitude: longitude};
+  let startPos = {latitude: parseInt(latitude,10), longitude: parseInt(longitude,10)};
   
   let allOrders = [];
   for (let i = 0; i < getOrders.length; i++) {
