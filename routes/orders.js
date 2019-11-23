@@ -45,7 +45,11 @@ router.get('/list', function (req, res) {
   let output;
   result.then(data => {
     if (req.query.curlat && req.query.curlng) {
-      output = sortOrder(data, req.query.curlat, req.query.curlng);
+      if (req.query.pathfinding) {
+        output = (data, req.query.curlat, req.query.curlng);
+      } else {
+        output = sortOrder(data, req.query.curlat, req.query.curlng);
+      }
       res.json(new SuccessModel({ list: output }));
     } else {
       res.json(new SuccessModel({ list: data }));
@@ -85,7 +89,7 @@ router.post('/accept', (req, res) => {
 /* Get the order that current user places or accepts
 * Fails: user has not logged in
 */
-router.get('/list_user', (req, res) => {
+router.get('/list_customer', (req, res) => {
   if (!req.session.username) {
     res.json(new ErrorModel('User has not log in yet!'));
   } else {

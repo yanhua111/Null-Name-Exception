@@ -1,17 +1,15 @@
-const { exec } = require('../database/mysql');
+const { exec } = require("../database/mysql");
 
-// /* Facebook login, save fbtoken and apptoken into database */
-// const login = (username, fbtoken, apptoken) => {
-//   const sql = `
-//         insert into users (username, fbtoken, apptoken) values('${username}', '${fbtoken}', '${apptoken}');
-//     `;
-//   return exec(sql).then(result => {
-//     console.log(result);
-//     return {
-//       id: result.insertId
-//     };
-//   });
-// };
+const update = (username, userId) => {
+  const sql = `
+        update users set username='${username}' where id = ${userId};
+  `;
+  return exec(sql).then(result => {
+    return {
+      affectedRows: result.affectedRows
+    };
+  });
+};
 
 /* Sign up */
 const signup = (username, password, fbtoken, apptoken) => {
@@ -26,7 +24,7 @@ const signup = (username, password, fbtoken, apptoken) => {
 };
 
 /* Helper for signup, check whether username has been registered */
-const signupHelper = (username) => {
+const signupHelper = username => {
   const sql = `
         select id from users where username = '${username}';
   `;
@@ -36,17 +34,25 @@ const signupHelper = (username) => {
 };
 
 /* Log in */
-const login = (username, password) => {
-  const sql = `
-        select id from users where username = '${username}' and password = '${password}';
-    `;
+const login = (username, password, fbtoken) => {
+  let sql;
+  if (fbtoken === -1) {
+    sql = `
+    select id from users where username = '${username}' and password = '${password}';
+`;
+  } else {
+    sql = `
+    select id, username from users where fbtoken = '${fbtoken}';
+`;
+  }
+
   return exec(sql).then(result => {
     return result;
   });
 };
 
 /* Get the app token given a known user id, used for courier to push notification to customer */
-const getAppToken = (userId) => {
+const getAppToken = userId => {
   const sql = `
         select apptoken from users where id='${userId}';
     `;
@@ -61,7 +67,6 @@ const del = (userId, username) => {
     delete from users where id='${userId}' and username ='${username}';
     `;
   return exec(sql).then(result => {
-    console.log(result);
     return {
       affectedRows: result.affectedRows
     };
@@ -69,6 +74,7 @@ const del = (userId, username) => {
 };
 
 module.exports = {
+  update,
   login,
   signup,
   signupHelper,

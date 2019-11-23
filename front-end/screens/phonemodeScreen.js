@@ -1,19 +1,21 @@
 import React from "react";
-import { StyleSheet, Text, View, Button, TouchableOpacity, TextInput } from "react-native";
+import { StyleSheet, Text, View, Button, TouchableOpacity, TextInput, Picker } from "react-native";
 import Expo from "expo";
 import * as Facebook from "expo-facebook";
 import { Notifications } from "expo";
 import * as Permissions from "expo-permissions";
+import "../global";
 export default class phonemodeScreen extends React.Component {
     state = {
         phonenum: '',
-        usermode: '',
+        usermode: 'Courier',
     }
     handelPhonenum = (text) => {
         this.setState({phonenum: text});
     }
     handelUsermode = (text) => {
         this.setState({usermode: text});
+        global.role = text;
     }
 
 
@@ -35,52 +37,42 @@ export default class phonemodeScreen extends React.Component {
     signupComb = (phonenum, usermode) => {
         this.user_info(phonenum, usermode);
         if(usermode == 'courier'){
-            ///////////////set globel usermode
+            global.role = 'courier';
             this.props.navigation.navigate("OrderList");
         } else {
+            global.role = 'customer';
             this.props.navigation.navigate("CustomerScreen");
-            ///////////////set globel usermode
         }
     }
 
     render() {
         return (
-            <View style = {style.container}>
-                <TextInput style = {styles.input}
-                    underlineColorAndroid = "transparent"
-                    placeholder = "User Name"
-                    placeholderTextColor = "#9a73ef"
-                    autoCapitalize = "none"
-                    onChangeText = {this.handelUserName}/>
+            <View style = {styles.container}>
                 
-                <TextInput style = {styles.input}
-                    underlineColorAndroid = "transparent"
-                    placeholder = "Password"
-                    placeholderTextColor = "#9a73ef"
-                    autoCapitalize = "none"
-                    onChangeText = {this.handlePassword}/>
                 
                 <Picker selectedValue = {this.state.usermode} onValueChange = {this.handelUsermode}>
                     <Picker.Item label = "Courier" value = 'courier' />
                     <Picker.Item label = "Customer" value = "customer" />
                 </Picker>
-                <Text style = {styles.text}>{this.state.usermode}</Text>
+                <Text style={styles.mode}>I want to be a {this.state.usermode}</Text>
+                
+                <TextInput style = {styles.input}
+                underlineColorAndroid = "transparent"
+                placeholder = "  phone number"
+                placeholderTextColor = "#9a73ef"
+                autoCapitalize = "none"
+                onChangeText = {this.handelUserName}/>
+                
 
                 <TouchableOpacity
                     style = {styles.submitButton}
                     onPress = {
-                    () => this.signupComb(this.state.username, this.state.password, this.state.phonenum, this.state.username)
+                    () => this.signupComb(this.state.phonenum, this.state.usermode)
                     }>
-                    <Text style = {styles.submitButtonText}> Sign Up </Text>
+                    <Text style = {styles.submitButtonText}>next </Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity
-                    style = {styles.fbloginButton}
-                    onPress = {
-                    () => this.loginWithFb()
-                    }>
-                    <Text style = {styles.submitButtonText}> Login With Facebook </Text>
-                </TouchableOpacity>
+
             </View>
         )
     }
@@ -105,6 +97,14 @@ const styles = StyleSheet.create({
         height: 40,
      },
      submitButtonText:{
-        color: 'white'
-     }
+        color: 'white',
+        textAlign: 'center',
+        fontSize: 20,
+        marginTop: -1
+     },
+     mode:{
+        fontSize:20,
+        textAlign: 'center',
+        marginTop: -20
+    }
 })

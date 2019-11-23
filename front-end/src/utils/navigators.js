@@ -9,6 +9,8 @@ import OpenPage from "../../screens/OpenPage";
 import OrderList from "../../screens/OrderList";
 import OrderScreen from "../../screens/PlaceorderPage";
 import Setting from "../../screens/setting";
+import ChangeSetting from "../../screens/ChangeSetting";
+
 // import { setDetectionImagesAsync } from 'expo/build/AR';
 
 export const CourierMapStack = createStackNavigator({
@@ -40,34 +42,39 @@ export const CourierMapStack = createStackNavigator({
    }
   );
 
-  export const SettingSwitch = createSwitchNavigator({ 
+  export const SettingStack = createSwitchNavigator({ 
     Setting: Setting,
-    OpenPage: OpenPage,
-  });
+    ChangeSetting: ChangeSetting,
+  },
+  {
+    headerMode: 'none',
+    navigationOptions: {
+      headerVisible: false,
+    }
+   });
 
 
   export const CourierTabs = createBottomTabNavigator({
       OrderList: {screen: OrderList},
       Map      : CourierMap,
-      Setting:{screen : Setting},
+      //Setting:{screen : Setting},
+      Setting:  SettingStack,
      
   });
 
   export const CustomerTabs = createBottomTabNavigator({
     CustomerScreen: {screen: CustomerScreen},
      PlaceOrder      : PlaceOrderStack,
-    //PlaceOrder      : OrderScreen,
-    Setting:{screen : Setting},
-   
+    //Setting:{screen : Setting},
+    Setting:  SettingStack,
 });
+  
+   
 
 export const courierStack = createStackNavigator({
   CourierTabs : CourierTabs,
   CourierMapStack: CourierMapStack,
-  //CustomerScreenStack: CustomerScreenStack,
   CourierMap: CourierMap,
-  //setting: Setting,
- 
 },
 {
   headerMode: 'none',
