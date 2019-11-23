@@ -25,7 +25,10 @@ export default class LoginScreen extends React.Component {
     }
    
     //to verify password and navigate to courier/customer screen
-    login = (username, password, usermode) => {
+    login = (username, password) => {
+        if(username == '' || password == ''){
+            alert('Please enter User Name and Password');
+        }else{
         fetch("http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/users/login", {
             method: "POST",
             headers: {
@@ -36,7 +39,6 @@ export default class LoginScreen extends React.Component {
             body: JSON.stringify({
                 username: username,
                 password: password,
-                usermode: usermode,
             }),
             }).then((response) => {
                 response.json().then((result) => {
@@ -53,6 +55,7 @@ export default class LoginScreen extends React.Component {
                 
               } 
               ).catch((error) => console.log(error));
+            }
 
     }
     toSignUp = () => {
@@ -84,6 +87,7 @@ export default class LoginScreen extends React.Component {
               ).catch((error) => console.log(error));
       }
 
+
     async loginWithFb(){
         try {
         //face book login    
@@ -108,8 +112,13 @@ export default class LoginScreen extends React.Component {
           const response = await fetch(
             `https://graph.facebook.com/me?access_token=${token}`);
     
-           let name = (await response.json()).name;
-           this.user_fbsignup(name,token,apptoken);
+           let id = (await response.json()).id;
+           //this.user_fbsignup(id,token,apptoken);
+           this.props.navigation.navigate("phonemodeScreen", {
+               username: id,
+               apptoken: apptoken,
+               fbtoken: token
+           });
         }
       }catch ({ message }) {
             alert(`${message}`);
@@ -117,30 +126,26 @@ export default class LoginScreen extends React.Component {
       
        }
     
-    fbsignupComb = () => {
-        this.loginWithFb();
-        this.props.navigation.navigate("phonemodeScreen");
-    }
-    user_fbsignup = (username, fbtoken,apptoken) => {
-    fetch("http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/users/login", {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-            },
-            credentials: "include",
-            body: JSON.stringify({
-                username: username,
-                fbtoken: fbtoken,
-                apptoken: apptoken,
-                usermode: global.role
-            }),
-            }).then(() => {
-                global.username = username;
-                console.log("username");
-                console.log(global.username);
-              });
-    }
+    // fbsignupComb = () => {
+    //     this.loginWithFb();
+    //     this.props.navigation.navigate("phonemodeScreen");
+    // }
+    // user_fbsignup = (username, fbtoken,apptoken) => {
+    // fetch("http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/users/login", {
+    //         method: "POST",
+    //         headers: {
+    //             Accept: "application/json",
+    //             "Content-Type": "application/json",
+    //         },
+    //         credentials: "include",
+    //         body: JSON.stringify({
+    //             username: username,
+    //             fbtoken: fbtoken,
+    //             apptoken: apptoken,
+    //             usermode: global.role
+    //         }),
+    //         });
+    // }
 
 
 
@@ -155,7 +160,7 @@ export default class LoginScreen extends React.Component {
                     autoCapitalize = "none"
                     onChangeText = {this.handelUserName}/>
                 
-                <TextInput style = {styles.input}
+                <TextInput secureTextEntry={true} style = {styles.input}
                     underlineColorAndroid = "transparent"
                     placeholder = "  Password"
                     placeholderTextColor = "#9a73ef"
@@ -168,7 +173,7 @@ export default class LoginScreen extends React.Component {
                 <TouchableOpacity
                     style = {styles.submitButton}
                     onPress = {
-                    () => this.login(this.state.username, this.state.password, this.state.username)
+                    () => this.login(this.state.username, this.state.password)
                     }>
                     <Text style = {styles.submitButtonText}> Log In </Text>
                 </TouchableOpacity>
@@ -183,7 +188,7 @@ export default class LoginScreen extends React.Component {
                 <TouchableOpacity
                     style = {styles.fbButtom}
                     onPress = {
-                    () => this.fbsignupComb()
+                    () => this.loginWithFb()
                     }>
                     <Image source={fbicon} style={styles.fbicon}/>
                 </TouchableOpacity>

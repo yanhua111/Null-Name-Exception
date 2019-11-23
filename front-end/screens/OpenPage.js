@@ -151,13 +151,14 @@ check_login = () => {
               usermode: global.role,
             }),
           }).then((response) => {
-            response.json().then((result)=>{
-              console.log(result);
+              console.log("response",response);
+              response.json().then((result)=>{
+              console.log("user signup function")
+              console.log("result",result);
               global.userid = result.data.userid;
+              global.username = result.data.username;
+              console.log("username",global.username);
             })
-            global.username = username;
-            console.log("username");
-            console.log(global.username);
           });
   }
 
