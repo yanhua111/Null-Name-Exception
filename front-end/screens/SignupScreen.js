@@ -10,10 +10,10 @@ import customer from "../assets/standperson.png";
 export default class SignupScreen extends React.Component {
 
         state = {
-            username: '',
-            passward: '',
-            phonenum: '',
-            usermode: 'Courier',
+            username: "",
+            passward: "",
+            phonenum: "",
+            usermode: "courier",
         };
 
     handelUserName = (text) => {
@@ -35,10 +35,10 @@ export default class SignupScreen extends React.Component {
     }
 
     user_signup = (username, password, phonenum, usermode, apptoken) => {
-        if(username == '' || password == '' || phonenum == ''){
-            alert('Please make you you have enter all fields')
+        if(username == "" || password == "" || phonenum == ""){
+            alert("Please make you you have enter all fields");
         } else{
-        fetch("http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/users/login", {
+        fetch("http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/users/signup", {
             method: "POST",
             headers: {
                 Accept: "application/json",
@@ -56,13 +56,19 @@ export default class SignupScreen extends React.Component {
         }).then((response) => {
             response.json().then((result) => {
                 if(result.errno == -1){
-                    alert(`Please choose a new username, this one is used by others`);
+                    alert("Please choose a new username, this one is used by others");
                 }else{
-                    if(usermode == 'courier'){
-                    global.role = 'courier';
-                    this.props.navigation.navigate("CourierScreen");
+                    if(usermode == "courier"){
+                    global.username = result.data.username;
+                    global.phoneNum = phonenum;
+                    global.role = "courier";
+                    global.userid = result.data.userid;
+                    this.props.navigation.navigate("OrderList");
                     } else {
-                    global.role = 'customer';
+                    global.role = "customer";
+                    global.username = result.data.username;
+                    global.phoneNum = phonenum;
+                    global.userid = result.data.userid;
                     this.props.navigation.navigate("CustomerScreen");
                     }
                 }
@@ -101,12 +107,12 @@ export default class SignupScreen extends React.Component {
           const response = await fetch(
             `https://graph.facebook.com/me?access_token=${token}`);
     
-           let id = (await response.json()).id;
+           let username = (await response.json()).name;
            //this.user_fbsignup(id,token,apptoken);
            this.props.navigation.navigate("phonemodeScreen", {
-            username: id,
+            username: username,
             apptoken: apptoken,
-            fbtoken: token
+            fbtoken: token,
         });
         }
       }catch ({ message }) {
@@ -137,8 +143,8 @@ export default class SignupScreen extends React.Component {
         return (
             <View style = {styles.container}>
                 <Picker selectedValue = {this.state.usermode} onValueChange = {this.handelUsermode}>
-                    <Picker.Item label = "Courier" value = 'courier' />
-                    <Picker.Item label = "Customer" value = 'customer' />
+                    <Picker.Item label = "Courier" value = "courier" />
+                    <Picker.Item label = "Customer" value = "customer" />
                 </Picker>
                 <Text style={styles.mode}>I want to be a {this.state.usermode}</Text>
 
@@ -168,7 +174,7 @@ export default class SignupScreen extends React.Component {
                 <TouchableOpacity
                     style = {styles.submitButton}
                     onPress = {
-                    () => this.userSignupComb(this.state.username, this.state.password, this.state.phonenum, this.state.username)
+                    () => this.userSignupComb(this.state.username, this.state.password, this.state.phonenum, this.state.usermode)
                     }>
                     <Text style = {styles.submitButtonText}> Sign Up </Text>
                 </TouchableOpacity>

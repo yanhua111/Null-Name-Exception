@@ -75,11 +75,14 @@ export default class LoginScreen extends React.Component {
                   if(result.errno == -1){
                     alert(`Please Log in or Sign Up`);
                  }else{
+                     console.log("usermode:", result.data.usermode);
                     if(result.data.usermode == "courier"){
                         global.userid = result.data.userid;
+                        global.role = "courier";
                         this.props.navigation.navigate("OrderList");
                         }else if(result.data.usermode == "customer"){
                         global.userid = result.data.userid;
+                        global.role = "customer";
                         this.props.navigation.navigate("CustomerScreen");
                         } 
                  }
@@ -121,7 +124,7 @@ export default class LoginScreen extends React.Component {
            this.props.navigation.navigate("phonemodeScreen", {
                username: username,
                apptoken: apptoken,
-               fbtoken: token
+               fbtoken: token,
            });
         }
       }catch ({ message }) {
@@ -130,27 +133,6 @@ export default class LoginScreen extends React.Component {
       
        }
     
-    // fbsignupComb = () => {
-    //     this.loginWithFb();
-    //     this.props.navigation.navigate("phonemodeScreen");
-    // }
-    // user_fbsignup = (username, fbtoken,apptoken) => {
-    // fetch("http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/users/login", {
-    //         method: "POST",
-    //         headers: {
-    //             Accept: "application/json",
-    //             "Content-Type": "application/json",
-    //         },
-    //         credentials: "include",
-    //         body: JSON.stringify({
-    //             username: username,
-    //             fbtoken: fbtoken,
-    //             apptoken: apptoken,
-    //             usermode: global.role
-    //         }),
-    //         });
-    // }
-
 
 
     render() {
