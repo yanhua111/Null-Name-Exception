@@ -1,14 +1,14 @@
 {
   "name": "skipwalk-express",
   "jest": {
-    "automock": true
+    "automock": true,
+    "coveragePathIgnorePatterns": [
+      "./node_modules",
+      "./front-end"
+    ]
   },
   "version": "0.0.0",
   "private": true,
-  "jest": {
-    "automock": true,
-    "coveragePathIgnorePatterns" : ["./node_modules", "./front-end"]
-  },
   "scripts": {
     "start": "node ./bin/www",
     "dev": "cross-env NODE_ENV=dev nodemon ./bin/www",
@@ -27,6 +27,7 @@
     "jade": "~1.11.0",
     "morgan": "~1.9.1",
     "mysql": "^2.17.1",
+    "react-native-maps-directions": "^1.7.3",
     "react-navigation-tabs": "^2.5.6",
     "redis": "^2.8.0",
     "socket.io": "^2.3.0"
