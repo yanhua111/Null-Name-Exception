@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Image, Text, View, Alert, TextInput, TouchableOpacity } from "react-native";
-import MapView, { AnimatedRegion, Marker, ProviderPropType, Polyline } from "react-native-maps";
+import MapView, { AnimatedRegion, Marker, ProviderPropType } from "react-native-maps";
 // import { MapView } from 'expo';
 import SocketIOClient from "socket.io-client";
 import "../global";

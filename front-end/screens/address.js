@@ -91,20 +91,19 @@ export default class AddressScreen extends React.Component {
             query={{
               // available options: https://developers.google.com/places/web-service/autocomplete
               key: APIKEY,
-              language: 'en'
-              // location: '49.267941, -123.247360',
-              // radius: '15000'
-              // types: '' // default: 'geocode'
+              language: 'en',
+              location: '49.267941,-123.247360',
+              radius: '2500',
             }}
             currentLocation={true}
             currentLocationLabel="Current location"
-            nearbyPlacesAPI='GoogleReverseGeocoding'
-            GooglePlacesSearchQuery={{
-              // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
-              rankby: 'distance'
-              // types: 'food',
-              // locationbias: ''
-            }}
+            // nearbyPlacesAPI='GoogleReverseGeocoding'
+            // GooglePlacesSearchQuery={{
+            //   // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
+            //   rankby: 'distance'
+            //   // types: 'food',
+            //   // locationbias: ''
+            // }}
             // filterReverseGeocodingByTypes={[
             //   'locality',
             //   'administrative_area_level_3'
