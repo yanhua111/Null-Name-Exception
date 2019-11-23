@@ -21,6 +21,9 @@ export default class phonemodeScreen extends React.Component {
 
 
     user_info = (username, phonenum, usermode, fbtoken, apptoken) => {
+        if(phonenum === ""){
+            alert("Please enter phone number !");
+        }else{
         fetch("http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/users/signup", {
             method: "POST",
             headers: {
@@ -35,8 +38,18 @@ export default class phonemodeScreen extends React.Component {
                 fbtoken:  fbtoken,//navigation.getParam('fbtoken'),
                 apptoken: apptoken,
             }),
+    }).then((response) => {
+        console.log("response",response);
+              response.json().then((result)=>{
+              console.log("user signup function")
+              console.log("result",result);
+              global.userid = result.data.userid;
+              global.username = result.data.username;
+              console.log("username",global.username);
+            })
     });
     }
+}
 
     signupComb = (phonenum, usermode, username, fbtoken, apptoken) => {
         this.user_info(username, phonenum, usermode, fbtoken, apptoken);

@@ -73,14 +73,18 @@ export default class LoginScreen extends React.Component {
               }).then((response) => {
                 response.json().then((result) => {
                   if(result.errno == -1){
-                    //alert(`Please Log in or Sign Up`);
+                    alert(`Please Log in or Sign Up`);
                  }else{
                     if(result.data.usermode == "courier"){
+                        global.userid = result.data.userid;
                         this.props.navigation.navigate("OrderList");
                         }else if(result.data.usermode == "customer"){
+                        global.userid = result.data.userid;
                         this.props.navigation.navigate("CustomerScreen");
-                        }
+                        } 
                  }
+                 global.username = result.data.username;
+                 global.phoneNum = result.data.phonenum;
                 });
                 
               } 
@@ -112,10 +116,10 @@ export default class LoginScreen extends React.Component {
           const response = await fetch(
             `https://graph.facebook.com/me?access_token=${token}`);
     
-           let id = (await response.json()).id;
+           let username = (await response.json()).name;
            //this.user_fbsignup(id,token,apptoken);
            this.props.navigation.navigate("phonemodeScreen", {
-               username: id,
+               username: username,
                apptoken: apptoken,
                fbtoken: token
            });
