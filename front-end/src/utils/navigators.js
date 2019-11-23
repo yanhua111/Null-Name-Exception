@@ -28,7 +28,7 @@ export const CourierMapStack = createStackNavigator({
   );
 
 
-  export const CustomerScreenSwitch = createSwitchNavigator({ //change here
+  export const CustomerScreenStack = createStackNavigator({ //change here
     CustomerScreen :CustomerScreen,
     OrderScreen: OrderScreen,
     AddressScreen: AddressScreen,
@@ -87,7 +87,7 @@ export const CourierMapStack = createStackNavigator({
     //CustomerScreen: {screen: CustomerScreen},
     // PlaceOrder      : PlaceOrderStack,
     //Setting:{screen : Setting},
-    PlaceOrder:CustomerScreenSwitch,
+    PlaceOrder:CustomerScreenStack,
     CustomerList:CustomerListStack, //{screen: CustomerList},
     Setting:  SettingSwitch,
 });
