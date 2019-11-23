@@ -6,55 +6,98 @@ import StatusView from "./StatusView";
 export default class OrderView extends Component {
   render = () => {
     return (
-      <View style={styles.order}>
+      <View
+        style={[styles.order, this.props.rich ? styles.rich : styles.simple]}
+      >
         <Image source={this.props.profilepic} style={styles.profilepic} />
-        <View style={styles.locContainer}>
+        <View style={[styles.locContainer, this.props.richlocContainer ? styles.rich : styles.simplelocContainer]}>
+          {this.props.rich && 
+            <Text style={{ color: "grey" }}>
+              <Text>Order number  </Text>
+              <Text style={{ color: "black", marginHorizontal: 20 }}>
+                {this.props.id}{"\n"}
+              </Text>
+              <Text>
+                Placed at   </Text>
+              <Text style={{ color: "black", marginHorizontal: 20 }}>
+                12.40{"\n"} 
+              </Text>
+              <Text>Preferred Delivery Time:  </Text>
+              <Text style={{ color: "black", marginHorizontal: 20 }}>
+                {this.props.time}
+              </Text>
+            </Text>
+          }
           <View style={styles.locLine}>
             <Image style={styles.smallpic} source={this.props.originpic} />
-            <Text style={styles.text}>{this.props.locFrom}</Text>
+            <Text>{this.props.locFrom}</Text>
           </View>
           <Image style={styles.dotpic} source={this.props.dotpic} />
           <View style={styles.locLine}>
             <Image style={styles.smallpic} source={this.props.despic} />
-            <Text style={styles.text}>{this.props.locTo}</Text>
+            <Text>{this.props.locTo}</Text>
           </View>
+
+          {this.props.rich && <View style = {styles.orderdetail}>
+            <Text style = {{fontWeight: 'bold'}}>Order Details:</Text>
+            <Text>{this.props.detail}</Text>
+          </View>}
         </View>
+
         <View style={styles.optionContainer}>
           <StatusView style={styles.statusview} status={this.props.status} />
-          <TouchableOpacity>
-            <Image
-              style={styles.largepic}
-              source={this.props.righticon}
-            ></Image>
-          </TouchableOpacity>
+          {!this.props.rich && (
+            <TouchableOpacity
+            onPress={this.props.onPress}>
+              <Image
+                style={styles.largepic}
+                source={this.props.righticon}
+              ></Image>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     );
   };
+  static defaultProps = {
+    rich: false
+  };
 }
+
 const styles = StyleSheet.create({
   order: {
-    width: "90%",
     alignSelf: "center",
     backgroundColor: "white",
     paddingHorizontal: 10,
     paddingVertical: 10,
     borderRadius: 5,
     borderColor: "grey",
-    height: 200,
     flexDirection: "row",
     marginBottom: 20,
-    elevation: 10,
     shadowOffset: { width: 1, height: 1 },
     shadowColor: "black",
     shadowOpacity: 1.0,
     borderBottomWidth: 1,
     justifyContent: "flex-start"
   },
+  rich: {
+    width: "100%",
+    height: 300,
+  },
+  simple: {
+    width: "90%",
+    height: 200,
+    elevation: 10
+  },
   locContainer: {
     flexDirection: "column",
-    marginTop: 20,
     justifyContent: "space-around"
+  },
+  richlocContainer: {
+    marginTop: 20,
+  },
+  simplelocContainer: {
+    marginTop: 20
   },
   locLine: {
     flexDirection: "row",
@@ -76,13 +119,17 @@ const styles = StyleSheet.create({
     height: 50,
     marginTop: 100
   },
+  orderdetail: {
+    borderTopColor: 'grey',
+    width: 250,
+    flexShrink: 1
+  },
   optionContainer: {
     flex: 1,
     height: 30,
     alignItems: "flex-end",
     flexDirection: "column"
   },
-  statusview: {},
   profilepic: {
     width: 50,
     height: 50,

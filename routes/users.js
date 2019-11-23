@@ -102,7 +102,7 @@ router.post('/login', (req, res) => {
     } else {
       req.session.userid = data[0].id;
       req.session.username = req.body.username;
-      res.json(new SuccessModel('Log in Succeed!'));
+      res.json({ userid: data[0].id }, new SuccessModel('Log in Succeed!'));
     }
   });
 });

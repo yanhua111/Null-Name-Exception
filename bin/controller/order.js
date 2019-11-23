@@ -3,10 +3,19 @@ const { exec } = require('../database/mysql');
 /* Accept a order and update order status in database */
 const accept = (orderId, courierId) => {
   const sql = `
-        update orders set courierid='${courierId}', status=0 where id='${orderId}';
+        update orders set courierid='${courierId}', status=0 where id=${orderId};
     `;
   return exec(sql).then(rows => {
     return rows;
+  });
+};
+
+const acceptHelper = (orderid) => {
+  const sql = `
+  select userid, courierid, status from orders where id = ${orderid}
+    `;
+  return exec(sql).then(rows => {
+    return rows[0];
   });
 };
 
@@ -81,6 +90,7 @@ const finish = (orderId) => {
 
 module.exports = {
   accept,
+  acceptHelper,
   getOrder,
   getCustomerOrder,
   getHistoryOrder,

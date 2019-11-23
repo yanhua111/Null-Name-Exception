@@ -19,6 +19,7 @@ import originpic from "../assets/origin.png";
 import OrderView from "../src/utils/OrderView";
 import dotpic from "../assets/dot.png";
 import righticon from "../assets/arrow_right.png";
+import OrderDetail from './OrderDetail';
 
 export default class OrderList extends React.Component {
   state = {
@@ -184,8 +185,20 @@ export default class OrderList extends React.Component {
       locTo={item.locTo}
       status={item.status}
       righticon={righticon}
+      onPress={() => {
+        this.props.navigation.navigate("OrderDetail", {
+          locFrom: item.locFrom,
+          locTo: item.locTo,
+          status: item.status,
+          id: item.id,
+          detail: item.content,
+          time: item.time
+        });
+      }}
+
       id={item.id}
       detail={item.content}
+      time = {item.time}
     />
 
     // {/* <View >

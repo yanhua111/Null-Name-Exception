@@ -1,29 +1,48 @@
+/* eslint-disable eqeqeq */
 const express = require('express');
 const router = express.Router();
-const { accept, getOrder, getCustomerOrder, getHistoryOrder, place, finish } = require('../bin/controller/order');
+const {
+  accept,
+  acceptHelper,
+  getOrder,
+  getCustomerOrder,
+  getHistoryOrder,
+  place,
+  finish
+} = require('../bin/controller/order');
 const { SuccessModel, ErrorModel } = require('../bin/controller/resMod');
 const { sortOrder, pathFinding } = require('../bin/complexLogic/complexLogic');
 
 /* Place a order, send content and current position of the customer
-* Fails: User has not logged in
-*/
+ * Fails: User has not logged in
+ */
 router.post('/place', (req, res) => {
   if (req.session.username) {
-    const result = place(req.session.userid, req.body.content,
-      req.body.lat, req.body.lng, req.body.deslat, req.body.deslng, req.body.time, req.body.locFrom, req.body.locTo);
+    const result = place(
+      req.session.userid,
+      req.body.content,
+      req.body.lat,
+      req.body.lng,
+      req.body.deslat,
+      req.body.deslng,
+      req.body.time,
+      req.body.locFrom,
+      req.body.locTo
+    );
     result.then(data => {
       if (data) {
         res.json(
-          new SuccessModel({
-            orderid: data.insertId
-          }, 'Order Placed!')
+          new SuccessModel(
+            {
+              orderid: data.insertId
+            },
+            'Order Placed!'
+          )
         );
       }
     });
   } else {
-    res.json(
-      new ErrorModel('Not logged in!')
-    );
+    res.json(new ErrorModel('Not logged in!'));
   }
 });
 
@@ -32,9 +51,7 @@ router.post('/finish', (req, res) => {
   const result = finish(req.body.orderid);
   result.then(data => {
     if (data) {
-      res.json(
-        new SuccessModel('Order Finished!')
-      );
+      res.json(new SuccessModel('Order Finished!'));
     }
   });
 });
@@ -58,37 +75,37 @@ router.get('/list', function (req, res) {
 });
 
 /* Accept an order, pass in the order id selected by courier,
-* Failed cases(errno -1): 1. Pass a non-existence order id.
-* 2. Pass a order id that correspond to an accepted order.
-* 3. Fail when there is no order available for the courier to accept
-*/
+ * Failed cases(errno -1): 1. Pass a non-existence order id.
+ * 2. Pass a order id that correspond to an accepted order.
+ * 3. Fail when there is no order available for the courier to accept
+ */
 router.post('/accept', (req, res) => {
-  const result = accept(req.body.orderid, req.session.userid);
-  const orderRes = getOrder(req.session.userid);
-  result.then(data => {
-    if (data.affectedRows === 1) {
-      if (data.changedRows === 1) {
-        orderRes.then(order => {
-          if (order.length !== 0) {
-            res.json(
-              new SuccessModel({ list: pathFinding(order, req.body.curlat, req.body.curlng) }, 'Order Accepted!')
-            );
-          } else {
-            res.json(new ErrorModel('No Order Available!'));
-          }
-        });
-      } else {
-        res.json(new ErrorModel('Order has been accepted!'));
-      }
-    } else if (data.affectedRows === 0) {
-      res.json(new ErrorModel('Order Does Not Exist!'));
+  const resHelper = acceptHelper(req.body.orderid);
+  resHelper.then(data => {
+    if (data.userid == req.session.userid) {
+      res.json(new ErrorModel('You are Accepting you own order!!!'));
+    } else if (data.courierid == req.session.userid) {
+      res.json(new ErrorModel('You have accepted this order!'));
+    } else if (data.courierid != -1) {
+      res.json(
+        new ErrorModel('This Order has been accepted by another courier!')
+      );
+    } else {
+      const result = accept(req.body.orderid, req.session.userid);
+      result.then(data => {
+        // if (data.affectedRows === 1) {
+        //   if (data.changedRows === 1) {
+        res.json(new SuccessModel('Order Accepted!'));
+        //   }
+        // }
+      });
     }
   });
 });
 
 /* Get the order that current user places or accepts
-* Fails: user has not logged in
-*/
+ * Fails: user has not logged in
+ */
 router.get('/list_customer', (req, res) => {
   if (!req.session.username) {
     res.json(new ErrorModel('User has not log in yet!'));
@@ -101,9 +118,9 @@ router.get('/list_customer', (req, res) => {
 });
 
 /* Get history order of the current user
-* Fails(errno -1): 1. usermode is not set
-* 2. user has not log in yet(or has log out)
-*/
+ * Fails(errno -1): 1. usermode is not set
+ * 2. user has not log in yet(or has log out)
+ */
 router.get('/order_history', (req, res) => {
   if (!req.session.usermode) {
     res.json(new ErrorModel('Usermode is NULL! Please Select uermode First!'));
