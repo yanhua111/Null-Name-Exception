@@ -73,11 +73,14 @@ check_login = () => {
               if(result.errno == -1){
                 alert(`Please Choose Your Role and Sign In with Facebook`);
              }else{
+               console.log(result.data.usermode);
                 if(result.data.usermode == "courier"){
                     global.role = "courier";
+                    global.userid = result.data.userid;
                     this.props.navigation.navigate("OrderList");
                     }else if(result.data.usermode == "customer"){
                     global.role = "customer";
+                    global.userid = result.data.userid;
                     this.props.navigation.navigate("CustomerScreen");
                     }
              }
@@ -121,8 +124,10 @@ check_login = () => {
       const response = await fetch(
         `https://graph.facebook.com/me?access_token=${token}`);
 
-       let id = (await response.json()).id;
-       this.user_signup(id,token,apptoken);
+       let username = (await response.json()).name;
+       global.username = username;
+       console.log(username);
+       this.user_signup(username,token,apptoken);
     }
   }catch ({ message }) {
         alert(`${message}`);
@@ -132,7 +137,7 @@ check_login = () => {
 
 
    user_signup = (username, fbtoken,apptoken) => {
-    fetch("http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/users/login", {
+    fetch("http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/users/signup", {
             method: "POST",
             headers: {
               Accept: "application/json",
@@ -145,6 +150,14 @@ check_login = () => {
               apptoken: apptoken,
               usermode: global.role,
             }),
+          }).then((response) => {
+            response.json().then((result)=>{
+              console.log(result);
+              global.userid = result.data.userid;
+            })
+            global.username = username;
+            console.log("username");
+            console.log(global.username);
           });
   }
 

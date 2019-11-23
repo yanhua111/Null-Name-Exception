@@ -9,7 +9,8 @@ import self from "../assets/self.png";
 import userMode from "../assets/usermode.png";
 import phone from "../assets/phone.png";
 import TopBar from "../src/utils/TopBar";
-
+import Cell from "../src/utils/Cell";
+import choco from "../assets/choco.png";
 
 export default class Setting extends React.Component { 
   
@@ -44,8 +45,31 @@ export default class Setting extends React.Component {
           Personal Profile
           </TopBar>
             {/**here is the view for text*/}
-          
-        <View style = {styles.infoStyle}>
+        <Cell
+          source={self}
+          title="Name:"
+          placeholder={global.username}
+          showarrow={false} 
+        />
+        <Cell
+          source={userMode}
+          title="User Mode:"
+          placeholder={global.role}
+          showarrow={false} 
+        />
+        <Cell
+          source={phone}
+          title="Phone Number:"
+          placeholder={global.phoneNum}
+          showarrow={false} 
+        />
+        <Cell
+          source={choco}
+          title="User ID:"
+          placeholder={global.userid}
+          showarrow={false} 
+        />
+        {/* <View style = {styles.infoStyle}>
         <Image style = {styles.icon}
          source = {self}
         />   
@@ -67,7 +91,7 @@ export default class Setting extends React.Component {
         />   
       <Text style = {styles.text}>Phone No : </Text>
       <Text style = {styles.text2}>{global.phoneNum}</Text>
-      </View>
+      </View> */}
        
      
       <View style={styles.touchBtn1}>
@@ -216,7 +240,7 @@ export default class Setting extends React.Component {
           flexDirection: 'row',
           height: null, 
           width: "100%", 
-          justifyContent: "space-around",
+          justifyContent: "flex-start",
           alignItems: "center",
           bottom: -100,
           position: "absolute",
@@ -261,7 +285,7 @@ export default class Setting extends React.Component {
           paddingVertical: 10,
           alignItems: 'center',
           marginBottom: 10,
-          bottom: -340,
+          bottom: -200,
           },    
         touchBtn2:{
             backgroundColor: '#F65353',
