@@ -142,7 +142,7 @@ export default class SignupScreen extends React.Component {
         return (
             <View style = {styles.container}>
                 <TouchableOpacity style={styles.backbtn}
-                    onPress={() => { this.props.navigation.navigate("DashboardScreen"); }} >
+                    onPress={() => { this.props.navigation.navigate("LoginScreen"); }} >
                     <Image source={backicon} style={styles.icon} />
                 </TouchableOpacity>
                 <Picker selectedValue = {this.state.usermode} onValueChange = {this.handelUsermode}>
