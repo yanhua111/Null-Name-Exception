@@ -8,8 +8,8 @@ import "../global";
 export default class phonemodeScreen extends React.Component {
     
     state = {
-        phonenum: '',
-        usermode: 'Courier',
+        phonenum: "",
+        usermode: "courier",
     }
     handelPhonenum = (text) => {
         this.setState({phonenum: text});
@@ -21,6 +21,11 @@ export default class phonemodeScreen extends React.Component {
 
 
     user_info = (username, phonenum, usermode, fbtoken, apptoken) => {
+        console.log("username:",username);
+        console.log("phonenumber",phonenum);
+        if(phonenum === ""){
+            alert("Please enter phone number !");
+        }else{
         fetch("http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/users/signup", {
             method: "POST",
             headers: {
@@ -35,30 +40,39 @@ export default class phonemodeScreen extends React.Component {
                 fbtoken:  fbtoken,//navigation.getParam('fbtoken'),
                 apptoken: apptoken,
             }),
+    }).then((response) => {
+        console.log("response",response);
+              response.json().then((result)=>{
+              console.log("user signup function")
+              console.log("result",result);
+              global.userid = result.data.userid;
+              global.username = result.data.username;
+              console.log("username",global.username);
+            })
     });
+    global.phoneNum = phonenum;
+    if(usermode == "courier"){
+        global.role = "courier";
+        this.props.navigation.navigate("OrderList");
+    } else {
+        global.role = "customer";
+        this.props.navigation.navigate("CustomerScreen");
     }
+    }
+}
 
-    signupComb = (phonenum, usermode, username, fbtoken, apptoken) => {
-        this.user_info(username, phonenum, usermode, fbtoken, apptoken);
-        if(usermode == 'courier'){
-            global.role = 'courier';
-            this.props.navigation.navigate("OrderList");
-        } else {
-            global.role = 'customer';
-            this.props.navigation.navigate("CustomerScreen");
-        }
-    }
+
 
     render() {
-        const username = this.props.navigation.getParam('username', 'EMPTY');
-        const fbtoken = this.props.navigation.getParam('fbtoken', 'EMPTY');
-        const apptoken = this.props.navigation.getParam('apptoken', 'EMPTY');
+        const username = this.props.navigation.getParam("username", "EMPTY");
+        const fbtoken = this.props.navigation.getParam("fbtoken", "EMPTY");
+        const apptoken = this.props.navigation.getParam("apptoken", "EMPTY");
         return (
             <View style = {styles.container}>
                 
                 
                 <Picker selectedValue = {this.state.usermode} onValueChange = {this.handelUsermode}>
-                    <Picker.Item label = "Courier" value = 'courier' />
+                    <Picker.Item label = "Courier" value = "courier"/>
                     <Picker.Item label = "Customer" value = "customer" />
                 </Picker>
                 <Text style={styles.mode}>I want to be a {this.state.usermode}</Text>
@@ -68,18 +82,16 @@ export default class phonemodeScreen extends React.Component {
                 placeholder = "  phone number"
                 placeholderTextColor = "#9a73ef"
                 autoCapitalize = "none"
-                onChangeText = {this.handelUserName}/>
+                onChangeText = {this.handelPhonenum}/>
                 
 
                 <TouchableOpacity
                     style = {styles.submitButton}
                     onPress = {
-                    () => this.signupComb(this.state.phonenum, this.state.usermode, username, fbtoken, apptoken)
+                    () => this.user_info(username,this.state.phonenum, this.state.usermode, fbtoken, apptoken)
                     }>
                     <Text style = {styles.submitButtonText}>next </Text>
                 </TouchableOpacity>
-
-
             </View>
         )
     }
