@@ -20,11 +20,14 @@ import OrderView from "../src/utils/OrderView";
 import dotpic from "../assets/dot.png";
 import righticon from "../assets/arrow_right.png";
 
-
 export default class OrderList extends React.Component {
   state = {
     refreshing: false,
-    myArray: []
+    myArray: [],
+    location: {
+      latitude: -1,
+      longitude: -1
+    }
   };
 
   componentDidMount() {
@@ -35,32 +38,37 @@ export default class OrderList extends React.Component {
     return this.myArray;
   };
 
+
   /* This function list_order is triggered by button of each order.
   Every small order is a button, when pressed, it will give us the 
   detailed information. This function help us to get all the information
   from back end database
   */
-
   list_order = () => {
-    fetch(`${URL}:${PORT}/order/list`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      credentials: "include"
-    })
-      .then(res => {
-        res.json().then(result => {
-          console.log(result);
-          for (j = 0; j < result.data.list.length; j++) {
-            var joined = this.state.myArray.concat(result.data.list[j]);
-            this.setState({ myArray: joined });
-          }
-          console.log(this.state.myArray);
-        });
+    navigator.geolocation.getCurrentPosition((position) => {
+      let location = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      };
+
+      fetch(`${URL}:${PORT}/order/list?curlat=${location.latitude}&curlng=${location.longitude}`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        credentials: "include"
       })
-      .catch(error => console.log(error));
+        .then(res => {
+          res.json().then(result => {
+            for (j = 0; j < result.data.list.length; j++) {
+              var joined = this.state.myArray.concat(result.data.list[j]);
+              this.setState({ myArray: joined });
+            }
+          });
+        })
+        .catch(error => console.log("List order error", error));
+    })
   };
 
   onClearArray = () => {
@@ -75,11 +83,9 @@ export default class OrderList extends React.Component {
   };
 
   _onEndReached = () => {
-    console.log("on end reached");
     // this.state.reachedEnd =  true;
     this.setState({ reachedEnd: true });
     // this.forceUpdate();
-    console.log(this.state.reachedEnd);
   };
 
   renderButtons = () => {
@@ -136,7 +142,7 @@ export default class OrderList extends React.Component {
           this.forceUpdate();
         });
       })
-      .catch(error => console.log(error));
+      .catch(error => console.log("Get User token error: ", error));
   };
 
   finish_order = (order_id, userid) => {
@@ -169,30 +175,31 @@ export default class OrderList extends React.Component {
   };
 
   _renderItem = ({ item }) => (
-
     <OrderView
-    profilepic = {profilepic}
-    originpic = {originpic}
-    locFrom = {item.locFrom}
-    dotpic = {dotpic}
-    despic = {despic}
-    locTo = {item.locTo}
-    status = {item.status}
-    righticon = {righticon}
+      profilepic={profilepic}
+      originpic={originpic}
+      locFrom={item.locFrom}
+      dotpic={dotpic}
+      despic={despic}
+      locTo={item.locTo}
+      status={item.status}
+      righticon={righticon}
+      id={item.id}
+      detail={item.content}
     />
 
-      // {/* <View >
-      //   <Button
-      //     title={`order ${item.id} accept above order`}
-      //     onPress={() => this.accept_order(item.id)}
-      //   ></Button>
-      // </View>
-      // <View >
-      //   <Button
-      //     title={"Finish this order"}
-      //     onPress={() => this.finish_order(item.id, item.userid)}
-      //   ></Button>
-      // </View> */}
+    // {/* <View >
+    //   <Button
+    //     title={`order ${item.id} accept above order`}
+    //     onPress={() => this.accept_order(item.id)}
+    //   ></Button>
+    // </View>
+    // <View >
+    //   <Button
+    //     title={"Finish this order"}
+    //     onPress={() => this.finish_order(item.id, item.userid)}
+    //   ></Button>
+    // </View> */}
     // </View>
   );
 
@@ -269,7 +276,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 30,
     alignItems: "flex-end",
-    flexDirection: 'column'
+    flexDirection: "column"
   },
   profilepic: {
     width: 50,
