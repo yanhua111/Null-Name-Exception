@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, Button, TouchableOpacity, TextInput,Picker, Image } from "react-native";
+import { StyleSheet, Text, View, Button, TouchableOpacity, TextInput,Picker, Image,ScrollView } from "react-native";
 import * as Facebook from "expo-facebook";
 import { Notifications } from "expo";
 import * as Permissions from "expo-permissions";
@@ -88,6 +88,7 @@ export default class SignupScreen extends React.Component {
         return (
             <View style = {styles.container}>
               <TopBar onBackPress={() => {this.props.navigation.navigate("LoginScreen")}}/>
+              <ScrollView>
                 <Picker selectedValue = {this.state.usermode} onValueChange = {this.handelUsermode}>
                     <Picker.Item label = "Courier" value = "courier" />
                     <Picker.Item label = "Customer" value = "customer" />
@@ -125,6 +126,7 @@ export default class SignupScreen extends React.Component {
                     }>
                     <Text style = {styles.submitButtonText}> Sign Up </Text>
                 </TouchableOpacity>
+            </ScrollView>
             </View>
 
         )
@@ -135,7 +137,7 @@ export default class SignupScreen extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-        paddingTop: 23
+        paddingTop: 0
     },
     input: {
         margin: 15,
