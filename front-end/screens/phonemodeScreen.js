@@ -23,7 +23,7 @@ export default class phonemodeScreen extends React.Component {
     user_info = (username, phonenum, usermode, fbtoken, apptoken) => {
         console.log("username:",username);
         console.log("phonenumber",phonenum);
-        if(phonenum === ""){
+        if(phonenum === "" || phonenum.length !== 10){
             alert("Please enter phone number !");
         }else{
         fetch("http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/users/signup", {
