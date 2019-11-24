@@ -12,9 +12,9 @@ const update = (username, userId) => {
 };
 
 /* Sign up */
-const signup = (username, password, fbtoken, apptoken) => {
+const signup = (username, password, fbtoken, apptoken, phonenum, usermode) => {
   const sql = `
-        insert into users (username, fbtoken, apptoken, password) values('${username}', '${fbtoken}', '${apptoken}', '${password}' );
+        insert into users (username, fbtoken, apptoken, password, phonenum, usermode) values('${username}', '${fbtoken}', '${apptoken}', '${password}', '${phonenum}', '${usermode}' );
   `;
   return exec(sql).then(result => {
     return {
@@ -34,15 +34,15 @@ const signupHelper = username => {
 };
 
 /* Log in */
-const login = (username, password, fbtoken) => {
+const login = (username, password, fbtoken, fbid) => {
   let sql;
-  if (fbtoken === -1) {
+  if (fbtoken == -1) {
     sql = `
-    select id from users where username = '${username}' and password = '${password}';
+    select id, phonenum, usermode from users where username = '${username}' and password = '${password}';
 `;
   } else {
     sql = `
-    select id, username from users where fbtoken = '${fbtoken}';
+    select id, username, phonenum, usermode from users where fbid = '${fbid}';
 `;
   }
 

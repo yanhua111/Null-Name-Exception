@@ -13,7 +13,6 @@ export default class OrderView extends Component {
       <View
         style={[styles.order, this.props.rich ? styles.rich : styles.simple]}
       >
-        <Image source={this.props.profilepic} style={styles.profilepic} />
         <View style={[styles.locContainer, this.props.richlocContainer ? styles.rich : styles.simplelocContainer]}>
           {this.props.rich && 
             <Text style={{ color: "grey" }}>
@@ -72,7 +71,7 @@ const styles = StyleSheet.create({
   order: {
     alignSelf: "center",
     backgroundColor: "white",
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 5,
     borderColor: "grey",

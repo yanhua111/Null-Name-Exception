@@ -16,36 +16,29 @@ router.post('/signup', (req, res) => {
   resHelper.then(data => {
     if (data.length === 0) {
       if (req.body.fbtoken != -1) {
-        const result = login('', '', req.body.fbtoken);
+        const result = signup(
+          req.body.username,
+          'FACEBOOK USER',
+          req.body.fbtoken,
+          req.body.apptoken,
+          req.body.phonenum,
+          req.body.usermode
+        );
         result.then(data => {
-          if (data.length === 0) {
-            const result = signup(
-              req.body.username,
-              'FACEBOOK USER',
-              req.body.fbtoken,
-              req.body.apptoken
-            );
-            result.then(data => {
-              req.session.userid = data.id;
-              req.session.username = req.body.username;
-              req.session.phonenum = req.body.phonenum;
-              req.session.usermode = req.body.usermode;
-              res.json(new SuccessModel({ userid: data.id, username: req.body.username }, 'User Sign Up Succeed!'));
-            });
-          } else {
-            req.session.userid = data[0].id;
-            req.session.username = data[0].username;
-            req.session.phonenum = req.body.phonenum;
-            req.session.usermode = req.body.usermode;
-            res.json(new SuccessModel({ userid: data[0].id, username: data[0].username }, 'User log in Succeed!'));
-          }
+          req.session.userid = data.id;
+          req.session.username = req.body.username;
+          req.session.phonenum = req.body.phonenum;
+          req.session.usermode = req.body.usermode;
+          res.json(new SuccessModel({ userid: data.id, username: req.body.username }, 'User Sign Up Succeed!'));
         });
       } else {
         const result = signup(
           req.body.username,
           req.body.password,
           null,
-          req.body.apptoken
+          req.body.apptoken,
+          req.body.phonenum,
+          req.body.usermode
         );
         result.then(data => {
           req.session.userid = data.id;
@@ -53,38 +46,29 @@ router.post('/signup', (req, res) => {
           req.session.phonenum = req.body.phonenum;
           req.session.usermode = req.body.usermode;
           res.json(
-            new SuccessModel({ userid: data.id }, 'User Sign Up Succeed!')
+            new SuccessModel({ userid: data.id, username: req.body.username }, 'User Sign Up Succeed!')
           );
         });
       }
     } else {
       // username exist
-      if (req.body.fbtoken) {
-        const result = login('', '', req.body.fbtoken);
+      if (req.body.fbtoken != -1) {
+        const username = req.body.username + (Date.now()).toString();
+        // console.log(username);
+        const result = signup(
+          username,
+          'FACEBOOK USER',
+          req.body.fbtoken,
+          req.body.apptoken,
+          req.body.phonenum,
+          req.body.usermode
+        );
         result.then(data => {
-          if (data.length === 0) {
-            const username = req.body.username + (Date.now()).toString();
-            console.log(username);
-            const result = signup(
-              username,
-              'FACEBOOK USER',
-              req.body.fbtoken,
-              req.body.apptoken
-            );
-            result.then(data => {
-              req.session.userid = data.id;
-              req.session.username = req.body.username;
-              req.session.phonenum = req.body.phonenum;
-              req.session.usermode = req.body.usermode;
-              res.json(new SuccessModel({ userid: data.id, username: username }, 'User Sign Up Succeed!'));
-            });
-          } else {
-            req.session.userid = data[0].id;
-            req.session.username = data[0].username;
-            req.session.phonenum = req.body.phonenum;
-            req.session.usermode = req.body.usermode;
-            res.json(new SuccessModel({ userid: data[0].id, username: data[0].username }, 'User log in Succeed!'));
-          }
+          req.session.userid = data.id;
+          req.session.username = req.body.username;
+          req.session.phonenum = req.body.phonenum;
+          req.session.usermode = req.body.usermode;
+          res.json(new SuccessModel({ userid: data.id, username: username }, 'User Sign Up Succeed!'));
         });
       } else {
         res.json(new ErrorModel('Username Exist! Please try another one'));
@@ -95,14 +79,20 @@ router.post('/signup', (req, res) => {
 
 /* Log in */
 router.post('/login', (req, res) => {
-  const result = login(req.body.username, req.body.password);
+  const result = login(req.body.username, req.body.password, req.body.fbtoken, req.body.fbid);
   result.then(data => {
     if (data.length === 0) {
       res.json(new ErrorModel('Invalid Username and Password Combination!'));
     } else {
       req.session.userid = data[0].id;
-      req.session.username = req.body.username;
-      res.json({ userid: data[0].id }, new SuccessModel('Log in Succeed!'));
+      if (req.body.fbtoken == -1) {
+        req.session.username = req.body.username;
+      } else {
+        req.session.username = data[0].username;
+      }
+      req.session.phonenum = data[0].phonenum;
+      req.session.usermode = data[0].usermode;
+      res.json(new SuccessModel({ userid: data[0].id, username: data[0].username, phonenum: data[0].phonenum, usermode: data[0].usermode }, 'Log in Succeed!'));
     }
   });
 });
