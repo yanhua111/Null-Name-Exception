@@ -14,7 +14,7 @@ import "../global";
 import { URL, PORT } from "../src/conf";
 import TopBar from "../src/utils/TopBar";
 import profilepic from "../assets/courier.png";
-
+import {NavigationEvents} from 'react-navigation';
 import OrderView from "../src/utils/OrderView";
 
 import OrderDetail from './OrderDetail';
@@ -138,6 +138,9 @@ export default class OrderList extends React.Component {
         <View>
           <TopBar showback={false}>My Order</TopBar>
         </View>
+        <NavigationEvents
+          onDidFocus={() => this.onRefresh()}
+        />
         <FlatList
           // style={{ marginTop: 100 }}
           data={this.state.myArray}
