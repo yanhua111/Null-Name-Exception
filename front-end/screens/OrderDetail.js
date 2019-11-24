@@ -131,7 +131,13 @@ export default class OrderDetail extends React.Component {
     const detail = this.props.navigation.getParam("detail", "");
     const time = this.props.navigation.getParam("time", "");
     const userid = this.props.navigation.getParam("userid", "");
-    const phonenum = this.props.navigation.getParam("phonenum", "");
+    const courierPhone = this.props.navigation.getParam("courierPhone", "");
+    const customerPhone = this.props.navigation.getParam("customerPhone", "");
+    const fee = this.props.navigation.getParam("fee", "");
+    const placeTime = this.props.navigation.getParam("placeTime", "");
+    const acceptTime = this.props.navigation.getParam("acceptTime", "");
+    const finishTime = this.props.navigation.getParam("finishTime", "");
+
     return (
       <View style={styles.container}>
         <CustomLoading
@@ -148,7 +154,12 @@ export default class OrderDetail extends React.Component {
           id={id}
           detail={detail}
           time={time}
-          phonenum={phonenum}
+          courierPhone={courierPhone}
+          customerPhone={customerPhone}
+          fee={fee}
+          placeTime={placeTime}
+          acceptTime={acceptTime}
+          finishTime={finishTime}
           rich={true}
         />
         {status == 1 && (
