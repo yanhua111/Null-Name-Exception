@@ -78,6 +78,7 @@ export default class phonemodeScreen extends React.Component {
                 <Text style={styles.mode}>I want to be a {this.state.usermode}</Text>
                 
                 <TextInput style = {styles.input}
+                keyboardType = 'numeric'
                 underlineColorAndroid = "transparent"
                 placeholder = "  phone number"
                 placeholderTextColor = "#9a73ef"
