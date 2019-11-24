@@ -15,7 +15,7 @@ router.post('/signup', (req, res) => {
   const resHelper = signupHelper(req.body.username);
   resHelper.then(data => {
     if (data.length === 0) {
-      if (req.body.fbtoken) {
+      if (req.body.fbtoken != -1) {
         const result = login('', '', req.body.fbtoken);
         result.then(data => {
           if (data.length === 0) {
@@ -44,7 +44,7 @@ router.post('/signup', (req, res) => {
         const result = signup(
           req.body.username,
           req.body.password,
-          req.body.fbtoken,
+          null,
           req.body.apptoken
         );
         result.then(data => {

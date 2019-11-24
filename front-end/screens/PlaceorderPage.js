@@ -127,18 +127,18 @@ export default class PlaceOrderScreen extends React.Component {
             showloader: false
           });
           if (result.errno == 0) {
-            ToastAndroid.showWithGravityAndOffset(
-              "Order Placed!",
-              ToastAndroid.LONG,
-              ToastAndroid.BOTTOM,
-              25,
-              50
-            );
+            // ToastAndroid.showWithGravityAndOffset(
+            //   "Order Placed!",
+            //   ToastAndroid.LONG,
+            //   ToastAndroid.BOTTOM,
+            //   25,
+            //   50
+            // );
             this.props.navigation.navigate("CustomerScreen");
           } else {
             Alert.alert("Failed to Place order", "Please try again");
           }
-        }, 1000);
+        }, 500);
       });
     });
   };

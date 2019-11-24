@@ -14,11 +14,9 @@ import "../global";
 import { URL, PORT } from "../src/conf";
 import TopBar from "../src/utils/TopBar";
 import profilepic from "../assets/courier.png";
-import despic from "../assets/destination.png";
-import originpic from "../assets/origin.png";
+
 import OrderView from "../src/utils/OrderView";
-import dotpic from "../assets/dot.png";
-import righticon from "../assets/arrow_right.png";
+
 import OrderDetail from './OrderDetail';
 
 export default class OrderList extends React.Component {
@@ -105,86 +103,82 @@ export default class OrderList extends React.Component {
     return buttons;
   };
 
-  accept_order = order_id => {
-    if (this.state.myArray[order_id].status == 1) {
-      Alert.alert("This order is already accepted");
-    } else {
-      fetch(`${URL}:${PORT}/order/accept`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          orderid: order_id //????????????
-        })
-      });
-      Alert.alert("successfully accepted");
-    }
-  };
+  // accept_order = order_id => {
+  //   if (this.state.myArray[order_id].status == 1) {
+  //     Alert.alert("This order is already accepted");
+  //   } else {
+  //     fetch(`${URL}:${PORT}/order/accept`, {
+  //       method: "POST",
+  //       headers: {
+  //         Accept: "application/json",
+  //         "Content-Type": "application/json"
+  //       },
+  //       credentials: "include",
+  //       body: JSON.stringify({
+  //         orderid: order_id //????????????
+  //       })
+  //     });
+  //     Alert.alert("successfully accepted");
+  //   }
+  // };
 
-  get_user_token = userid => {
-    return fetch(`${URL}:${PORT}/users/get_token`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        //userid: global.user_id_ls,
-        userid: userid
-      })
-    })
-      .then(res => {
-        res.json().then(result => {
-          global.apptoken = result.data.apptoken;
-          this.forceUpdate();
-        });
-      })
-      .catch(error => console.log("Get User token error: ", error));
-  };
+  // get_user_token = userid => {
+  //   return fetch(`${URL}:${PORT}/users/get_token`, {
+  //     method: "POST",
+  //     headers: {
+  //       Accept: "application/json",
+  //       "Content-Type": "application/json"
+  //     },
+  //     credentials: "include",
+  //     body: JSON.stringify({
+  //       //userid: global.user_id_ls,
+  //       userid: userid
+  //     })
+  //   })
+  //     .then(res => {
+  //       res.json().then(result => {
+  //         global.apptoken = result.data.apptoken;
+  //         this.forceUpdate();
+  //       });
+  //     })
+  //     .catch(error => console.log("Get User token error: ", error));
+  // };
 
-  finish_order = (order_id, userid) => {
-    this.get_user_token(userid).then(
-      fetch(`${URL}:${PORT}/order/finish`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          orderid: order_id
-        })
-      }).then(res => {
-        fetch(`${URL}:${PORT}/push`, {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json"
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            token: global.apptoken,
-            message: "finished"
-          })
-        });
-      })
-    );
-  };
+  // finish_order = (order_id, userid) => {
+  //   this.get_user_token(userid).then(
+  //     fetch(`${URL}:${PORT}/order/finish`, {
+  //       method: "POST",
+  //       headers: {
+  //         Accept: "application/json",
+  //         "Content-Type": "application/json"
+  //       },
+  //       credentials: "include",
+  //       body: JSON.stringify({
+  //         orderid: order_id
+  //       })
+  //     }).then((res) => {
+  //       fetch(`${URL}:${PORT}/push`, {
+  //         method: "POST",
+  //         headers: {
+  //           Accept: "application/json",
+  //           "Content-Type": "application/json"
+  //         },
+  //         credentials: "include",
+  //         body: JSON.stringify({
+  //           token: global.apptoken,
+  //           message: "finished"
+  //         })
+  //       })
+  //     })
+  //   );
+  // };
 
   _renderItem = ({ item }) => (
     <OrderView
-      profilepic={profilepic}
-      originpic={originpic}
+      profilepic={{uri: 'https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=2332629910320084&height=50&width=50&ext=1577141395&hash=AeR3CWoeOcEop4Wo'}}
       locFrom={item.locFrom}
-      dotpic={dotpic}
-      despic={despic}
       locTo={item.locTo}
       status={item.status}
-      righticon={righticon}
       onPress={() => {
         this.props.navigation.navigate("OrderDetail", {
           locFrom: item.locFrom,
@@ -192,13 +186,14 @@ export default class OrderList extends React.Component {
           status: item.status,
           id: item.id,
           detail: item.content,
-          time: item.time
+          time: item.time,
+          userid: item.userid
         });
       }}
 
-      id={item.id}
-      detail={item.content}
-      time = {item.time}
+      // id={item.id}
+      // detail={item.content}
+      // time = {item.time}
     />
 
     // {/* <View >

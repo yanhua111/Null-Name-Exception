@@ -2,6 +2,10 @@ import React, { Component } from "react";
 
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import StatusView from "./StatusView";
+import despic from "../../assets/destination.png";
+import originpic from "../../assets/origin.png";
+import dotpic from "../../assets/dot.png";
+import righticon from "../../assets/arrow_right.png";
 
 export default class OrderView extends Component {
   render = () => {
@@ -29,12 +33,12 @@ export default class OrderView extends Component {
             </Text>
           }
           <View style={styles.locLine}>
-            <Image style={styles.smallpic} source={this.props.originpic} />
+            <Image style={styles.smallpic} source={originpic} />
             <Text>{this.props.locFrom}</Text>
           </View>
-          <Image style={styles.dotpic} source={this.props.dotpic} />
+          <Image style={styles.dotpic} source={dotpic} />
           <View style={styles.locLine}>
-            <Image style={styles.smallpic} source={this.props.despic} />
+            <Image style={styles.smallpic} source={despic} />
             <Text>{this.props.locTo}</Text>
           </View>
 
@@ -51,7 +55,7 @@ export default class OrderView extends Component {
             onPress={this.props.onPress}>
               <Image
                 style={styles.largepic}
-                source={this.props.righticon}
+                source={righticon}
               ></Image>
             </TouchableOpacity>
           )}
