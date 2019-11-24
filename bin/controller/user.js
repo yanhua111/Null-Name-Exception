@@ -12,9 +12,9 @@ const update = (username, userId) => {
 };
 
 /* Sign up */
-const signup = (username, password, fbtoken, apptoken, phonenum, usermode) => {
+const signup = (username, password, fbtoken, apptoken, phonenum, usermode, fbid) => {
   const sql = `
-        insert into users (username, fbtoken, apptoken, password, phonenum, usermode) values('${username}', '${fbtoken}', '${apptoken}', '${password}', '${phonenum}', '${usermode}' );
+        insert into users (username, fbtoken, apptoken, password, phonenum, usermode, fbid) values('${username}', '${fbtoken}', '${apptoken}', '${password}', '${phonenum}', '${usermode}', '${fbid}' );
   `;
   return exec(sql).then(result => {
     return {

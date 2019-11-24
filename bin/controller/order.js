@@ -1,9 +1,9 @@
 const { exec } = require('../database/mysql');
 
 /* Accept a order and update order status in database */
-const accept = (orderId, courierId) => {
+const accept = (orderId, courierId, acceptTime, courierPhone) => {
   const sql = `
-        update orders set courierid='${courierId}', status=0 where id=${orderId};
+        update orders set courierid='${courierId}', status=0, acceptTime='${acceptTime}', courierPhone='${courierPhone}' where id=${orderId};
     `;
   return exec(sql).then(rows => {
     return rows;
@@ -31,9 +31,9 @@ const getOrder = (courierId) => {
 const fetchOrder = (userId, usermode, status, short) => {
   let sql = '';
   if (short === 1) {
-    sql += 'select id, content, locFrom, locTo, time, status from orders where ';
+    sql += 'select id, content, locFrom, locTo, time, status, fee, placeTime from orders where ';
   } else {
-    sql += 'select id, userid, courierid, content, lat, lng, deslat, deslng, status, time, locFrom, locTo from orders where ';
+    sql += 'select id, userid, courierid, content, lat, lng, deslat, deslng, status, time, locFrom, locTo, fee, placeTime, acceptTime, finishTime, customerPhone, courierPhone from orders where ';
   }
   // Check all order that courier accept or can acccept
   if (status === 1) {
@@ -68,10 +68,10 @@ const getHistoryOrder = (userId, usermode) => {
 };
 
 /* Place a order, and save all corresponding inforation into the database */
-const place = (userId, content, lat, lng, deslat, deslng, time, locFrom, locTo) => {
+const place = (userId, content, lat, lng, deslat, deslng, time, locFrom, locTo, fee, placeTime, customerPhone) => {
   const sql = `
-    insert into orders (userid, courierid, content, lat, lng, deslat, deslng, status, time, locFrom, locTo) values('${userId}', -1 ,'${content}',
-     '${lat}', '${lng}', '${deslat}', '${deslng}', 1, '${time}', '${locFrom}', '${locTo}');
+    insert into orders (userid, courierid, content, lat, lng, deslat, deslng, status, time, locFrom, locTo, fee, placeTime, customerPhone) values('${userId}', -1 ,'${content}',
+     '${lat}', '${lng}', '${deslat}', '${deslng}', 1, '${time}', '${locFrom}', '${locTo}', '${fee}', '${placeTime}', '${customerPhone}');
     `;
   return exec(sql).then(result => {
     return result;
@@ -79,9 +79,9 @@ const place = (userId, content, lat, lng, deslat, deslng, time, locFrom, locTo) 
 };
 
 /* Finish a order, mark the order 'Zombie' */
-const finish = (orderId) => {
+const finish = (orderId, finishTime) => {
   const sql = `
-        update orders set status=-1 where id='${orderId}';
+        update orders set status=-1, finishTime='${finishTime}' where id='${orderId}';
     `;
   return exec(sql).then(rows => {
     return rows[0] || {};

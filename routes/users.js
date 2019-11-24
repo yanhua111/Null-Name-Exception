@@ -22,7 +22,8 @@ router.post('/signup', (req, res) => {
           req.body.fbtoken,
           req.body.apptoken,
           req.body.phonenum,
-          req.body.usermode
+          req.body.usermode,
+          req.body.fbid
         );
         result.then(data => {
           req.session.userid = data.id;
@@ -38,7 +39,8 @@ router.post('/signup', (req, res) => {
           null,
           req.body.apptoken,
           req.body.phonenum,
-          req.body.usermode
+          req.body.usermode,
+          req.body.fbid
         );
         result.then(data => {
           req.session.userid = data.id;
@@ -61,11 +63,12 @@ router.post('/signup', (req, res) => {
           req.body.fbtoken,
           req.body.apptoken,
           req.body.phonenum,
-          req.body.usermode
+          req.body.usermode,
+          req.body.fbid
         );
         result.then(data => {
           req.session.userid = data.id;
-          req.session.username = req.body.username;
+          req.session.username = username;
           req.session.phonenum = req.body.phonenum;
           req.session.usermode = req.body.usermode;
           res.json(new SuccessModel({ userid: data.id, username: username }, 'User Sign Up Succeed!'));

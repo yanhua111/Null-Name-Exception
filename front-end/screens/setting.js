@@ -5,12 +5,12 @@ import "../global";
 import Modal from "react-native-modal";
 import { URL, PORT} from "../src/conf";
 
-import self from "../assets/self.png";
-import userMode from "../assets/usermode.png";
-import phone from "../assets/phone.png";
+import self from "../assets/nameIcon.png";
+import userMode from "../assets/modeIcon.png";
+import phone from "../assets/phoneIcon.png";
 import TopBar from "../src/utils/TopBar";
 import Cell from "../src/utils/Cell";
-import choco from "../assets/choco.png";
+import choco from "../assets/idIcon.png";
 
 
 export default class Setting extends React.Component { 

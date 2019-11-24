@@ -27,7 +27,10 @@ router.post('/place', (req, res) => {
       req.body.deslng,
       req.body.time,
       req.body.locFrom,
-      req.body.locTo
+      req.body.locTo,
+      req.body.fee,
+      req.body.placeTime,
+      req.body.customerPhone
     );
     result.then(data => {
       if (data) {
@@ -48,7 +51,7 @@ router.post('/place', (req, res) => {
 
 /* Finish an order, should be requested when the courier arrived his/her destination, post the order id */
 router.post('/finish', (req, res) => {
-  const result = finish(req.body.orderid);
+  const result = finish(req.body.orderid, req.body.finishTime);
   result.then(data => {
     if (data) {
       res.json(new SuccessModel('Order Finished!'));
@@ -91,7 +94,7 @@ router.post('/accept', (req, res) => {
         new ErrorModel('This Order has been accepted by another courier!')
       );
     } else {
-      const result = accept(req.body.orderid, req.session.userid);
+      const result = accept(req.body.orderid, req.session.userid, req.body.acceptTime, req.body.courierPhone);
       result.then(data => {
         // if (data.affectedRows === 1) {
         //   if (data.changedRows === 1) {
