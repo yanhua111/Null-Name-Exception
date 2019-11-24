@@ -29,6 +29,9 @@ export default class ChangeSetting extends React.Component {
 
 
         set_update = ()=>{
+          if(this.state.user_text_phone.length !== 10){
+            alert("Please enter valid phone number!");
+          }else{
           fetch(`${URL}:${PORT}/users/update`, {
             method: "POST",
             headers: {
@@ -41,20 +44,29 @@ export default class ChangeSetting extends React.Component {
              usermode: this.state.user_mode,
              phonenum: this.state.user_text_phone, 
              }),
+          }).then((response) => {
+            console.log(response);
+            response.json().then((result)=> {
+              console.log(result);
+              if(result.errno == -1){
+                alert("User name already exist please choose a new one")
+              }else{
+                global.username = this.state.user_text_name;
+                global.role = this.state.user_mode;
+                global.phoneNum = this.state.user_text_phone;
+                global.change_screen = (this.state.user_mode == mode)?0:1,
+                this.props.navigation.navigate("Setting",
+                {
+                  Name : this.state.user_text_name,
+                  UserMode: this.state.user_mode,
+                  Phone: this.state.user_text_phone,
+                  Change: (this.state.user_mode == mode)?0:1,
+                }
+                )
+              }
+            })
           }); 
-          global.username = this.state.user_text_name;
-          global.role = this.state.user_mode;
-          global.phoneNum = this.state.user_text_phone;
-          global.change_screen = (this.state.user_mode == mode)?0:1,
-
-          this.props.navigation.navigate("Setting",
-          {
-            Name : this.state.user_text_name,
-            UserMode: this.state.user_mode,
-            Phone: this.state.user_text_phone,
-            Change: (this.state.user_mode == mode)?0:1,
-          }
-          )
+        }
         }
 
 

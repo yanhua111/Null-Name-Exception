@@ -5,6 +5,8 @@ import * as Facebook from "expo-facebook";
 import { Notifications } from "expo";
 import * as Permissions from "expo-permissions";
 import "../global";
+import { URL, PORT} from "../src/conf";
+
 export default class phonemodeScreen extends React.Component {
     
     state = {
@@ -20,13 +22,20 @@ export default class phonemodeScreen extends React.Component {
     }
 
 
-    user_info = (username, phonenum, usermode, fbtoken, apptoken) => {
-        console.log("username:",username);
-        console.log("phonenumber",phonenum);
+    facebook_signup = (username, fbid,fbtoken,phonenum,usermode, apptoken, password) => {
+        console.log(username);
+        console.log(fbid);
+        console.log(fbtoken);
+        console.log(phonenum);
+        console.log(usermode);
+        console.log(apptoken);
+        console.log(password);
         if(phonenum === "" || phonenum.length !== 10){
+            console.log("phone number");
             alert("Please enter phone number !");
         }else{
-        fetch("http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/users/signup", {
+            console.log("enter");
+        fetch(`${URL}:${PORT}/users/signup`, {
             method: "POST",
             headers: {
                 Accept: "application/json",
@@ -35,38 +44,42 @@ export default class phonemodeScreen extends React.Component {
             credentials: "include",
             body: JSON.stringify({
                 username: username,
+                fbid    : fbid,
+                fbtoken:  fbtoken,
                 phonenum: phonenum,
                 usermode: usermode,
-                fbtoken:  fbtoken,//navigation.getParam('fbtoken'),
                 apptoken: apptoken,
+                password: password,
             }),
-    }).then((response) => {
-        console.log("response",response);
-              response.json().then((result)=>{
-              console.log("user signup function")
-              console.log("result",result);
-              global.userid = result.data.userid;
-              global.username = result.data.username;
-              console.log("username",global.username);
+        }).then((response) => {
+              response.json().then((result) => {
+                if(result.errno == -1){
+                    alert(result.message);
+                }else{
+                    console.log("result:",result);
+                    global.userid = result.data.userid;
+                    global.username = result.data.username;
+                    global.phoneNum = phonenum;
+                    global.role     = usermode;
+                    if(usermode == "courier"){
+                        this.props.navigation.navigate("OrderList");
+                    } else {
+                        this.props.navigation.navigate("CustomerScreen");
+                    }
+                }
             })
-    });
-    global.phoneNum = phonenum;
-    if(usermode == "courier"){
-        global.role = "courier";
-        this.props.navigation.navigate("OrderList");
-    } else {
-        global.role = "customer";
-        this.props.navigation.navigate("CustomerScreen");
-    }
-    }
+    }).catch((error) => console.log(error)); 
+    
+  }
 }
 
 
 
     render() {
         const username = this.props.navigation.getParam("username", "EMPTY");
-        const fbtoken = this.props.navigation.getParam("fbtoken", "EMPTY");
+        const fbtoken  = this.props.navigation.getParam("fbtoken", "EMPTY");
         const apptoken = this.props.navigation.getParam("apptoken", "EMPTY");
+        const fbid    = this.props.navigation.getParam("fbid", "EMPTY");
         return (
             <View style = {styles.container}>
                 
@@ -88,8 +101,8 @@ export default class phonemodeScreen extends React.Component {
 
                 <TouchableOpacity
                     style = {styles.submitButton}
-                    onPress = {
-                    () => this.user_info(username,this.state.phonenum, this.state.usermode, fbtoken, apptoken)
+                    onPress = { // facebook_signup = (username, fbid,fbtoken,phonenum,usermode, apptoken, password)
+                    () => this.facebook_signup(username,fbid,fbtoken,this.state.phonenum, this.state.usermode,apptoken,-1)
                     }>
                     <Text style = {styles.submitButtonText}>next </Text>
                 </TouchableOpacity>

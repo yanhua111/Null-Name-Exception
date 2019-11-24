@@ -8,6 +8,7 @@ import "../global";
 
 import logo from "../assets/logo.png";
 import fbicon from "../assets/facebook.png";
+import { URL, PORT} from "../src/conf";
 
 export default class LoginScreen extends React.Component {
     componentDidMount() {
@@ -15,66 +16,35 @@ export default class LoginScreen extends React.Component {
     }
     state = {
         username: '',
-        passward: '',
+        password: '',
     }
     handelUserName = (text) => {
         this.setState({username: text});
     }
     handlePassword = (text) => {
-        this.setState({passward: text});
+        this.setState({password: text});
     }
    
-    //to verify password and navigate to courier/customer screen
-    login = (username, password) => {
-        if(username == '' || password == ''){
-            alert('Please enter User Name and Password');
-        }else{
-        fetch("http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/users/login", {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-            },
-            credentials: "include",
-            body: JSON.stringify({
-                username: username,
-                password: password,
-            }),
-            }).then((response) => {
-                response.json().then((result) => {
-                  if(result.errno == -1){
-                    alert(`Please enter the correct username and password`);
-                 }else{
-                    if(result.data.usermode == "courier"){
-                        this.props.navigation.navigate("OrderList");
-                        }else if(result.data.usermode == "customer"){
-                        this.props.navigation.navigate("CustomerScreen");
-                        }
-                 }
-                });
-                
-              } 
-              ).catch((error) => console.log(error));
-            }
 
-    }
     toSignUp = () => {
+        console.log("please sign up");
         this.props.navigation.navigate("SignupScreen");
     }
  
     check_login = () => {
-        fetch("http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/users/check", {
+        fetch(`${URL}:${PORT}/users/check`, {
                 method: "GET",
                 headers: {
                   Accept: "application/json",
                   "Content-Type": "application/json",
                 },
                 credentials: "include",
-              }).then((response) => {
+              }).then( (response) => {
                 response.json().then((result) => {
                   if(result.errno == -1){
                     alert(`Please Log in or Sign Up`);
                  }else{
+                     console.log(result.message);
                      console.log("usermode:", result.data.usermode);
                     if(result.data.usermode == "courier"){
                         global.userid = result.data.userid;
@@ -84,12 +54,13 @@ export default class LoginScreen extends React.Component {
                         global.userid = result.data.userid;
                         global.role = "customer";
                         this.props.navigation.navigate("CustomerScreen");
-                        } 
+                        }
+                        console.log(result);
+                        global.username = result.data.username;
+                        global.phoneNum = result.data.phonenum; 
                  }
-                 global.username = result.data.username;
-                 global.phoneNum = result.data.phonenum;
+                 
                 });
-                
               } 
               ).catch((error) => console.log(error));
       }
@@ -113,26 +84,76 @@ export default class LoginScreen extends React.Component {
             return;
           }
           let apptoken = await Notifications.getExpoPushTokenAsync();
-    
-        //call function to return value
         if(type =="success"){
           const response = await fetch(
             `https://graph.facebook.com/me?access_token=${token}`);
     
-           let username = (await response.json()).name;
-           //this.user_fbsignup(id,token,apptoken);
-           this.props.navigation.navigate("phonemodeScreen", {
-               username: username,
-               apptoken: apptoken,
-               fbtoken: token,
-           });
+           let result = (await response.json());
+           let username = result.name;
+           let fbid = result.id;
+           this.log_in(username,-1,fbid,token,apptoken,"facebook");//login_mode = facebook(try facebook login) password = -1
         }
       }catch ({ message }) {
             alert(`${message}`);
           }
-      
        }
+
+   
     
+    log_in(username,password,fbid,fbtoken,apptoken,login_mode){
+        if(username == '' || password == ''){
+            alert('Please enter User Name and Password');
+        }else{
+        fetch(`${URL}:${PORT}/users/login`, {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify({
+                username: username,
+                password: password,
+                fbtoken : fbtoken, 
+                fbid    : fbid,
+            }),
+            }).then((response) => {
+                response.json().then((result) => {
+                  if(result.errno == -1){
+                      if(login_mode == "facebook"){
+                          console.log("enter facebook signup");
+                        this.props.navigation.navigate("phonemodeScreen", {
+                            username: username,
+                            apptoken: apptoken,
+                            fbtoken: fbtoken,
+                            fbid: fbid,
+                          });
+                      }else if(login_mode == "manual"){
+                        alert(result.message);
+                      } 
+                 }else{
+                    console.log("enter else")
+                    console.log(result.data.username);
+                    if(login_mode == "facebook"){
+                        global.username = result.data.username;
+                    }else{
+                        global.username = username;
+                    }
+                    global.userid   = result.data.userid;
+                    global.phoneNum = result.data.phonenum;
+                    if(result.data.usermode == "courier"){
+                        global.role = result.data.usermode;
+                        this.props.navigation.navigate("OrderList");
+                    }else if(result.data.usermode == "customer"){
+                        global.role = result.data.usermode;
+                        this.props.navigation.navigate("CustomerScreen");
+                    }
+                 }
+                });
+              } 
+              ).catch((error) => console.log(error));
+            }
+    }
 
 
     render() {
@@ -152,14 +173,11 @@ export default class LoginScreen extends React.Component {
                     placeholderTextColor = "#9a73ef"
                     autoCapitalize = "none"
                     onChangeText = {this.handlePassword}/>
-                
-
-
 
                 <TouchableOpacity
                     style = {styles.submitButton}
-                    onPress = {
-                    () => this.login(this.state.username, this.state.password)
+                    onPress = {  
+                    () => this.log_in(this.state.username, this.state.password,-1,-1,-1,"manual")//fbid,fbtoken,apptoken,login_mode
                     }>
                     <Text style = {styles.submitButtonText}> Log In </Text>
                 </TouchableOpacity>
