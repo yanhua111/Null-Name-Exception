@@ -40,7 +40,7 @@ export default class PlaceOrderScreen extends React.Component {
         hour: "00",
         minute: "00"
       },
-    
+      fee: "",
       showloader: false
     };
   }
@@ -61,8 +61,8 @@ export default class PlaceOrderScreen extends React.Component {
       user_text: content,
       user_reward: money
     })
-    console.log(content)
-    console.log(this.state.user_text)
+    // console.log(content)
+    // console.log(this.state.user_text)
   }
 
   /* Update position set by user */
@@ -78,7 +78,7 @@ export default class PlaceOrderScreen extends React.Component {
   };
 
   /* place order handler */
-  get_order_info = (fromLat, fromLng, toLat, toLng, locFrom, locTo) => {
+  get_order_info = (fromLat, fromLng, toLat, toLng, locFrom, locTo, placeTime, fee) => {
     if (this.state.user_text === "") {
       Alert.alert("Invalid Order", "Please enter order Details!");
       return;
@@ -98,12 +98,15 @@ export default class PlaceOrderScreen extends React.Component {
       toLng,
       `${this.state.orderTime.hour}:${this.state.orderTime.minute}:00`,
       locFrom,
-      locTo
+      locTo,
+      placeTime,
+      fee
     );
+    console.log("placeTime:", placeTime);
   };
 
   /* place a order */
-  place_order = (lat, lng, deslat, deslng, time, locFrom, locTo) => {
+  place_order = (lat, lng, deslat, deslng, time, locFrom, locTo, placeTime, fee) => {
     this.setState({
       showloader: true
     });
@@ -122,7 +125,10 @@ export default class PlaceOrderScreen extends React.Component {
         deslng: deslng,
         time: time,
         locFrom: locFrom,
-        locTo: locTo
+        locTo: locTo,
+        placeTime: placeTime,
+        fee: fee,
+        customerPhone: global.phoneNum
       })
     }).then(res => {
       res.json().then(result => {
@@ -149,7 +155,7 @@ export default class PlaceOrderScreen extends React.Component {
 
   /* Time picker */
   async pickTime() {
-    console.log(this.state.user_text)
+    //console.log(this.state.user_text)
     if(Platform.OS === 'android') {
       try {
         const { action, hour, minute } = await TimePickerAndroid.open({
@@ -170,8 +176,8 @@ export default class PlaceOrderScreen extends React.Component {
           } else {
             setMin = minute;
           }
-          console.log(setHour);
-          console.log(setMin);
+          // console.log(setHour);
+          // console.log(setMin);
           this.setState({
             orderTime: {
               hour: setHour,
@@ -193,6 +199,16 @@ export default class PlaceOrderScreen extends React.Component {
     
   }
   
+  getPlaceTime = () => {
+    var today = new Date();
+    var time = today.getFullYear()+"/"
+              +(today.getMonth()+1)+"/"
+              +today.getDate()+" "
+              +today.getHours()+":"
+              +today.getMinutes()
+    return time;
+  }
+
   //numeric only text input
   set_update = ()=>{
   }
@@ -260,7 +276,8 @@ export default class PlaceOrderScreen extends React.Component {
               toLat: toLat,
               toLng: toLng,
               content: this.state.user_text,
-              orderTime: this.state.orderTime
+              orderTime: this.state.orderTime,
+              fee: this.state.fee
             });
           }}
         />
@@ -287,21 +304,22 @@ export default class PlaceOrderScreen extends React.Component {
               toLat: toLat,
               toLng: toLng,
               content: this.state.user_text,
-              orderTime: this.state.orderTime
+              orderTime: this.state.orderTime,
+              fee: this.state.fee
             });
           }}
         />
         
-        <View style={styles.locTo}>
+        <View style={styles.locTo1}>
           <Image source={contentIcon} style={styles.icon} />
           <Text style={styles.shorttext}> Delivery Cost: </Text>
-          <Text style={styles.longtext}>   $ </Text>
+          <Text style={styles.longtext}>  $ </Text>
           <TextInput
             keyboardType={"decimal-pad"}
             placeholder="Your princess is in another castle"
             underlineColorAndroid={"transparent"}
-            onChangeText={user_text => this.setState({ user_text })}
-            //style={{ marginVertical: 20 }}
+            onChangeText={fee => this.setState({ fee })}
+            style={{ flex:1,textAlign:"center",alignContent:"center" }}
           />
         </View>
 
@@ -337,14 +355,16 @@ export default class PlaceOrderScreen extends React.Component {
         <View style={styles.placeBtn}>
           <TouchableOpacity
             style={styles.placeTxtContainer}
-            onPress={() =>
+            onPress={() => 
               this.get_order_info(
                 fromLat,
                 fromLng,
                 toLat,
                 toLng,
                 locFrom,
-                locTo
+                locTo,
+                this.getPlaceTime(),
+                this.state.fee
               )
             }
           >
@@ -387,6 +407,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     //marginBottom: 20
   },
+  locTo1: {
+    width: "100%",
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderColor: "grey",
+    height: 48,
+    flexDirection: "row",
+    alignContent:"space-between",
+    //marginBottom: 20
+  },
   txtInputContainer: {
     width: "100%",
     paddingHorizontal: 10,
@@ -422,7 +453,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     //fontWeight: "bold",
     color: "black",
-    marginVertical: 2.5
+    marginVertical: 2.5,
   },
   placeholderText: {
     color: "grey",
