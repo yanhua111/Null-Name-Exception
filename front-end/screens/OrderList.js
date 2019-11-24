@@ -116,7 +116,13 @@ export default class OrderList extends React.Component {
           id: item.id,
           detail: item.content,
           time: item.time,
-          userid: item.userid
+          userid: item.userid,
+          courierPhone: item.courierPhone,
+          customerPhone: item.customerPhone,
+          fee: item.fee,
+          placeTime: item.placeTime,
+          acceptTime: item.acceptTime,
+          finishTime: item.finishTime
         });
       }}
 
