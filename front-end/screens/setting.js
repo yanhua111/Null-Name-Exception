@@ -1,6 +1,6 @@
 import React from "react"; 
-import {StyleSheet,View,Image,Text,TouchableOpacity,ImageBackground,Button,TextInput,Platform,
-  PixelRatio} from 'react-native'; 
+import {StyleSheet,View,Image,Text,TouchableOpacity,ToastAndroid,ImageBackground,Button,TextInput,Platform,
+  PixelRatio,Alert} from 'react-native'; 
 import "../global";
 import Modal from "react-native-modal";
 import { URL, PORT} from "../src/conf";
@@ -11,6 +11,7 @@ import phone from "../assets/phone.png";
 import TopBar from "../src/utils/TopBar";
 import Cell from "../src/utils/Cell";
 import choco from "../assets/choco.png";
+
 
 export default class Setting extends React.Component { 
   
@@ -31,6 +32,35 @@ export default class Setting extends React.Component {
         global.change_screen = 0;
       this.props.navigation.navigate("CustomerScreen");
       }
+    }
+
+    logout = () => {
+      console.log("here");
+      fetch(`${URL}:${PORT}/users/logout`, {
+              method: "GET",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+              credentials: "include",
+            }).then((response) => {
+              response.json().then((result) => {
+                if (result.errno == 0) {
+                  this.props.navigation.navigate("LoginScreen");
+                  if(Platform.OS === "ios"){
+                    console.log(result.message);
+                  }else{
+                      ToastAndroid.showWithGravityAndOffset(
+                      result.message,
+                      ToastAndroid.LONG,
+                      ToastAndroid.BOTTOM,
+                      25,
+                      50
+                    );
+                  }  
+                }
+              })
+            }).catch((error) => console.log(error));      
     }
 
     render() { 
@@ -69,29 +99,6 @@ export default class Setting extends React.Component {
           placeholder={global.userid}
           showarrow={false} 
         />
-        {/* <View style = {styles.infoStyle}>
-        <Image style = {styles.icon}
-         source = {self}
-        />   
-      <Text style = {styles.text}>name : </Text>
-      <Text style = {styles.text2}>{global.username} </Text>   
-      </View>
-      
-      <View style = {styles.infoStyle1}>
-      <Image style = {styles.icon}
-         source = {userMode}
-        />   
-      <Text style = {styles.text}>mode : </Text>
-      <Text style = {styles.text2}>{global.role} </Text> 
-      </View>
-
-      <View style = {styles.infoStyle2}>
-      <Image style = {styles.icon}
-         source = {phone}
-        />   
-      <Text style = {styles.text}>Phone No : </Text>
-      <Text style = {styles.text2}>{global.phoneNum}</Text>
-      </View> */}
        
      
       <View style={styles.touchBtn1}>
@@ -105,10 +112,29 @@ export default class Setting extends React.Component {
              }
             )
               }>
-            <Text style={styles.text_opacity}>Change Setting</Text>
+            <Text style={styles.text_opacity}>Edit Setting</Text>
             </TouchableOpacity>
-          </View>
-        </View> 
+      </View>
+
+      <View style={styles.touchBtn1}>
+            <TouchableOpacity 
+             onPress={ ()=> Alert.alert(
+              "Do you really want to log out?",
+              "you can log in later",
+              [
+                {
+                  text: 'Cancel',
+                  style: 'cancel',
+                },
+                {text: 'Log Out', onPress: () => this.logout()},
+              ],
+              {cancelable: false},
+            )}>
+            <Text style={styles.text_opacity}>Log Out</Text>
+            </TouchableOpacity>
+      </View>
+
+    </View> 
       );
     } 
   } 
@@ -286,6 +312,8 @@ export default class Setting extends React.Component {
           alignItems: 'center',
           marginBottom: 10,
           bottom: -200,
+          height: 60,
+          width:"82%",
           },    
         touchBtn2:{
             backgroundColor: '#F65353',
