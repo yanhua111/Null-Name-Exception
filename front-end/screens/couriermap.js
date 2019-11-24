@@ -134,8 +134,10 @@ export default class CourierMap extends React.Component {
   getUserlocHandler = () => {
     //console.log("emiiting id: ", global.id_ls);
     navigator.geolocation.getCurrentPosition((position) => {
-      this.pos.lat = position.coords.latitude;
-      this.pos.lng = position.coords.longitude;          
+      if (Math.abs(this.pos.lat - position.coords.latitude) > 0.00005 || Math.abs(this.pos.lng - position.coords.longitude) > 0.00005) {
+        this.pos.lat = position.coords.latitude;
+        this.pos.lng = position.coords.longitude; 
+      }         
       this.socket.emit("courierLocIn", JSON.stringify({ lat: position.coords.latitude, lng: position.coords.longitude, orderid: global.id_ls }));
     }, (err) => console.log(err));
   }
@@ -154,8 +156,7 @@ export default class CourierMap extends React.Component {
                 //console.log(this.pos.objArray);
               })
           } 
-          ).catch((error) => console.log('Error: '+ error)); 
-          console.log("orderid is: " +global.id_ls); 
+          ).catch((error) => console.log('Error: '+ error));  
     }
 
   /* locate user position and move to current location */
@@ -250,7 +251,7 @@ export default class CourierMap extends React.Component {
           <Marker 
             key={marker.latitude+marker.longitude}
             coordinate={marker}
-            title={this.pos.objArray.indexOf(marker)}
+            title={this.pos.objArray.indexOf(marker).toString()}
             //description={marker.lng}
           />
         )))}
