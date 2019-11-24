@@ -11,7 +11,8 @@ import {
   Alert,
   ToastAndroid,
   Modal,
-  ActivityIndicator
+  ActivityIndicator,
+  ScrollView,
 } from "react-native";
 
 import locIcon from "../assets/region.png";
@@ -260,7 +261,7 @@ export default class PlaceOrderScreen extends React.Component {
         >
           Order Information
         </TopBar>
-
+        <ScrollView>
         <Cell
           source={locIcon}
           title="From:"
@@ -351,7 +352,7 @@ export default class PlaceOrderScreen extends React.Component {
             style={{ marginVertical: 20 }}
           />
         </View>
-
+        </ScrollView>
         <View style={styles.placeBtn}>
           <TouchableOpacity
             style={styles.placeTxtContainer}
@@ -371,6 +372,7 @@ export default class PlaceOrderScreen extends React.Component {
             <Text style={styles.placeTxt}>PLACE!</Text>
           </TouchableOpacity>
         </View>
+        
       </View>
     );
   }
