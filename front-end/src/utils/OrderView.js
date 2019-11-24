@@ -7,7 +7,7 @@ import originpic from "../../assets/origin.png";
 import dotpic from "../../assets/dot.png";
 import righticon from "../../assets/arrow_right.png";
 import phone from "../../assets/phone.png";
-
+import "../../global";
 export default class OrderView extends Component {
   dialCall = (number) => {
     let phoneNumber = '';
@@ -17,6 +17,10 @@ export default class OrderView extends Component {
   }
 
   render = () => {
+    const phonenum = global.role==="courier"?this.props.courierPhone:this.props.customerPhone;
+    // const accepted = global.status == 0;
+    // const finished = global.status == -1;
+    //console.log("accepted: ", accpeted);
     return (
       <View
         style={[styles.order, this.props.rich ? styles.rich : styles.simple]}
@@ -31,14 +35,32 @@ export default class OrderView extends Component {
               <Text>
                 Placed at   </Text>
               <Text style={{ color: "black", marginHorizontal: 20 }}>
-                12.40{"\n"} 
+                {this.props.placeTime}{"\n"}
               </Text>
               <Text>Preferred Delivery Time:  </Text>
               <Text style={{ color: "black", marginHorizontal: 20 }}>
-                {this.props.time}
+                {this.props.time}{"\n"}
+              </Text>
+            </Text>
+
+          }
+          {this.props.rich && (this.props.status==0||this.props.status==-1) && 
+            <Text style={{color:"grey", marginTop: -20, left:-5}}>
+              <Text> Accepted time  </Text>
+              <Text style={{ color: "black", marginHorizontal: 20 }}>
+                  {this.props.acceptTime}{"\n"}
               </Text>
             </Text>
           }
+          {this.props.rich && this.props.status==-1 && 
+            <Text style={{color:"grey", marginTop: -20, left: -5}}>
+              <Text> Finished time  </Text>
+              <Text style={{ color: "black", marginHorizontal: 20 }}>
+                  {this.props.finishTime}{"\n"}
+              </Text>
+            </Text>
+          }
+          <Text> Fee:  {this.props.fee}{"\n"} </Text>
           <View style={styles.locLine}>
             <Image style={styles.smallpic} source={originpic} />
             <Text>{this.props.locFrom}</Text>
@@ -66,6 +88,7 @@ export default class OrderView extends Component {
               ></Image>
             </TouchableOpacity>
           )}
+          
           {this.props.rich &&(
             <TouchableOpacity
             style={{
@@ -77,7 +100,7 @@ export default class OrderView extends Component {
             borderRadius: 5,
             marginTop: 180
             }}
-            onPress={()=>{this.dialCall(parseInt(this.props.phonenum),10)}}>
+            onPress={()=>{this.dialCall(parseInt(phonenum),10)}}>
               <Image
                 style={{height:50,width:50}}
                 source={phone}
