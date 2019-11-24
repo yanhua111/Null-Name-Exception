@@ -245,6 +245,16 @@ export default class CourierMap extends React.Component {
             }}
           />
         )}
+        {(this.pos.objArray.length > 2) && (
+          this.pos.objArray.slice(1).map(marker => (
+          <Marker 
+            key={marker.latitude+marker.longitude}
+            coordinate={marker}
+            title={this.pos.objArray.indexOf(marker)}
+            //description={marker.lng}
+          />
+        )))}
+
         </MapView>
       <View style = {styles.container1} >
         <Text style = {styles.text}>Distance: {this.pos.distance} km    Time: {this.pos.duration} m</Text>
