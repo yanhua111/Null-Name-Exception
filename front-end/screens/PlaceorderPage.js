@@ -22,6 +22,7 @@ import TopBar from "../src/utils/TopBar";
 import Cell from "../src/utils/Cell";
 let ordertime;
 let content;
+let money;
 
 export default class PlaceOrderScreen extends React.Component {
   constructor(props) {
@@ -39,9 +40,11 @@ export default class PlaceOrderScreen extends React.Component {
         hour: "00",
         minute: "00"
       },
+    
       showloader: false
     };
   }
+ 
 
   componentWillUnmount() {
     this.setState({
@@ -55,7 +58,8 @@ export default class PlaceOrderScreen extends React.Component {
   setTimeContent = () => {
     this.setState({
       orderTime: ordertime,
-      user_text: content
+      user_text: content,
+      user_reward: money
     })
     console.log(content)
     console.log(this.state.user_text)
@@ -188,6 +192,10 @@ export default class PlaceOrderScreen extends React.Component {
     }
     
   }
+  
+  //numeric only text input
+  set_update = ()=>{
+  }
 
   render() {
     const locFrom = this.props.navigation.getParam(
@@ -211,6 +219,10 @@ export default class PlaceOrderScreen extends React.Component {
       "orderTime",
       this.state.orderTime
     );
+    // money = this.props.navigation.getParam(
+    //   "money",
+    //   this.state.user_reward
+    // );
     
     return (
       <View style={styles.container}>
@@ -279,12 +291,25 @@ export default class PlaceOrderScreen extends React.Component {
             });
           }}
         />
+        
+        <View style={styles.locTo}>
+          <Image source={contentIcon} style={styles.icon} />
+          <Text style={styles.shorttext}> Delivery Cost: </Text>
+          <Text style={styles.longtext}>   $ </Text>
+          <TextInput
+            keyboardType={"decimal-pad"}
+            placeholder="Your princess is in another castle"
+            underlineColorAndroid={"transparent"}
+            onChangeText={user_text => this.setState({ user_text })}
+            //style={{ marginVertical: 20 }}
+          />
+        </View>
 
         <View style={styles.locTo}>
           <Image source={timeIcon} style={styles.icon} />
           <Text onPress={() => this.pickTime()} style={styles.shorttext}>
             {" "}
-            Pick a time:{" "}
+             Pick a time:{" "}
           </Text>
           <TouchableOpacity
             style={styles.address}
@@ -358,13 +383,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderColor: "grey",
-    height: 50,
+    height: 48,
     flexDirection: "row",
-    marginBottom: 20
+    //marginBottom: 20
   },
   txtInputContainer: {
     width: "100%",
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderColor: "grey",
@@ -372,12 +397,14 @@ const styles = StyleSheet.create({
     flexDirection: "column"
   },
   titleContainer: {
+    justifyContent: "flex-start",
     flexDirection: "row"
   },
   address: {
     borderRadius: 10,
     width: "80%",
-    height: 200
+    height: 200,
+    marginVertical: 4
   },
   text: {
     fontSize: 20,
@@ -389,7 +416,13 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "bold",
     color: "black",
-    marginHorizontal: 10
+    marginVertical: 2.5
+  },
+  longtext: {
+    fontSize: 15,
+    //fontWeight: "bold",
+    color: "black",
+    marginVertical: 2.5
   },
   placeholderText: {
     color: "grey",
