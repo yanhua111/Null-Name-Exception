@@ -80,14 +80,11 @@ export default class CourierMap extends React.Component {
   /* When component mounts, set up interval to get user location repeatedly */
   componentDidMount() {
     interval = setInterval(() => {
-      this.getUserlocHandler().then(() =>{
-        this.pathFinding_order().then(() => {
-          this.setState(() => {
-        
-            return { unseen: "does not display" }
-          }); 
-        }); 
-      });    
+      this.getUserlocHandler();      
+      this.pathFinding_order();
+      this.setState(() => {        
+        return { unseen: "does not display" }
+      });     
 
     }, 1000);
     if (global.id_ls != -1) {
