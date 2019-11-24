@@ -13,7 +13,6 @@ import {
 import "../global";
 import { URL, PORT } from "../src/conf";
 import TopBar from "../src/utils/TopBar";
-import profilepic from "../assets/courier.png";
 
 import OrderView from "../src/utils/OrderView";
 
@@ -80,29 +79,7 @@ export default class OrderList extends React.Component {
     this.list_order();
     this.setState({ refreshing: false });
   };
-
-  _onEndReached = () => {
-    // this.state.reachedEnd =  true;
-    this.setState({ reachedEnd: true });
-    // this.forceUpdate();
-  };
-
-  renderButtons = () => {
-    const buttons = [];
-    for (let i = 0; i < global.ls_length; i++) {
-      buttons.push(
-        <Button
-          onPress={() => {
-            this.list_order(i);
-          }}
-          title={`order ${i}`}
-          key={i}
-        ></Button>
-      );
-    }
-    return buttons;
-  };
-
+  
   _renderItem = ({ item }) => (
     <OrderView
       locFrom={item.locFrom}
@@ -126,10 +103,6 @@ export default class OrderList extends React.Component {
           finishTime: item.finishTime
         });
       }}
-
-      // id={item.id}
-      // detail={item.content}
-      // time = {item.time}
     />
   );
 
@@ -158,63 +131,5 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 0,
     flexDirection: "column"
-  },
-  order: {
-    width: "90%",
-    alignSelf: "center",
-    backgroundColor: "white",
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    borderRadius: 5,
-    borderColor: "grey",
-    height: 200,
-    flexDirection: "row",
-    marginBottom: 20,
-    elevation: 10,
-    shadowOffset: { width: 1, height: 1 },
-    shadowColor: "black",
-    shadowOpacity: 1.0,
-    borderBottomWidth: 1,
-    justifyContent: "flex-start"
-  },
-  locContainer: {
-    flexDirection: "column",
-    marginTop: 20,
-    justifyContent: "space-around"
-  },
-  locLine: {
-    flexDirection: "row",
-    width: 200,
-    marginVertical: 2,
-    flexShrink: 1
-  },
-  dotpic: {
-    width: 20,
-    height: 30
-  },
-  smallpic: {
-    width: 20,
-    height: 20,
-    marginRight: 2
-  },
-  largepic: {
-    width: 50,
-    height: 50,
-    marginTop: 100
-  },
-  optionContainer: {
-    flex: 1,
-    height: 30,
-    alignItems: "flex-end",
-    flexDirection: "column"
-  },
-  profilepic: {
-    width: 50,
-    height: 50,
-    borderRadius: 5,
-    borderWidth: 1,
-    backgroundColor: "white",
-    borderColor: "grey",
-    marginRight: 10
   }
 });
