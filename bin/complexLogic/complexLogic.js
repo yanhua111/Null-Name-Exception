@@ -23,9 +23,9 @@ const pathFinding = (getOrders, latitude, longitude) => {
   let desArray = [], custArray = [];
   for (let i = 0; i < allOrders.length; i++) {               
     let loc = {latitude: allOrders[i].deslat, longitude: allOrders[i].deslng};
-    desArray.push(loc);
-    loc = {latitude: allOrders[i].lat, longitude: allOrders[i].lng};
     custArray.push(loc);
+    loc = {latitude: allOrders[i].lat, longitude: allOrders[i].lng};
+    desArray.push(loc);
   } 
   //removes repeating locations
   desArray = desArray.filter((desArray, index, self) =>   
