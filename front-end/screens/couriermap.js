@@ -82,10 +82,11 @@ export default class CourierMap extends React.Component {
     interval = setInterval(() => {
       this.getUserlocHandler();      
       this.pathFinding_order();
+      // this.fetchCurOrder();
       this.setState(() => {        
         return { unseen: "does not display" }
       });     
-
+      
     }, 1000);
     if (global.id_ls != -1) {
       this.socket.emit("join", JSON.stringify({ orderid: global.id_ls }));
@@ -102,7 +103,12 @@ export default class CourierMap extends React.Component {
   }
 
   fetchCurOrder = () => {
-    fetch(`${URL}:${PORT}/order/list_user`, {
+    navigator.geolocation.getCurrentPosition((position) => {
+      let location = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      };
+    fetch(`${URL}:${PORT}/order/list?curlat=${location.latitude}&curlng=${location.longitude}`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -112,12 +118,16 @@ export default class CourierMap extends React.Component {
     }).then((res) => {
       res.json().then(result => {
         // console.log(result.data.list[0].id)
-        global.id_ls = result.data.list[0].id
-        this.forceUpdate();
+        if (result.data.list[0].status == 0) {
+          global.id_ls = result.data.list[0].id;
+          this.forceUpdate();
+        }
       })
 
     }
     ).catch((error) => console.log(error));   
+  })
+  
   }
 
   /* Get the current user locatio, by calling navigator.geolocation.getCurrentPosition */
@@ -145,7 +155,7 @@ export default class CourierMap extends React.Component {
               })
           } 
           ).catch((error) => console.log('Error: '+ error)); 
-              
+          console.log("orderid is: " +global.id_ls); 
     }
 
   /* locate user position and move to current location */
@@ -188,6 +198,7 @@ export default class CourierMap extends React.Component {
     this.map.animateToRegion(region, 500);
   }
 
+  
   render() {
     return (
       <View style={styles.container}>
@@ -204,8 +215,11 @@ export default class CourierMap extends React.Component {
                 this.marker = marker;
               }}
               coordinate={this.state.coordinate}
+              title='Cust'
+              description='350'
             >
               <Image source={customer} style={{ width: 50, height: 50 }} />
+              
             </Marker.Animated>
           }
         {(this.pos.objArray.length >= 2 && this.pos.lat != 0) && (
@@ -217,6 +231,7 @@ export default class CourierMap extends React.Component {
             strokeWidth={3}
             strokeColor='#FF0000'
             optimizeWaypoints={false}
+            mode='WALKING'
             onStart={(params) => {
               //console.log(`Started routing between "${params.origin}" and "${params.destination}"`);
             }}
@@ -261,7 +276,6 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     justifyContent: "center",
     flexDirection:"row",
-    borderStyle: "dotted",
     alignItems: 'flex-start',
   },
   btn: {
