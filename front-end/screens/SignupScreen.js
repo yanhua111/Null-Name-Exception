@@ -34,7 +34,7 @@ export default class SignupScreen extends React.Component {
     }
 
     user_signup = (username, password, phonenum, usermode, apptoken) => {
-        if(username == "" || password == "" || phonenum == ""){
+        if(username == "" || password == "" || phonenum == "" || phonenum.length !== 10){
             alert("Please make you you have enter all fields");
         } else{
         fetch("http://ec2-99-79-78-181.ca-central-1.compute.amazonaws.com:3000/users/signup", {
@@ -166,6 +166,7 @@ export default class SignupScreen extends React.Component {
                     onChangeText = {this.handlePassword}/>
 
                 <TextInput style = {styles.input}
+                    keyboardType = 'numeric'
                     underlineColorAndroid = "transparent"
                     placeholder = " Phone Number"
                     placeholderTextColor = "#9a73ef"
