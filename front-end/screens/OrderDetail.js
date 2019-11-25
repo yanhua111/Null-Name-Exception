@@ -21,7 +21,7 @@ export default class OrderDetail extends React.Component {
     };
   }
   /* Accept an order, update status, return error messages on error */
-  accept_order = (order_id, acceptTime) => {
+  accept_order = (order_id, acceptTime, courierPhone) => {
     fetch(`${URL}:${PORT}/order/accept`, {
       method: "POST",
       headers: {
@@ -31,7 +31,8 @@ export default class OrderDetail extends React.Component {
       credentials: "include",
       body: JSON.stringify({
         orderid: order_id,
-        acceptTime: acceptTime
+        acceptTime: acceptTime,
+        courierPhone: courierPhone
       })
     }).then(res => {
       res.json().then(result => {
@@ -168,7 +169,7 @@ export default class OrderDetail extends React.Component {
           <CustomButton
             content="Accept"
             style={{ backgroundColor: "red",  }}
-            onPress={() => this.accept_order(id, accept_order)}
+            onPress={() => this.accept_order(id, accept_orderm, courierPhone)}
           />
         )}
         {status == 0 && (
