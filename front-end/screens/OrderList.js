@@ -1,4 +1,7 @@
-import React from "react";
+/* eslint-disable no-unused-vars */
+/* eslint-disable eqeqeq */
+/* eslint-disable camelcase */
+import React from 'react';
 import {
   StyleSheet,
   SafeAreaView,
@@ -9,13 +12,13 @@ import {
   Alert,
   Image,
   TouchableOpacity
-} from "react-native";
-import "../global";
-import { URL, PORT } from "../src/conf";
-import TopBar from "../src/utils/TopBar";
-import profilepic from "../assets/courier.png";
+} from 'react-native';
+import '../global';
+import { URL, PORT } from '../src/conf';
+import TopBar from '../src/utils/TopBar';
+import profilepic from '../assets/courier.png';
 
-import OrderView from "../src/utils/OrderView";
+import OrderView from '../src/utils/OrderView';
 
 import OrderDetail from './OrderDetail';
 
@@ -29,7 +32,7 @@ export default class OrderList extends React.Component {
     }
   };
 
-  componentDidMount() {
+  componentDidMount () {
     this.list_order();
   }
 
@@ -37,38 +40,36 @@ export default class OrderList extends React.Component {
     return this.myArray;
   };
 
-
   /* This function list_order is triggered by button of each order.
-  Every small order is a button, when pressed, it will give us the 
+  Every small order is a button, when pressed, it will give us the
   detailed information. This function help us to get all the information
   from back end database
   */
   list_order = () => {
     navigator.geolocation.getCurrentPosition((position) => {
-      let location = {
+      const location = {
         latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
+        longitude: position.coords.longitude
       };
       fetch(`${URL}:${PORT}/order/list?curlat=${location.latitude}&curlng=${location.longitude}`, {
-        method: "GET",
+        method: 'GET',
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
         },
-        credentials: "include"
+        credentials: 'include'
       })
         .then(res => {
-          console.log(res)
           res.json().then(result => {
-            console.log(result)
+            let j;
             for (j = 0; j < result.data.list.length; j++) {
               var joined = this.state.myArray.concat(result.data.list[j]);
               this.setState({ myArray: joined });
             }
           });
         })
-        .catch(error => console.log("List order error", error));
-    })
+        .catch(error => console.log('List order error', error));
+    });
   };
 
   onClearArray = () => {
@@ -109,9 +110,9 @@ export default class OrderList extends React.Component {
       locFrom={item.locFrom}
       locTo={item.locTo}
       status={item.status}
-      fee= {item.fee} //{item.fee}
+      fee= {item.fee} // {item.fee}
       onPress={() => {
-        this.props.navigation.navigate("OrderDetail", {
+        this.props.navigation.navigate('OrderDetail', {
           locFrom: item.locFrom,
           locTo: item.locTo,
           status: item.status,
@@ -131,7 +132,7 @@ export default class OrderList extends React.Component {
     />
   );
 
-  render() {
+  render () {
     return (
       <SafeAreaView style={styles.container}>
         <View>
@@ -155,33 +156,33 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: 0,
-    flexDirection: "column"
+    flexDirection: 'column'
   },
   order: {
-    width: "90%",
-    alignSelf: "center",
-    backgroundColor: "white",
+    width: '90%',
+    alignSelf: 'center',
+    backgroundColor: 'white',
     paddingHorizontal: 10,
     paddingVertical: 10,
     borderRadius: 5,
-    borderColor: "grey",
+    borderColor: 'grey',
     height: 200,
-    flexDirection: "row",
+    flexDirection: 'row',
     marginBottom: 20,
     elevation: 10,
     shadowOffset: { width: 1, height: 1 },
-    shadowColor: "black",
+    shadowColor: 'black',
     shadowOpacity: 1.0,
     borderBottomWidth: 1,
-    justifyContent: "flex-start"
+    justifyContent: 'flex-start'
   },
   locContainer: {
-    flexDirection: "column",
+    flexDirection: 'column',
     marginTop: 20,
-    justifyContent: "space-around"
+    justifyContent: 'space-around'
   },
   locLine: {
-    flexDirection: "row",
+    flexDirection: 'row',
     width: 200,
     marginVertical: 2,
     flexShrink: 1
@@ -203,16 +204,16 @@ const styles = StyleSheet.create({
   optionContainer: {
     flex: 1,
     height: 30,
-    alignItems: "flex-end",
-    flexDirection: "column"
+    alignItems: 'flex-end',
+    flexDirection: 'column'
   },
   profilepic: {
     width: 50,
     height: 50,
     borderRadius: 5,
     borderWidth: 1,
-    backgroundColor: "white",
-    borderColor: "grey",
+    backgroundColor: 'white',
+    borderColor: 'grey',
     marginRight: 10
   }
 });

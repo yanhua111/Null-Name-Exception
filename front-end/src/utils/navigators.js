@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable eqeqeq */
+/* eslint-disable camelcase */
 import React from 'react';
 import { Text, View, Image } from 'react-native';
 import { createAppContainer, createSwitchNavigator, createDrawerNavigator } from 'react-navigation';
@@ -102,6 +105,7 @@ export const CourierTabs = createBottomTabNavigator({
   defaultNavigationOptions: ({ navigation }) => ({
     tabBarIcon: ({ focused, horizontal, tintColor }) => {
       const { routeName } = navigation.state;
+      // eslint-disable-next-line no-unused-vars
       let IconComponent;
       let iconname;
       if (routeName === 'Map') {
@@ -126,7 +130,7 @@ export const CourierTabs = createBottomTabNavigator({
 });
 
 class IconWithBadge extends React.Component {
-  render() {
+  render () {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Image source={this.props.source} style={{ width: 30, height: 30 }}/>

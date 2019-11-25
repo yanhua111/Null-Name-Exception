@@ -1,20 +1,17 @@
-import React from "react";
+/* eslint-disable camelcase */
+/* eslint-disable no-unused-vars */
+import React from 'react';
 import {
   StyleSheet,
   SafeAreaView,
   FlatList,
-  Text,
-  View,
-  Button,
-  Alert,
-  Image,
-  TouchableOpacity
-} from "react-native";
-import "../global";
-import { URL, PORT } from "../src/conf";
-import TopBar from "../src/utils/TopBar";
+  View
+} from 'react-native';
+import '../global';
+import { URL, PORT } from '../src/conf';
+import TopBar from '../src/utils/TopBar';
 
-import OrderView from "../src/utils/OrderView";
+import OrderView from '../src/utils/OrderView';
 
 export default class OrderHistory extends React.Component {
   state = {
@@ -26,7 +23,7 @@ export default class OrderHistory extends React.Component {
     }
   };
 
-  componentDidMount() {
+  componentDidMount () {
     this.list_order();
   }
 
@@ -34,37 +31,37 @@ export default class OrderHistory extends React.Component {
     return this.myArray;
   };
 
-
   /* This function list_order is triggered by button of each order.
-  Every small order is a button, when pressed, it will give us the 
+  Every small order is a button, when pressed, it will give us the
   detailed information. This function help us to get all the information
   from back end database
   */
   list_order = () => {
     navigator.geolocation.getCurrentPosition((position) => {
-      let location = {
+      const location = {
         latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
+        longitude: position.coords.longitude
       };
 
       fetch(`${URL}:${PORT}/order/order_history`, {
-        method: "GET",
+        method: 'GET',
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
         },
-        credentials: "include"
+        credentials: 'include'
       })
         .then(res => {
           res.json().then(result => {
+            let j;
             for (j = 0; j < result.data.list.length; j++) {
               var joined = this.state.myArray.concat(result.data.list[j]);
               this.setState({ myArray: joined });
             }
           });
         })
-        .catch(error => console.log("List order error", error));
-    })
+        .catch(error => console.log('List order error', error));
+    });
   };
 
   onClearArray = () => {
@@ -80,29 +77,29 @@ export default class OrderHistory extends React.Component {
 
   _renderItem = ({ item }) => (
     <OrderView
-    locFrom={item.locFrom}
-    locTo={item.locTo}
-    status={item.status}
-    righticon={item.righticon}
-    id={item.id}
-    detail={item.detail}
-    time={item.time}
-    courierPhone={item.courierPhone}
-    customerPhone={item.customerPhone}
-    fee={item.fee}
-    placeTime={item.placeTime}
-    acceptTime={item.acceptTime}
-    finishTime={item.finishTime}
-    rich={true}
+      locFrom={item.locFrom}
+      locTo={item.locTo}
+      status={item.status}
+      righticon={item.righticon}
+      id={item.id}
+      detail={item.detail}
+      time={item.time}
+      courierPhone={item.courierPhone}
+      customerPhone={item.customerPhone}
+      fee={item.fee}
+      placeTime={item.placeTime}
+      acceptTime={item.acceptTime}
+      finishTime={item.finishTime}
+      rich={true}
     />
   );
 
-  render() {
+  render () {
     return (
       <SafeAreaView style={styles.container}>
         <View>
           <TopBar
-          onBackPress = {() => this.props.navigation.navigate("CustomerList")}
+            onBackPress = {() => this.props.navigation.navigate('CustomerList')}
           >Order History</TopBar>
         </View>
         <FlatList
@@ -123,6 +120,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: 0,
-    flexDirection: "column"
+    flexDirection: 'column'
   }
 });

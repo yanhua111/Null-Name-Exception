@@ -1,34 +1,38 @@
-import React from "react";
-import { StyleSheet, View, Alert } from "react-native";
-import "../global";
-import { URL, PORT } from "../src/conf";
-import TopBar from "../src/utils/TopBar";
-import profilepic from "../assets/courier.png";
-import despic from "../assets/destination.png";
-import originpic from "../assets/origin.png";
-import OrderView from "../src/utils/OrderView";
-import dotpic from "../assets/dot.png";
-import righticon from "../assets/arrow_right.png";
-import CustomButton from "../src/utils/CustomButton";
-import CustomLoading from "../src/utils/CustomLoading";
+/* eslint-disable no-unused-vars */
+/* eslint-disable eqeqeq */
+/* eslint-disable camelcase */
+import React from 'react';
+import { StyleSheet, View, Alert } from 'react-native';
+import '../global';
+import { URL, PORT } from '../src/conf';
+import TopBar from '../src/utils/TopBar';
+import profilepic from '../assets/courier.png';
+import despic from '../assets/destination.png';
+import originpic from '../assets/origin.png';
+import OrderView from '../src/utils/OrderView';
+import dotpic from '../assets/dot.png';
+import righticon from '../assets/arrow_right.png';
+import CustomButton from '../src/utils/CustomButton';
+import CustomLoading from '../src/utils/CustomLoading';
 
 export default class OrderDetail extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
       showloader: false
     };
   }
+
   /* Accept an order, update status, return error messages on error */
   accept_order = (order_id, acceptTime, courierPhone) => {
     fetch(`${URL}:${PORT}/order/accept`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
       },
-      credentials: "include",
+      credentials: 'include',
       body: JSON.stringify({
         orderid: order_id,
         acceptTime: acceptTime,
@@ -37,131 +41,129 @@ export default class OrderDetail extends React.Component {
     }).then(res => {
       res.json().then(result => {
         Alert.alert(result.message);
-        this.props.navigation.navigate("OrderList");
+        this.props.navigation.navigate('OrderList');
       });
     });
   };
 
-  get_user_token = async userid => {
-    try {
-      const res = await fetch(`${URL}:${PORT}/users/get_token`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          //userid: global.user_id_ls,
-          userid: userid
-        })
-      });
-      res.json().then(result => {
-        global.apptoken = result.data.apptoken;
-        // this.forceUpdate();
-      });
-    } catch (error) {
-      return console.log(error);
-    }
-  };
-
   finish_order = (order_id, userid, finishTime) => {
     Alert.alert(
-      "Have you finished the order?",
-      "",
+      'Have you finished the order?',
+      '',
       [
         {
-          text: "Cancel",
-          style: "cancel"
+          text: 'Cancel',
+          style: 'cancel'
         },
         {
-          text: "Confirm",
+          text: 'Confirm',
           onPress: () => {
             this.setState({
               showloader: true
             });
-            this.get_user_token(userid).then(
-              fetch(`${URL}:${PORT}/order/finish`, {
-                method: "POST",
-                headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json"
-                },
-                credentials: "include",
-                body: JSON.stringify({
-                  orderid: order_id,
-                  finishTime: finishTime
-                })
-              }).then(res => {
-                fetch(`${URL}:${PORT}/push`, {
-                  method: "POST",
-                  headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json"
-                  },
-                  credentials: "include",
-                  body: JSON.stringify({
-                    token: global.apptoken,
-                    message: "You order has been finished!"
-                  })
-                });
-                res.json().then(result => {
-                  setTimeout(() => {
-                    this.setState({
-                      showloader: false
-                    });
-                    if (result.errno == 0) {
-                      this.props.navigation.navigate("OrderList");
-                    } else {
-                      Alert.alert(result.message);
-                    }
-                  }, 300);
-                });
+
+            fetch(`${URL}:${PORT}/users/get_token`, {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+              },
+              credentials: 'include',
+              body: JSON.stringify({
+                // userid: global.user_id_ls,
+                userid: userid
               })
-            );
+            }).then((res) => {
+              res.json().then(result => {
+                const apptoken = result.data.apptoken;
+                fetch(`${URL}:${PORT}/order/finish`, {
+                  method: 'POST',
+                  headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                  },
+                  credentials: 'include',
+                  body: JSON.stringify({
+                    orderid: order_id,
+                    finishTime: finishTime
+                  })
+                }).then(res => {
+                  fetch(`${URL}:${PORT}/push`, {
+                    method: 'POST',
+                    headers: {
+                      Accept: 'application/json',
+                      'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                      token: apptoken,
+                      message: 'You order has been finished!'
+                    })
+                  });
+                  res.json().then(result => {
+                    setTimeout(() => {
+                      this.setState({
+                        showloader: false
+                      });
+                      if (result.errno == 0) {
+                        this.props.navigation.navigate('OrderList');
+                      } else {
+                        Alert.alert(result.message);
+                      }
+                    }, 300);
+                  });
+                });
+              });
+            });
           }
         }
       ],
       { cancelable: false }
     );
   };
-  getPlaceTime = () => {
-    const today = new Date();
-    let time = today.getFullYear()+"/"
-              +(today.getMonth()+1)+"/"
-              +today.getDate()+" "
-              +today.getHours()+":"
-              +today.getMinutes()
-    return time;
-  }
 
-  render() {
-    const locFrom = this.props.navigation.getParam("locFrom", "");
-    const locTo = this.props.navigation.getParam("locTo", "");
-    var status = this.props.navigation.getParam("status", "");
-    const id = this.props.navigation.getParam("id", "");
-    const detail = this.props.navigation.getParam("detail", "");
-    const time = this.props.navigation.getParam("time", "");
-    const userid = this.props.navigation.getParam("userid", "");
-    const courierPhone = this.props.navigation.getParam("courierPhone", "");
-    const customerPhone = this.props.navigation.getParam("customerPhone", "");
-    const fee = this.props.navigation.getParam("fee", "");
-    const placeTime = this.props.navigation.getParam("placeTime", "");
-    const acceptTime = this.props.navigation.getParam("acceptTime", "");
-    const finishTime = this.props.navigation.getParam("finishTime", "");
+  getPlaceTime = () => {
+    const today = new Date();
+    const time =
+      today.getFullYear() +
+      '/' +
+      (today.getMonth() + 1) +
+      '/' +
+      today.getDate() +
+      ' ' +
+      today.getHours() +
+      ':' +
+      today.getMinutes();
+    return time;
+  };
+
+  render () {
+    const locFrom = this.props.navigation.getParam('locFrom', '');
+    const locTo = this.props.navigation.getParam('locTo', '');
+    var status = this.props.navigation.getParam('status', '');
+    const id = this.props.navigation.getParam('id', '');
+    const detail = this.props.navigation.getParam('detail', '');
+    const time = this.props.navigation.getParam('time', '');
+    const userid = this.props.navigation.getParam('userid', '');
+    const courierPhone = this.props.navigation.getParam('courierPhone', '');
+    const customerPhone = this.props.navigation.getParam('customerPhone', '');
+    const fee = this.props.navigation.getParam('fee', '');
+    const placeTime = this.props.navigation.getParam('placeTime', '');
+    const acceptTime = this.props.navigation.getParam('acceptTime', '');
+    const finishTime = this.props.navigation.getParam('finishTime', '');
 
     return (
       <View style={styles.container}>
-        <CustomLoading
-        visible={this.state.showloader}
-        />
-        <TopBar onBackPress={() => {
-          if (global.role == 'courier') {
-            this.props.navigation.navigate("OrderList")
-          } else {
-            this.props.navigation.navigate("CustomerList")
-          }
-        }}>
+        <CustomLoading visible={this.state.showloader} />
+        <TopBar
+          onBackPress={() => {
+            if (global.role == 'courier') {
+              this.props.navigation.navigate('OrderList');
+            } else {
+              this.props.navigation.navigate('CustomerList');
+            }
+          }}
+        >
           Order Detail
         </TopBar>
         <OrderView
@@ -183,22 +185,24 @@ export default class OrderDetail extends React.Component {
         {status == 1 && (
           <CustomButton
             content="Accept"
-            style={{ backgroundColor: "red",  }}
-            onPress={() => this.accept_order(id, this.getPlaceTime(), global.phoneNum)}
+            style={{ backgroundColor: 'red' }}
+            onPress={() =>
+              this.accept_order(id, this.getPlaceTime(), global.phoneNum)
+            }
           />
         )}
         {status == 0 && (
           <CustomButton
             content="Finish"
-            style={{ backgroundColor: "#f55442" }}
+            style={{ backgroundColor: '#f55442' }}
             onPress={() => this.finish_order(id, userid, finishTime)}
           />
         )}
 
         <CustomButton
           content="Cancel"
-          style={{ backgroundColor: "blue" }}
-          onPress={() => this.props.navigation.navigate("OrderList")}
+          style={{ backgroundColor: 'blue' }}
+          onPress={() => this.props.navigation.navigate('OrderList')}
           whitefont={true}
         />
       </View>
@@ -209,6 +213,6 @@ export default class OrderDetail extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: "column"
+    flexDirection: 'column'
   }
 });

@@ -1,19 +1,20 @@
-import React from "react";
+/* eslint-disable no-unused-vars */
+/* eslint-disable eqeqeq */
+import React from 'react';
 import {
   StyleSheet, Text, Image, View,
-  TouchableOpacity, TimePickerAndroid, Alert, ToastAndroid
-} from "react-native";
-import MapView, { AnimatedRegion, Marker } from "react-native-maps";
-import io from "socket.io-client";
-import { URL, PORT, WebSocketPORT } from '../src/conf'
-import "../global";
+  TouchableOpacity, TimePickerAndroid, Alert
+} from 'react-native';
+import MapView, { AnimatedRegion, Marker } from 'react-native-maps';
+import io from 'socket.io-client';
+import { URL, PORT, WebSocketPORT } from '../src/conf';
+import '../global';
 
-import courier from "../assets/runningman.png";
-import locateicon from "../assets/locate.png";
-import backicon from "../assets/back.png";
-import placeOrdericon from "../assets/plus.png"
+import courier from '../assets/runningman.png';
+import locateicon from '../assets/locate.png';
+import placeOrdericon from '../assets/plus.png';
 
-/* A random latitude and longitude, required for declaring animated Marker*/
+/* A random latitude and longitude, required for declaring animated Marker */
 const LATITUDE = 49.267941;
 const LONGITUDE = -123.247360;
 const initRegion = {
@@ -22,14 +23,14 @@ const initRegion = {
   latitudeDelta: 0.00922,
   longitudeDelta: 0.0200
 };
+let interval;
 
 export default class CustomerScreen extends React.Component {
-
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
-      user_text: "",
+      user_text: '',
       region: {
         latitude: 49.267941,
         longitude: -123.247360,
@@ -45,38 +46,38 @@ export default class CustomerScreen extends React.Component {
       orderTime: {
         hour: -1,
         minute: -1
-      },
+      }
     };
-    /* Connect to server socket 
+    /* Connect to server socket
     * join socket io room by order id
     * listen to event 'locationOut', and update Marker position
     */
     // this.socket = SocketIOClient(`${URL}:${WebSocketPORT}`);
     this.socket = io(`${URL}:${WebSocketPORT}`);
-    this.socket.emit("join", JSON.stringify({ orderid: global.id_ls }));
-    this.socket.on("courierLocOut", (data) => {
-      console.log(data)
-      let loc = JSON.parse(data.location);
+    this.socket.emit('join', JSON.stringify({ orderid: global.id_ls }));
+    this.socket.on('courierLocOut', (data) => {
+      console.log(data);
+      const loc = JSON.parse(data.location);
       if (loc.orderid != -1 && loc.orderid == global.id_ls) {
-        let location = {
+        const location = {
           latitude: loc.lat,
           longitude: loc.lng
         };
 
         this.animate(location);
       }
-      });
-}
+    });
+  }
 
 /* locate courier's position and move to current location */
 locate = () => {
   navigator.geolocation.getCurrentPosition((position) => {
-    let location = {
+    const location = {
       latitude: position.coords.latitude,
-      longitude: position.coords.longitude,
+      longitude: position.coords.longitude
     };
     this.animateRegion(location);
-  }, (err) => Alert.alert("PLease enable location"));
+  }, () => Alert.alert('PLease enable location'));
   // this.setState({
   //   region: position
   // })
@@ -85,23 +86,23 @@ locate = () => {
 /* Get the current user locatio, by calling navigator.geolocation.getCurrentPosition */
 getUserlocHandler = () => {
   navigator.geolocation.getCurrentPosition((position) => {
-    this.socket.emit("customerLocIn", JSON.stringify({ lat: position.coords.latitude, lng: position.coords.longitude, orderid: global.id_ls }));
+    this.socket.emit('customerLocIn', JSON.stringify({ lat: position.coords.latitude, lng: position.coords.longitude, orderid: global.id_ls }));
   }, (err) => console.log(err));
 }
 
 /* Triggered when the region on map changes, update region state to current region */
-onRegionChange(region) {
+onRegionChange (region) {
   this.setState({ region });
 }
 
 /* Animation */
-animate(location) {
+animate (location) {
   const { coordinate } = this.state;
   const newCoordinate = {
     latitude: location.latitude,
     longitude: location.longitude
   };
-    coordinate.timing(newCoordinate).start();
+  coordinate.timing(newCoordinate).start();
 }
 
 /* Animation for Map region */
@@ -117,60 +118,56 @@ animateRegion = (location) => {
 }
 
 /* When component mounts, set up interval to get user location repeatedly */
-componentDidMount() {
+componentDidMount () {
   interval = setInterval(() => {
     this.getUserlocHandler();
-    console.log("Order is : ", global.id_ls)
+    console.log('Order is : ', global.id_ls);
   }, 1000);
 
   if (global.id_ls != -1) {
-    this.socket.emit("join", JSON.stringify({ orderid: global.id_ls }));
+    this.socket.emit('join', JSON.stringify({ orderid: global.id_ls }));
   }
   this.locate();
 }
 
 /* Fetch order and check if user is in an order when entered */
-componentWillMount() {
+componentWillMount () {
   this.fetchCurOrder();
 }
 
 /* Clear the interval when component unmount */
-componentWillUnmount() {
+componentWillUnmount () {
   clearInterval(interval);
 }
 
-
 fetchCurOrder = () => {
   fetch(`${URL}:${PORT}/order/list_customer`, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
     },
-    credentials: "include",
+    credentials: 'include'
   }).then((res) => {
     res.json().then(result => {
       if (result.data.list.length != 0) {
-        if(result.data.list[0].status == 0) {
-          global.id_ls = result.data.list[0].id
+        if (result.data.list[0].status == 0) {
+          global.id_ls = result.data.list[0].id;
           this.forceUpdate();
         }
       }
-      
-    })
-
+    });
   }
   ).catch((error) => console.log(error));
 }
 
-
 /* Time picker */
-async pickTime() {
+async pickTime () {
   try {
     const { action, hour, minute } = await TimePickerAndroid.open({
       hour: 14,
       minute: 0,
-      is24Hour: false, // Will display '2 PM'
+      is24Hour: false // Will display '2 PM'
     });
     if (action !== TimePickerAndroid.dismissedAction) {
       this.setState({
@@ -178,14 +175,14 @@ async pickTime() {
           hour: hour,
           minute: minute
         }
-      })
+      });
     }
   } catch ({ code, message }) {
     console.warn('Cannot open time picker', message);
   }
 }
 
-render() {
+render () {
   // let handles = this.state.panResponder.panHandlers;
   return (
     <View style={styles.container}>
@@ -209,30 +206,28 @@ render() {
       </MapView>
 
       <TouchableOpacity style={styles.placebtn}
-        onPress={() => { this.props.navigation.navigate("OrderScreen"); }} >
-          <Text style={{fontWeight: 'bold', marginBottom: 10, fontSize: 15}}>
+        onPress={() => { this.props.navigation.navigate('OrderScreen'); }} >
+        <Text style={{ fontWeight: 'bold', marginBottom: 10, fontSize: 15 }}>
             Place Order!
-          </Text>
+        </Text>
         <Image source={placeOrdericon} style={styles.largeicon} />
       </TouchableOpacity>
 
-      <TouchableOpacity style={{ position: "absolute", bottom: 40, right: 20, borderColor: 'black' }}
+      <TouchableOpacity style={{ position: 'absolute', bottom: 40, right: 20, borderColor: 'black' }}
         onPress={() => this.locate()} >
         <Image source={locateicon} style={styles.icon} />
       </TouchableOpacity>
     </View>
   );
 }
-
-
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    justifyContent: "center",
-    padding: 0,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    padding: 0
   },
   icon: {
     width: 30,
@@ -241,7 +236,7 @@ const styles = StyleSheet.create({
   backbtn: {
     position: 'absolute',
     top: 30,
-    left: 10,
+    left: 10
   },
   largeicon: {
     width: 50,
@@ -250,6 +245,6 @@ const styles = StyleSheet.create({
   placebtn: {
     position: 'absolute',
     bottom: 30,
-    left: 30,
+    left: 30
   }
 });

@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable eqeqeq */
+/* eslint-disable camelcase */
 import React, { Component } from 'react';
 
 import {
@@ -6,7 +9,7 @@ import {
 import backicon from '../../assets/back.png';
 
 export default class TopBar extends Component {
-  render = (  ) => {
+  render = () => {
     return (
       <View style={{
         alignSelf: 'flex-start',
@@ -21,15 +24,15 @@ export default class TopBar extends Component {
         shadowOffset: { width: 1, height: 1 },
         shadowColor: 'black',
         shadowOpacity: 1.0,
-        elevation: 10,
+        elevation: 10
       }}>
         <TouchableOpacity style={{
           position: 'absolute',
           left: 20,
-          top: 40,
+          top: 40
         }}
         onPress={this.props.onBackPress} >
-        { this.props.showback && <Image source={backicon} style={ { width: 30, height: 30 }} />}
+          { this.props.showback && <Image source={backicon} style={ { width: 30, height: 30 }} />}
         </TouchableOpacity>
         <TouchableOpacity style={{
           position: 'absolute',
@@ -48,8 +51,8 @@ export default class TopBar extends Component {
       </View>
     );
   }
+
   static defaultProps = {
     showback: true
   };
 }
-

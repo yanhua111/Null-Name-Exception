@@ -1,7 +1,8 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
 import React from 'react';
 import {
-  StyleSheet, Image, View, TouchableOpacity
+  StyleSheet, Image, View
 } from 'react-native';
 
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
@@ -12,7 +13,7 @@ import TopBar from '../src/utils/TopBar.js';
 let content;
 
 export default class AddressScreen extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
@@ -26,7 +27,7 @@ export default class AddressScreen extends React.Component {
     console.log(content);
   }
 
-  render() {
+  render () {
     const selection = this.props.navigation.getParam('selection', 'NO SELECTION');
     const locFrom = this.props.navigation.getParam('locFrom', 'NO SELECTION');
     const locTo = this.props.navigation.getParam('locTo', 'NO SELECTION');
@@ -86,14 +87,14 @@ export default class AddressScreen extends React.Component {
             }}
             isRowScrollable={true}
             textInputProps={{
-              onChangeText: (user_text) => this.setState({ user_text }),
+              onChangeText: (user_text) => this.setState({ user_text })
             }}
             query={{
               // available options: https://developers.google.com/places/web-service/autocomplete
               key: APIKEY,
               language: 'en',
               location: '49.267941,-123.247360',
-              radius: '2500',
+              radius: '2500'
             }}
             currentLocation={true}
             currentLocationLabel="Current location"

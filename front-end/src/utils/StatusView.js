@@ -1,6 +1,9 @@
-import React, { Component } from "react";
+/* eslint-disable no-unused-vars */
+/* eslint-disable eqeqeq */
+/* eslint-disable camelcase */
+import React, { Component } from 'react';
 
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 
 export default class StatusView extends Component {
   render = () => {
@@ -10,8 +13,8 @@ export default class StatusView extends Component {
           style={[styles.common, this.props.status ? styles.available : styles.accepted]}
         >
           <Text
-          style = {[styles.commontext, this.props.status ? styles.availabletxt : styles.acceptedtxt]}
-          >{this.props.status ? "Available" : "accepted"}</Text>
+            style = {[styles.commontext, this.props.status ? styles.availabletxt : styles.acceptedtxt]}
+          >{this.props.status ? 'Available' : 'accepted'}</Text>
         </View>
       </View>
     );
@@ -25,7 +28,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    borderColor: "#c7c7c7",
+    borderColor: '#c7c7c7',
     height: 50,
     textAlign: 'center',
     borderWidth: 1,
@@ -33,11 +36,11 @@ const styles = StyleSheet.create({
   },
   available: {
   //  color: 'blue',
-  borderColor: "blue",
+    borderColor: 'blue'
   },
   accepted: {
     // color: 'green',
-    borderColor: "green",
+    borderColor: 'green'
   },
   commontext: {
 

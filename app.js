@@ -11,7 +11,8 @@ const pushRouter = require('./routes/notification');
 
 var app = express();
 app.get('/', function (req, res) {
-  res.send('Hello Server!');
+  res.json('Hello Server!');
+  // res.send('Hello Server!');
 });
 
 /* creating socket.io on port 8000, will be used be used for real time communication from the client,
@@ -59,15 +60,6 @@ app.use(session({
 app.use('/users', usersRouter);
 app.use('/order', orderRouter);
 app.use('/push', pushRouter);
-
-io.on('connection', (client) => {
-  client.on('event', data => {
-    console.log(data);
-  });
-  client.on('disconnect', (data) => {
-    console.log(data);
-  });
-});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
