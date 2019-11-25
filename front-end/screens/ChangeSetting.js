@@ -49,7 +49,7 @@ export default class ChangeSetting extends React.Component {
             response.json().then((result)=> {
               console.log(result);
               if(result.errno == -1){
-                alert("User name already exist please choose a new one")
+                alert(result.message)
               }else{
                 global.username = this.state.user_text_name;
                 global.role = this.state.user_mode;

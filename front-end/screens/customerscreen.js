@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  StyleSheet, Platform, Image, View,
+  StyleSheet, Text, Image, View,
   TouchableOpacity, TimePickerAndroid, Alert, ToastAndroid
 } from "react-native";
 import MapView, { AnimatedRegion, Marker } from "react-native-maps";
@@ -8,7 +8,7 @@ import io from "socket.io-client";
 import { URL, PORT, WebSocketPORT } from '../src/conf'
 import "../global";
 
-import courier from "../assets/courier.png";
+import courier from "../assets/runningman.png";
 import locateicon from "../assets/locate.png";
 import backicon from "../assets/back.png";
 import placeOrdericon from "../assets/plus.png"
@@ -150,8 +150,13 @@ fetchCurOrder = () => {
     credentials: "include",
   }).then((res) => {
     res.json().then(result => {
-      global.id_ls = result.data.list[0].id
-      this.forceUpdate();
+      if (result.data.list.length != 0) {
+        if(result.data.list[0].status == 0) {
+          global.id_ls = result.data.list[0].id
+          this.forceUpdate();
+        }
+      }
+      
     })
 
   }
@@ -198,18 +203,16 @@ render() {
             }}
             coordinate={this.state.coordinate}
           >
-            <Image source={courier} style={{ width: 30, height: 30 }} />
+            <Image source={courier} style={{ width: 50, height: 50 }} />
           </Marker.Animated>
         }
       </MapView>
 
-      <TouchableOpacity style={styles.backbtn}
-        onPress={() => { this.props.navigation.navigate("DashboardScreen"); }} >
-        <Image source={backicon} style={styles.icon} />
-      </TouchableOpacity>
-
       <TouchableOpacity style={styles.placebtn}
         onPress={() => { this.props.navigation.navigate("OrderScreen"); }} >
+          <Text style={{fontWeight: 'bold', marginBottom: 10, fontSize: 15}}>
+            Place Order!
+          </Text>
         <Image source={placeOrdericon} style={styles.largeicon} />
       </TouchableOpacity>
 

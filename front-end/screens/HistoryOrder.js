@@ -47,7 +47,7 @@ export default class OrderHistory extends React.Component {
         longitude: position.coords.longitude,
       };
 
-      fetch(`${URL}:${PORT}/order/list?curlat=${location.latitude}&curlng=${location.longitude}`, {
+      fetch(`${URL}:${PORT}/order/order_history`, {
         method: "GET",
         headers: {
           Accept: "application/json",

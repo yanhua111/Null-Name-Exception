@@ -91,9 +91,9 @@ const getWeight = (toVisit) => {
 const getDist = (start, end) => Math.sqrt(Math.pow(start.latitude - end.latitude, 2) + Math.pow(start.longitude - end.longitude, 2));
 
 /*
- * return an array of sorted orders id
+ * return an array of sorted orders id
  */
-const sortOrder = (allOrders, latitude, longitude) => {
+const sortOrder = (allOrders, latitude, longitude) => {
   try {
     if (allOrders.length == 0) {
       return allOrders; // return empty array
@@ -110,7 +110,7 @@ const sortOrder = (allOrders, latitude, longitude) => {
     }
     let i = 0;
     while (i < available.length) {
-      const today = new Date();
+      const today = new Date();
       const time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
       const curTime = parseInt(time[0]) * 60 + parseInt(time[1]);
       const itimeArr = available[i].time.split(':');
@@ -121,7 +121,7 @@ const sortOrder = (allOrders, latitude, longitude) => {
       }
       i++;
     }
-    available = mergeSort(startPos, available);
+    available = mergeSort(startPos, available);
     return current.concat(available);
   } catch (err) {
     return err;
@@ -129,14 +129,14 @@ const sortOrder = (allOrders, latitude, longitude) => {
 };
 
 const mergeSort = (startPos, available) => {
-  if (available.length <= 1) {
-    return available;
+  if (available.length <= 1) {
+    return available;
   }
-  const mid = Math.floor(available.length / 2);
+  const mid = Math.floor(available.length / 2);
   const left = available.slice(0, mid);
   const right = available.slice(mid);
 
-  return merge(mergeSort(startPos, left), mergeSort(startPos, right), startPos);
+  return merge(mergeSort(startPos, left), mergeSort(startPos, right), startPos);
 };
 
 const merge = (L, R, startPos) => {
@@ -150,11 +150,11 @@ const merge = (L, R, startPos) => {
     const iloc = { latitude: L[i].deslat, longitude: L[i].deslng };
     const itimeArr = L[i].time.split(':');
     const itime = Math.abs(parseInt(itimeArr[0]) * 60 + parseInt(itimeArr[1]) - curTime);
-    const iref = getDist(startPos, iloc) * 1000 + itime;
-    const jloc = { latitude: R[j].deslat, longitude: R[j].deslng };
+    const iref = getDist(startPos, iloc) * 1000 + itime;
+    const jloc = { latitude: R[j].deslat, longitude: R[j].deslng };
     const jtimeArr = R[j].time.split(':');
-    const jtime = Math.abs(parseInt(jtimeArr[0]) * 60 + parseInt(jtimeArr[1]) - curTime);
-    const jref = getDist(startPos, jloc) * 1000 + jtime;
+    const jtime = Math.abs(parseInt(jtimeArr[0]) * 60 + parseInt(jtimeArr[1]) - curTime);
+    const jref = getDist(startPos, jloc) * 1000 + jtime;
     if (iref < jref) {
       result.push(L[i]);
       i++;
@@ -163,7 +163,7 @@ const merge = (L, R, startPos) => {
       j++;
     }
   }
-  return result.concat(L.slice(i).concat(R.slice(j)));
+  return result.concat(L.slice(i).concat(R.slice(j)));
 };
 
 module.exports = { pathFinding, sortOrder };

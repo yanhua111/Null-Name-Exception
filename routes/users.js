@@ -188,11 +188,17 @@ router.post('/update', (req, res) => {
             new ErrorModel('User already exist, please try another username!')
           );
         } else {
-          req.session.username = req.body.username;
+          const updateres = update(req.body.username, req.session.userid, req.body.phonenum, req.body.usermode);
+          updateres.then(data => {
+            if (data.affectedRows === 1) {
+              req.session.username = req.body.username;
+              res.json(new SuccessModel('User Updated Succeed!'));
+            }
+          });
           res.json(new SuccessModel('Profile Updated Succeed!'));
         }
       } else {
-        const updateres = update(req.body.username, req.session.userid);
+        const updateres = update(req.body.username, req.session.userid, req.body.phonenum, req.body.usermode);
         updateres.then(data => {
           console.log(data);
           if (data.affectedRows === 1) {

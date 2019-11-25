@@ -118,8 +118,26 @@ export default class CustomerList extends React.Component {
     locTo = {item.locTo}
     status = {item.status}
     righticon = {righticon}
+    fee = {item.fee}
     id={item.id}
     detail={item.content}
+    onPress={() => {
+      this.props.navigation.navigate("OrderDetail", {
+        locFrom: item.locFrom,
+        locTo: item.locTo,
+        status: item.status,
+        id: item.id,
+        detail: item.content,
+        time: item.time,
+        userid: item.userid,
+        courierPhone: item.courierPhone,
+        customerPhone: item.customerPhone,
+        fee: item.fee,
+        placeTime: item.placeTime,
+        acceptTime: item.acceptTime,
+        finishTime: item.finishTime
+      });
+    }}
     />
   );
 

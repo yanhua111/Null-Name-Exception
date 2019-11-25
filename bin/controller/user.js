@@ -1,8 +1,8 @@
 const { exec } = require("../database/mysql");
 
-const update = (username, userId) => {
+const update = (username, userId, phonenum, usermode) => {
   const sql = `
-        update users set username='${username}' where id = ${userId};
+        update users set username='${username}', phonenum='${phonenum}', usermode = '${usermode}'  where id = ${userId};
   `;
   return exec(sql).then(result => {
     return {

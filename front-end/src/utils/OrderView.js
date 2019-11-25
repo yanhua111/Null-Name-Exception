@@ -7,6 +7,7 @@ import originpic from "../../assets/origin.png";
 import dotpic from "../../assets/dot.png";
 import righticon from "../../assets/arrow_right.png";
 import phone from "../../assets/phone.png";
+import money from "../../assets/money.png";
 import "../../global";
 export default class OrderView extends Component {
   dialCall = (number) => {
@@ -60,7 +61,11 @@ export default class OrderView extends Component {
               </Text>
             </Text>
           }
-          <Text> Fee:  {this.props.fee}{"\n"} </Text>
+          {/* <Text> Fee:  {this.props.fee} $ {"\n"} </Text> */}
+          <View style={styles.locLine}>
+            <Image style={{ width: 40, height: 40, marginLeft: -3, marginTop: -3 }} source={money} />
+            <Text>$ {this.props.fee}</Text>
+          </View>
           <View style={styles.locLine}>
             <Image style={styles.smallpic} source={originpic} />
             <Text>{this.props.locFrom}</Text>

@@ -117,7 +117,7 @@ export default class CourierMap extends React.Component {
       credentials: "include",
     }).then((res) => {
       res.json().then(result => {
-        // console.log(result.data.list[0].id)
+        // console.log("Evan console: ", result.data.list[0].id)
         if (result.data.list[0].status == 0) {
           global.id_ls = result.data.list[0].id;
           this.forceUpdate();
@@ -134,16 +134,16 @@ export default class CourierMap extends React.Component {
   getUserlocHandler = () => {
     //console.log("emiiting id: ", global.id_ls);
     navigator.geolocation.getCurrentPosition((position) => {
-      if (Math.abs(this.pos.lat - position.coords.latitude) > 0.00005 || Math.abs(this.pos.lng - position.coords.longitude) > 0.00005) {
+      // if (Math.abs(this.pos.lat - position.coords.latitude) > 0.00005 || Math.abs(this.pos.lng - position.coords.longitude) > 0.00005) {
         this.pos.lat = position.coords.latitude;
         this.pos.lng = position.coords.longitude; 
-      }         
+      // }         
       this.socket.emit("courierLocIn", JSON.stringify({ lat: position.coords.latitude, lng: position.coords.longitude, orderid: global.id_ls }));
     }, (err) => console.log(err));
   }
 
   pathFinding_order = () => { 
-    fetch(`${URL}:${PORT}/order/list?pathfinding=true&curlat=${this.pos.lat}&curlng=${this.pos.lng}`, {
+    fetch(`${URL}:${PORT}/order/list?pathfinding=1&curlat=${this.pos.lat}&curlng=${this.pos.lng}`, {
             method: "GET",
             headers: {
               Accept: "application/json",
@@ -153,7 +153,7 @@ export default class CourierMap extends React.Component {
           }).then((res) => {
               res.json().then(result =>{
                 this.pos.objArray = result.data.list;
-                //console.log(this.pos.objArray);
+                console.log("Evan console:", this.pos.objArray);
               })
           } 
           ).catch((error) => console.log('Error: '+ error));  
@@ -210,7 +210,7 @@ export default class CourierMap extends React.Component {
           initialRegion={initRegion}
           showsUserLocation={true}
           style={{ flex: 1 }} >
-          {
+          {/* {
             (global.id_ls != -1) && <Marker.Animated
               ref={(marker) => {
                 this.marker = marker;
@@ -222,7 +222,7 @@ export default class CourierMap extends React.Component {
               <Image source={customer} style={{ width: 50, height: 50 }} />
               
             </Marker.Animated>
-          }
+          } */}
         {(this.pos.objArray.length >= 2 && this.pos.lat != 0) && (
           <MapViewDirections
             origin={this.pos.objArray[0]}
@@ -249,8 +249,8 @@ export default class CourierMap extends React.Component {
         {(this.pos.objArray.length > 2) && (
           this.pos.objArray.slice(1).map(marker => (
           <Marker 
-            key={marker.latitude+marker.longitude}
-            coordinate={marker}
+            // key={marker.latitude+marker.longitude}
+            coordinate={marker ? marker : {latitude: 0, longitude: 0}}
             title={this.pos.objArray.indexOf(marker).toString()}
             //description={marker.lng}
           />

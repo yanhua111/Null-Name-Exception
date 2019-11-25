@@ -57,7 +57,7 @@ const fetchOrder = (userId, usermode, status, short) => {
 
 /* Get All order placed by the current user(For Customer) */
 const getCustomerOrder = (userId) => {
-  const result = fetchOrder(userId, 'customer', 0, 1);
+  const result = fetchOrder(userId, 'customer', 0, 0);
   return result;
 };
 

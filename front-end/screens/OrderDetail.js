@@ -125,6 +125,15 @@ export default class OrderDetail extends React.Component {
       { cancelable: false }
     );
   };
+  getPlaceTime = () => {
+    const today = new Date();
+    let time = today.getFullYear()+"/"
+              +(today.getMonth()+1)+"/"
+              +today.getDate()+" "
+              +today.getHours()+":"
+              +today.getMinutes()
+    return time;
+  }
 
   render() {
     const locFrom = this.props.navigation.getParam("locFrom", "");
@@ -146,7 +155,13 @@ export default class OrderDetail extends React.Component {
         <CustomLoading
         visible={this.state.showloader}
         />
-        <TopBar onBackPress={() => this.props.navigation.navigate("OrderList")}>
+        <TopBar onBackPress={() => {
+          if (global.role == 'courier') {
+            this.props.navigation.navigate("OrderList")
+          } else {
+            this.props.navigation.navigate("CustomerList")
+          }
+        }}>
           Order Detail
         </TopBar>
         <OrderView
@@ -169,7 +184,7 @@ export default class OrderDetail extends React.Component {
           <CustomButton
             content="Accept"
             style={{ backgroundColor: "red",  }}
-            onPress={() => this.accept_order(id, accept_orderm, courierPhone)}
+            onPress={() => this.accept_order(id, this.getPlaceTime(), global.phoneNum)}
           />
         )}
         {status == 0 && (
