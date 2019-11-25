@@ -21,7 +21,7 @@ export default class OrderDetail extends React.Component {
     };
   }
   /* Accept an order, update status, return error messages on error */
-  accept_order = order_id => {
+  accept_order = (order_id, acceptTime) => {
     fetch(`${URL}:${PORT}/order/accept`, {
       method: "POST",
       headers: {
@@ -30,7 +30,8 @@ export default class OrderDetail extends React.Component {
       },
       credentials: "include",
       body: JSON.stringify({
-        orderid: order_id
+        orderid: order_id,
+        acceptTime: acceptTime
       })
     }).then(res => {
       res.json().then(result => {
@@ -63,7 +64,7 @@ export default class OrderDetail extends React.Component {
     }
   };
 
-  finish_order = (order_id, userid) => {
+  finish_order = (order_id, userid, finishTime) => {
     Alert.alert(
       "Have you finished the order?",
       "",
@@ -87,7 +88,8 @@ export default class OrderDetail extends React.Component {
                 },
                 credentials: "include",
                 body: JSON.stringify({
-                  orderid: order_id
+                  orderid: order_id,
+                  finishTime: finishTime
                 })
               }).then(res => {
                 fetch(`${URL}:${PORT}/push`, {
@@ -165,15 +167,15 @@ export default class OrderDetail extends React.Component {
         {status == 1 && (
           <CustomButton
             content="Accept"
-            style={{ backgroundColor: "red" }}
-            onPress={() => this.accept_order(id)}
+            style={{ backgroundColor: "red",  }}
+            onPress={() => this.accept_order(id, accept_order)}
           />
         )}
         {status == 0 && (
           <CustomButton
             content="Finish"
             style={{ backgroundColor: "#f55442" }}
-            onPress={() => this.finish_order(id, userid)}
+            onPress={() => this.finish_order(id, userid, finishTime)}
           />
         )}
 
