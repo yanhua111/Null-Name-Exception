@@ -65,15 +65,17 @@ router.get('/list', function (req, res) {
   let output;
   result.then(data => {
     if (req.query.curlat && req.query.curlng) {
-      if (req.query.pathfinding) {
+      if (req.query.pathfinding == true) {
         output = pathFinding(data, req.query.curlat, req.query.curlng);
       } else {
-        output = sortOrder(data, req.query.curlat, req.query.curlng);
+        output = data; // sortOrder(data, req.query.curlat, req.query.curlng);
       }
       res.json(new SuccessModel({ list: output }));
     } else {
       res.json(new SuccessModel({ list: data }));
     }
+  }).catch(err => {
+    res.json(new Error(err));
   });
 });
 

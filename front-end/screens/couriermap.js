@@ -54,20 +54,20 @@ export default class CourierMap extends React.Component {
     */
     //  if(global.id_ls != -1) {
     this.socket = SocketIOClient(`${URL}:${WebSocketPORT}`);
-    this.socket.emit("join", JSON.stringify({ orderid: global.id_ls }));
-    this.socket.on("customerLocOut", (data) => {
-      let loc = JSON.parse(data.location);
-      if (loc.orderid != -1 && loc.orderid == global.id_ls) {
-        let location = {
-          latitude: loc.lat,
-          longitude: loc.lng
-        };
-        //update position on map
-        // this.setPosition(location);
-        this.animate(location);
-      }
+    // this.socket.emit("join", JSON.stringify({ orderid: global.id_ls }));
+    // this.socket.on("customerLocOut", (data) => {
+    //   let loc = JSON.parse(data.location);
+    //   if (loc.orderid != -1 && loc.orderid == global.id_ls) {
+    //     let location = {
+    //       latitude: loc.lat,
+    //       longitude: loc.lng
+    //     };
+    //     //update position on map
+    //     // this.setPosition(location);
+    //     this.animate(location);
+    //   }
 
-    });
+    // });
   }
   pos = {
     lat: 0, lng: 0,
