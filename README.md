@@ -13,7 +13,10 @@ https://www.youtube.com/watch?v=r4hjxecvj_c&t=1s
 #### Courier Accept Order & Shortest Path Identification Between starting Point and Destination
 ![Alt Text](https://github.com/NULL-Name-Exception/Null-Name-Exception/blob/master/gif_source/place_order.gif)
 
-#### Courier Moving on the map
+#### Courier Moving on the Map
 ![Alt Text](https://github.com/NULL-Name-Exception/Null-Name-Exception/blob/master/gif_source/courier_map_gif.gif)
+
+#### Courier Finish Current Order
+![Alt Text](https://github.com/NULL-Name-Exception/Null-Name-Exception/blob/master/gif_source/courier_finish_gif.gif)
 
 
