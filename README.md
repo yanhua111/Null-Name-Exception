@@ -14,6 +14,6 @@ https://www.youtube.com/watch?v=r4hjxecvj_c&t=1s
 ![Alt Text](https://github.com/NULL-Name-Exception/Null-Name-Exception/blob/master/gif_source/place_order.gif)
 
 #### Courier Moving on the map
-
+![Alt Text](https://github.com/NULL-Name-Exception/Null-Name-Exception/blob/master/gif_source/courier_map_gif.gif)
 
 
