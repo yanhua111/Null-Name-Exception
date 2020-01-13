@@ -8,6 +8,10 @@ A delivery app with two user modes: courier and customer. You can choose to be e
 ## YouTube Video Link
 https://www.youtube.com/watch?v=r4hjxecvj_c&t=1s
 
+## Main Function Demo
+### Place Order
+![Alt Text](https://github.com/NULL-Name-Exception/Null-Name-Exception/place_order.gif)
+
 
 
 
