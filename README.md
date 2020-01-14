@@ -19,4 +19,13 @@ https://www.youtube.com/watch?v=XJOHmgFQXaY&feature=youtu.be
 #### Courier Finish Current Order
 ![Alt Text](https://github.com/NULL-Name-Exception/Null-Name-Exception/blob/master/gif_source/courier_finish_gif.gif)
 
+### Functions in Customer Mode
 
+#### Customer Place Order
+![Alt Text](https://github.com/NULL-Name-Exception/Null-Name-Exception/blob/master/gif_source/true_place_order.gif)
+
+#### Real Time Courier Location Update
+![Alt Text](https://github.com/NULL-Name-Exception/Null-Name-Exception/blob/master/gif_source/real_time_gif.gif)
+
+#### Customer Received Notification 
+![Alt Text](https://github.com/NULL-Name-Exception/Null-Name-Exception/blob/master/gif_source/nitification_gif.gif)
