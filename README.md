@@ -6,7 +6,7 @@
 A delivery app that allows users to place orders as courier, accept orders as customer, and track order status in real-time.
 
 ## YouTube Video Link
-https://www.youtube.com/watch?v=r4hjxecvj_c&t=1s
+https://www.youtube.com/watch?v=XJOHmgFQXaY&feature=youtu.be
 
 ## Main Function Demo
 ### Functions in Courier Mode
