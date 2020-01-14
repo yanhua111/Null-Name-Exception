@@ -27,5 +27,5 @@ https://www.youtube.com/watch?v=XJOHmgFQXaY&feature=youtu.be
 #### Real Time Courier Location Update
 ![Alt Text](https://github.com/NULL-Name-Exception/Null-Name-Exception/blob/master/gif_source/real_time_gif.gif)
 
-#### Customer Received Notification 
+#### Customer Receive Notification 
 ![Alt Text](https://github.com/NULL-Name-Exception/Null-Name-Exception/blob/master/gif_source/nitification_gif.gif)
