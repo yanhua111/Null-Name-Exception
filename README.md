@@ -5,7 +5,7 @@
 ## Project Summary
 A delivery app that allows users to place orders as courier, accept orders as customer, and track order status in real-time.
 
-## YouTube Video Link
+## App Walkthrough on YouTube
 https://www.youtube.com/watch?v=XJOHmgFQXaY&feature=youtu.be
 
 ## Main Function Demo
