@@ -3,7 +3,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5ea0b627b01e4ae387df7624c9aa2d88)](https://www.codacy.com/manual/yanhua111/Null-Name-Exception_2?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=NULL-Name-Exception/Null-Name-Exception&amp;utm_campaign=Badge_Grade)
 
 ## Project Summary
-A delivery app that allows users to place orders as courier, accept orders as customer, and track order status in real-time.
+A delivery app that allows users to place orders as customer, accept orders as courier, and track order status in real-time.
 
 ## App Walkthrough on YouTube
 https://www.youtube.com/watch?v=XJOHmgFQXaY&feature=youtu.be
